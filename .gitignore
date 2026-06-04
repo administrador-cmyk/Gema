@@ -1,0 +1,19 @@
+# Secrets — credenciales reales en ../00-datos de acceso/
+.env
+.env.local
+*.pem
+*.key
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Node (fase 2+)
+node_modules/
+dist/
+.next/
+
+# WordPress sync artifacts
+wordpress/sync/*.sql
+wordpress/sync/uploads/

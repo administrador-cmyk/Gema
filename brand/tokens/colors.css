@@ -1,0 +1,66 @@
+/**
+ * Gema Digital & ERP Cumbre — Design Tokens (colors)
+ * Fase 1 — importar en tema WordPress hijo o build Tailwind
+ */
+
+:root {
+  /* ─── Gema Digital (agencia) ─── */
+  --gema-primary: #0b192c;
+  --gema-primary-rgb: 11, 25, 44;
+  --gema-secondary: #00f2fe;
+  --gema-secondary-rgb: 0, 242, 254;
+  --gema-accent: #e2e8f0;
+  --gema-accent-rgb: 226, 232, 240;
+  --gema-surface: #f8fafc;
+  --gema-surface-rgb: 248, 250, 252;
+  --gema-on-primary: #ffffff;
+  --gema-on-surface: #0f172a;
+  --gema-muted: #64748b;
+
+  /* ─── ERP Cumbre (producto) ─── */
+  --cumbre-primary: #0f172a;
+  --cumbre-primary-rgb: 15, 23, 42;
+  --cumbre-primary-alt: #1e293b;
+  --cumbre-primary-alt-rgb: 30, 41, 59;
+  --cumbre-secondary: #10b981;
+  --cumbre-secondary-rgb: 16, 185, 129;
+  --cumbre-accent: #f59e0b;
+  --cumbre-accent-rgb: 245, 158, 11;
+  --cumbre-on-primary: #f8fafc;
+  --cumbre-surface: #f1f5f9;
+
+  /* ─── Sovereign 4.0 (Stitch / landings existentes) ─── */
+  --sovereign-industrial-blue: #003366;
+  --sovereign-action-yellow: #ffd400;
+  --sovereign-success: #008037;
+  --sovereign-warning: #f37021;
+  --sovereign-danger: #ed1c24;
+  --sovereign-surface: #f8f9fa;
+  --sovereign-slate: #1e293b;
+
+  /* ─── Semánticos sitio marketing ─── */
+  --color-bg: var(--gema-surface);
+  --color-text: var(--gema-on-surface);
+  --color-cta: var(--sovereign-action-yellow);
+  --color-cta-text: var(--cumbre-primary);
+  --color-link: var(--gema-secondary);
+  --color-link-hover: var(--cumbre-secondary);
+}
+
+/* Utilidades rápidas para bloques Gutenberg / HTML Stitch */
+.theme-gema {
+  --color-primary: var(--gema-primary);
+  --color-secondary: var(--gema-secondary);
+  --color-accent: var(--gema-accent);
+}
+
+.theme-cumbre {
+  --color-primary: var(--cumbre-primary);
+  --color-secondary: var(--cumbre-secondary);
+  --color-accent: var(--cumbre-accent);
+}
+
+.theme-sovereign {
+  --color-primary: var(--sovereign-industrial-blue);
+  --color-cta: var(--sovereign-action-yellow);
+}

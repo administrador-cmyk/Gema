@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "color": {
+      "palette": [
+        { "slug": "gema-primary", "color": "#0B192C", "name": "Gema Primary" },
+        { "slug": "gema-secondary", "color": "#00F2FE", "name": "Gema Secondary" },
+        { "slug": "gema-accent", "color": "#E2E8F0", "name": "Gema Accent" },
+        { "slug": "cumbre-primary", "color": "#0F172A", "name": "Cumbre Primary" },
+        { "slug": "cumbre-secondary", "color": "#10B981", "name": "Cumbre Secondary" },
+        { "slug": "cumbre-accent", "color": "#F59E0B", "name": "Cumbre Accent" },
+        { "slug": "sovereign-blue", "color": "#003366", "name": "Sovereign Blue" },
+        { "slug": "sovereign-yellow", "color": "#FFD400", "name": "Sovereign CTA" }
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "fontFamily": "Geist, Inter, system-ui, sans-serif",
+          "slug": "gema-display",
+          "name": "Gema Display"
+        },
+        {
+          "fontFamily": "Inter, system-ui, sans-serif",
+          "slug": "gema-body",
+          "name": "Gema Body"
+        },
+        {
+          "fontFamily": "Plus Jakarta Sans, system-ui, sans-serif",
+          "slug": "cumbre-display",
+          "name": "Cumbre Display"
+        }
+      ]
+    },
+    "layout": {
+      "contentSize": "1440px",
+      "wideSize": "1440px"
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "var(--wp--preset--color--gema-accent)",
+      "text": "#0F172A"
+    },
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--gema-body)",
+      "fontSize": "1rem"
+    }
+  }
+}

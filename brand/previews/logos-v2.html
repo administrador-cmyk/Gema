@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Preview Logos v2 — Gema Digital & ERP Cumbre</title>
+    <style>
+      :root {
+        --gema-primary: #0b192c;
+        --gema-secondary: #00f2fe;
+        --cumbre-primary: #0f172a;
+        --cumbre-secondary: #10b981;
+        --surface: #f8fafc;
+        --muted: #64748b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, sans-serif;
+        color: var(--cumbre-primary);
+        background: var(--surface);
+      }
+
+      main {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 48px 24px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(2rem, 5vw, 4rem);
+        letter-spacing: -0.05em;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px;
+        margin-top: 32px;
+      }
+
+      .card {
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        border-radius: 24px;
+        padding: 28px;
+        background: white;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.08);
+      }
+
+      .card.dark {
+        background: var(--gema-primary);
+      }
+
+      .card.cumbre {
+        background: var(--cumbre-primary);
+      }
+
+      .label {
+        margin-bottom: 18px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .dark .label,
+      .cumbre .label {
+        color: rgba(248, 250, 252, 0.75);
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .icon {
+        width: 144px;
+      }
+
+      .favicon-row {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .favicon-row img {
+        width: 48px;
+        height: 48px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Logos v2</h1>
+      <p>
+        Dirección aprobada: Gema Digital como marca madre de IA, software y gestión empresarial;
+        ERP Cumbre como producto financiero de misión crítica.
+      </p>
+
+      <section class="grid" aria-label="Gema Digital">
+        <article class="card">
+          <div class="label">Gema Digital · Isotipo</div>
+          <img class="icon" src="../logos/gema-digital/logo-primary-v2.svg" alt="Gema Digital isotipo v2" />
+        </article>
+        <article class="card">
+          <div class="label">Gema Digital · Wordmark</div>
+          <img src="../logos/gema-digital/logo-wordmark-v2.svg" alt="Gema Digital wordmark v2" />
+        </article>
+        <article class="card dark">
+          <div class="label">Gema Digital · Fondo oscuro</div>
+          <img src="../logos/gema-digital/logo-wordmark-v2-inverse.svg" alt="Gema Digital wordmark v2 fondo oscuro" />
+        </article>
+      </section>
+
+      <section class="grid" aria-label="ERP Cumbre">
+        <article class="card">
+          <div class="label">ERP Cumbre · Isotipo</div>
+          <img class="icon" src="../logos/erp-cumbre/logo-primary-v2.svg" alt="ERP Cumbre isotipo v2" />
+        </article>
+        <article class="card">
+          <div class="label">ERP Cumbre · Wordmark</div>
+          <img src="../logos/erp-cumbre/logo-wordmark-v2.svg" alt="ERP Cumbre wordmark v2" />
+        </article>
+        <article class="card cumbre">
+          <div class="label">ERP Cumbre · Fondo oscuro</div>
+          <img src="../logos/erp-cumbre/logo-wordmark-v2.svg" alt="ERP Cumbre wordmark v2 fondo oscuro" />
+        </article>
+      </section>
+
+      <section class="grid" aria-label="Favicons">
+        <article class="card">
+          <div class="label">Favicons</div>
+          <div class="favicon-row">
+            <img src="../logos/favicons/favicon-gema-v2.svg" alt="Gema favicon v2" />
+            <img src="../logos/favicons/favicon-cumbre-v2.svg" alt="Cumbre favicon v2" />
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
