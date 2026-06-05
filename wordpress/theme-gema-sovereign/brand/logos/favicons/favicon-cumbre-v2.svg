@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="ERP Cumbre favicon">
+  <rect width="64" height="64" rx="16" fill="#0F172A"/>
+  <path d="M32 7 54 17v18c0 14-9 24-22 29C19 59 10 49 10 35V17L32 7Z" fill="#1E293B" stroke="#10B981" stroke-width="2"/>
+  <path d="M18 40 26 29l7 7 10-15 6 19H18Z" fill="none" stroke="#10B981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="24" y="40" width="5" height="10" rx="1" fill="#F8FAFC"/>
+  <rect x="32" y="35" width="5" height="15" rx="1" fill="#F8FAFC"/>
+  <rect x="40" y="28" width="5" height="22" rx="1" fill="#F59E0B"/>
+</svg>

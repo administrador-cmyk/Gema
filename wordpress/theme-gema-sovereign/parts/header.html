@@ -4,24 +4,40 @@
 	<div class="wp-block-group gema-header-shell">
 		<!-- wp:html -->
 		<a class="gema-brand" href="/" aria-label="Gema Digital - Inicio">
-			<img src="/wp-content/themes/gema-sovereign/brand/logos/gema-digital/logo-wordmark-v2-inverse.svg" alt="Gema Digital" />
+			<span class="gema-brand-mark-shell">
+				<img class="gema-brand-mark" src="/wp-content/themes/gema-sovereign/assets/gema-logo-web-mark.png" alt="" aria-hidden="true" />
+			</span>
+			<span class="gema-brand-copy">
+				<span class="gema-brand-name">GEMA</span>
+				<span class="gema-brand-subtitle">DIGITAL</span>
+			</span>
 		</a>
 		<!-- /wp:html -->
 
-		<!-- wp:navigation {"overlayMenu":"mobile","className":"gema-main-nav","layout":{"type":"flex","justifyContent":"right"}} -->
-			<!-- wp:navigation-link {"label":"Inicio","url":"/"} /-->
-			<!-- wp:navigation-link {"label":"Sectores","url":"/sectores"} /-->
-			<!-- wp:navigation-link {"label":"Tecnologia e IA","url":"/ia/brainstore"} /-->
-			<!-- wp:navigation-link {"label":"Integraciones","url":"/integraciones/mercado-libre"} /-->
-			<!-- wp:navigation-link {"label":"Comparativas","url":"/competencia/tango"} /-->
-			<!-- wp:navigation-link {"label":"Nosotros","url":"/nosotros"} /-->
+		<!-- wp:navigation {"overlayMenu":"mobile","className":"gema-main-nav","layout":{"type":"flex","justifyContent":"center"}} -->
+			<!-- wp:navigation-link {"label":"Soluciones","url":"#soluciones"} /-->
+			<!-- wp:navigation-link {"label":"ERP Cumbre","url":"/erp-cumbre"} /-->
+			<!-- wp:navigation-link {"label":"Precios","url":"/erp/precios"} /-->
+			<!-- wp:navigation-link {"label":"IA Productiva","url":"/ia-productiva"} /-->
+			<!-- wp:navigation-link {"label":"WhatsApp IA","url":"/ia/automatizacion-whatsapp"} /-->
 			<!-- wp:navigation-link {"label":"Blog","url":"/blog"} /-->
+			<!-- wp:navigation-link {"label":"Comparativas","url":"/competencia"} /-->
+			<!-- wp:navigation-link {"label":"Contacto","url":"/contacto"} /-->
 		<!-- /wp:navigation -->
 
 		<!-- wp:buttons {"className":"gema-header-actions"} -->
 		<div class="wp-block-buttons gema-header-actions">
+			<!-- wp:html -->
+			<button class="gema-theme-toggle" type="button" aria-label="Cambiar entre modo dia y modo noche" aria-pressed="false">
+				<span class="gema-theme-toggle__icon" aria-hidden="true">Dia</span>
+				<span class="gema-theme-toggle__text">Modo noche</span>
+			</button>
+			<!-- /wp:html -->
+			<!-- wp:button {"className":"btn-ghost-login"} -->
+			<div class="wp-block-button btn-ghost-login"><a class="wp-block-button__link wp-element-button" href="/login">Iniciar sesion</a></div>
+			<!-- /wp:button -->
 			<!-- wp:button {"className":"btn-cta-primary"} -->
-			<div class="wp-block-button btn-cta-primary"><a class="wp-block-button__link wp-element-button" href="/prueba-gratis">Prueba Gratis</a></div>
+			<div class="wp-block-button btn-cta-primary"><a class="wp-block-button__link wp-element-button" href="/erp/precios">Prueba gratis</a></div>
 			<!-- /wp:button -->
 		</div>
 		<!-- /wp:buttons -->

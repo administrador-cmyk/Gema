@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Opciones ERP Cumbre</title>
+    <style>
+      :root {
+        --ink: #0f172a;
+        --muted: #64748b;
+        --green: #10b981;
+        --blue: #08213f;
+        --surface: #f8fafc;
+        --border: #e2e8f0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 14% 0%, rgba(16, 185, 129, 0.12), transparent 28rem),
+          var(--surface);
+      }
+
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 52px 24px 76px;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2.4rem, 6vw, 5.4rem);
+        font-weight: 650;
+        letter-spacing: -0.06em;
+        line-height: 0.95;
+      }
+
+      p {
+        max-width: 860px;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 22px;
+        margin-top: 32px;
+      }
+
+      .card {
+        display: grid;
+        align-items: center;
+        min-height: 230px;
+        padding: 28px;
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        background: #ffffff;
+        box-shadow: 0 22px 70px rgba(15, 23, 42, 0.08);
+      }
+
+      .card.dark {
+        background:
+          radial-gradient(circle at 16% 10%, rgba(16, 185, 129, 0.2), transparent 20rem),
+          linear-gradient(135deg, #0f172a, #08213f);
+      }
+
+      .label {
+        margin-bottom: 18px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 650;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+      }
+
+      .dark .label {
+        color: rgba(248, 250, 252, 0.72);
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .dark img {
+        padding: 18px;
+        border-radius: 18px;
+        background: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>ERP Cumbre</h1>
+      <p>
+        Exploracion de identidad para el producto SaaS de gestion. Buscamos seguridad,
+        control financiero y crecimiento, sin perder cercania con empresas y negocios.
+      </p>
+
+      <section class="grid">
+        <article class="card">
+          <div class="label">Opcion A · Escudo institucional</div>
+          <img src="../logos/erp-cumbre/options/cumbre-option-a-shield.svg" alt="ERP Cumbre opcion A escudo" />
+        </article>
+        <article class="card dark">
+          <div class="label">Opcion A · Dark</div>
+          <img src="../logos/erp-cumbre/options/cumbre-option-a-shield.svg" alt="ERP Cumbre opcion A dark" />
+        </article>
+
+        <article class="card">
+          <div class="label">Opcion B · Montaña amable</div>
+          <img src="../logos/erp-cumbre/options/cumbre-option-b-mountain.svg" alt="ERP Cumbre opcion B montaña" />
+        </article>
+        <article class="card dark">
+          <div class="label">Opcion B · Dark</div>
+          <img src="../logos/erp-cumbre/options/cumbre-option-b-mountain.svg" alt="ERP Cumbre opcion B dark" />
+        </article>
+
+        <article class="card">
+          <div class="label">Opcion C · Tech financiera</div>
+          <img src="../logos/erp-cumbre/options/cumbre-option-c-tech.svg" alt="ERP Cumbre opcion C tech" />
+        </article>
+        <article class="card dark">
+          <div class="label">Opcion C · Dark</div>
+          <img src="../logos/erp-cumbre/options/cumbre-option-c-tech.svg" alt="ERP Cumbre opcion C dark" />
+        </article>
+
+        <article class="card">
+          <div class="label">Opcion D · Familia GEMA</div>
+          <img src="../logos/erp-cumbre/options/cumbre-option-d-gema-family.svg" alt="ERP Cumbre opcion D familia GEMA" />
+        </article>
+        <article class="card dark">
+          <div class="label">Opcion D · Dark</div>
+          <img src="../logos/erp-cumbre/options/cumbre-option-d-gema-family.svg" alt="ERP Cumbre opcion D dark" />
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

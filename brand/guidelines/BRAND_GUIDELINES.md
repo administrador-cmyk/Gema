@@ -9,8 +9,9 @@ Versión 1.0 — Fase 1. Referencia para WordPress, Tailwind y materiales B2B.
 ### Gema Digital (agencia)
 
 - **Rol:** Nave nodriza — transformación digital, IA agéntica, desarrollo elite.
-- **Tono:** Vanguardista, tecnológico, cyber-pro corporativo.
-- **Audiencia:** CTOs, founders, equipos de innovación.
+- **Tono:** Amigable-profesional, tecnológico, claro y confiable.
+- **Audiencia:** CTOs, founders, equipos de innovación, PyMEs, comercios y emprendedores.
+- **Sigla:** GEMA significa `Gestion · Empresas · Marketing · Automatizacion`.
 
 ### ERP Cumbre (producto)
 
@@ -19,7 +20,7 @@ Versión 1.0 — Fase 1. Referencia para WordPress, Tailwind y materiales B2B.
 - **Audiencia:** CFOs, contadores, directores de operaciones.
 - **Competencia de referencia:** SAP, Tango, Odoo, NetSuite, Holded.
 
-**Regla:** En el sitio WordPress, el shell global (header/footer) usa identidad **Gema Digital**. Las páginas de producto ERP destacan acentos **ERP Cumbre** (verde esmeralda, oro moderado).
+**Regla:** En el sitio WordPress, el shell global (header/footer) usa identidad **Gema Digital**. Las páginas de producto ERP destacan acentos **ERP Cumbre** (verde esmeralda, oro moderado). Las secciones de negocios pueden ser más cálidas y simples; las secciones corporativas pueden ser más formales.
 
 ---
 
@@ -42,13 +43,23 @@ Versión 1.0 — Fase 1. Referencia para WordPress, Tailwind y materiales B2B.
 
 ### Isotipo
 
-Dirección aprobada v2: monograma `G` sobrio, vectorial, con señales de red/IA y gema tecnológica. El logo original multicolor queda como referencia conceptual, no como versión final de lanzamiento.
+Dirección actual: la forma original de la `G` de nodos multicolor se respeta como isotipo principal. No redibujar ni reemplazar esa forma sin aprobación explícita.
+
+El trabajo visual debe enfocarse en sistema, contraste, fondos, tipografía y composición alrededor del isotipo original.
 
 **Archivos recomendados:**
 
+- `brand/logos/gema-digital/original/gema-logo-original.png`
 - `brand/logos/gema-digital/logo-primary-v2.svg`
 - `brand/logos/gema-digital/logo-wordmark-v2.svg`
 - `brand/logos/favicons/favicon-gema-v2.svg`
+
+**Opciones en evaluación:**
+
+- `brand/logos/gema-digital/options/gema-option-a-balanced.svg`
+- `brand/logos/gema-digital/options/gema-option-b-friendly.svg`
+- `brand/logos/gema-digital/options/gema-option-c-premium.svg`
+- `brand/logos/gema-digital/options/gema-option-d-human-tech.svg`
 
 ---
 
@@ -95,11 +106,11 @@ En WordPress migraremos gradualmente: **shell Gema Digital** + **componentes pro
 
 ## 5. CSS
 
-Importar en tema hijo:
+Importar dentro del theme autocontenido:
 
 ```css
-@import '../../brand/tokens/colors.css';
-@import '../../brand/tokens/typography.css';
+@import './brand/tokens/colors.css';
+@import './brand/tokens/typography.css';
 ```
 
 Variables disponibles como `--gema-*`, `--cumbre-*`, `--sovereign-*`.
@@ -139,5 +150,8 @@ Los PNG originales son fuente histórica y referencia de concepto. Para nuevas p
 ## 9. Decisiones de marca
 
 Ver `brand/decisions/001-identidad-logo-v2.md`.
+Ver `brand/decisions/002-identidad-flexible-por-sector.md`.
+Ver `brand/decisions/003-logo-original-como-isotipo-principal.md`.
 
 Preview local: `brand/previews/logos-v2.html`.
+Preview opciones: `brand/previews/gema-logo-options.html`.

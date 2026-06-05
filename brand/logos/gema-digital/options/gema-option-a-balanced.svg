@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 128" role="img" aria-label="Gema Digital opcion A equilibrada">
+  <defs>
+    <linearGradient id="a-mark" x1="16" y1="16" x2="112" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00F2FE"/>
+      <stop offset="0.55" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#0B192C"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="32" fill="#F8FAFC" stroke="#DDEAF7" stroke-width="2"/>
+  <path d="M88 41c-9-10-25-14-40-7-18 8-26 28-18 46 8 18 29 27 48 19 10-4 18-12 21-23H65V61h55c1 25-14 45-37 55-29 12-62-1-74-30C-3 58 10 26 39 14c22-10 47-5 63 12L88 41Z" fill="#0B192C" transform="scale(.88) translate(7 6)"/>
+  <path d="M31 82 54 39l22 36 17-25 16 32" fill="none" stroke="url(#a-mark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="54" cy="39" r="5" fill="#00F2FE"/>
+  <circle cx="76" cy="75" r="4.5" fill="#2563EB"/>
+  <circle cx="109" cy="82" r="5" fill="#0B192C"/>
+  <text x="148" y="65" font-family="Geist, Inter, system-ui, sans-serif" font-size="48" font-weight="800" letter-spacing="-0.045em" fill="#0B192C">GEMA</text>
+  <text x="150" y="94" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="750" letter-spacing="0.12em" fill="#2563EB">DIGITAL</text>
+  <text x="278" y="94" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#64748B">Software e IA para empresas reales</text>
+</svg>

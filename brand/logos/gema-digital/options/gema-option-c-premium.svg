@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 128" role="img" aria-label="Gema Digital opcion C premium">
+  <defs>
+    <linearGradient id="c-panel" x1="8" y1="8" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#102A46"/>
+      <stop offset="1" stop-color="#07111F"/>
+    </linearGradient>
+    <linearGradient id="c-facet" x1="34" y1="28" x2="104" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00F2FE"/>
+      <stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#c-panel)"/>
+  <path d="M90 40c-9-10-25-14-40-7-18 8-26 28-18 46 8 18 29 27 48 19 10-4 18-12 21-23H66V61h55c1 25-14 45-37 55-29 12-62-1-74-30C-2 58 11 26 40 14c22-10 47-5 63 12L90 40Z" fill="#F8FAFC" transform="scale(.86) translate(8 7)"/>
+  <path d="M36 86 58 35h42l-22 51H36Z" fill="none" stroke="url(#c-facet)" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M58 35 77 86M100 35 77 86" fill="none" stroke="#00F2FE" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+  <circle cx="58" cy="35" r="4" fill="#00F2FE"/>
+  <circle cx="77" cy="86" r="4" fill="#60A5FA"/>
+  <text x="148" y="65" font-family="Geist, Inter, system-ui, sans-serif" font-size="48" font-weight="850" letter-spacing="-0.05em" fill="#0B192C">GEMA</text>
+  <text x="150" y="94" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="750" letter-spacing="0.16em" fill="#0B192C">DIGITAL</text>
+  <path d="M150 104h180" stroke="#00F2FE" stroke-width="3" stroke-linecap="round"/>
+  <text x="354" y="94" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#64748B">IA aplicada a gestion empresarial</text>
+</svg>

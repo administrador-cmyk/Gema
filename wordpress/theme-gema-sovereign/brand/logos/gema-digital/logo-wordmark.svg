@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" role="img" aria-label="Gema Digital">
+  <g transform="translate(4,8) scale(0.24)">
+    <polygon points="100,24 156,56 156,128 100,160 44,128 44,56" fill="none" stroke="#00F2FE" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M100 44 L132 62 L132 78 M132 62 L100 80" fill="none" stroke="#00F2FE" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="132" cy="78" r="8" fill="#00F2FE"/>
+  </g>
+  <text x="56" y="42" font-family="Geist, Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#0B192C">GEMA</text>
+  <text x="56" y="58" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="500" fill="#64748B" letter-spacing="0.12em">DIGITAL</text>
+</svg>

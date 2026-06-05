@@ -24,11 +24,14 @@ ERP CUMBRE (producto SaaS)
 - [x] Brand Guidelines (`brand/guidelines/BRAND_GUIDELINES.md`)
 - [x] Tokens CSS (`brand/tokens/`)
 - [x] Logotipos SVG conceptuales + favicons
-- [ ] Validación visual contra PNG en `02-Logos/`
-- [ ] Export final de isotipos si se refinan en Figma/Illustrator
+- [x] Definición del isotipo principal: forma original de GEMA
+- [x] Kit operativo de logos en `../../00-Proyecto Gema/00-Logos`
+- [x] Variantes `.png` y `.webp` para día, dark, texto, horizontal y redes
+- [ ] Validación visual final del kit de logos
 
 ### Fase 2 — UI web (WordPress + Stitch)
 
+- Sprint v0 para explorar Home/header/cards usando `docs/V0_WORKFLOW.md`
 - Maquetación clave desde `03-Silo contenido/30) Paginas creadas en stritch/`
 - Tema hijo `gema-sovereign` (bridge Sovereign 4.0 + nuevas paletas Gema/Cumbre)
 - `tailwind.config.js` con presets `gema` y `cumbre`
