@@ -1,55 +1,87 @@
 <!-- wp:group {"tagName":"footer","className":"gema-site-footer","layout":{"type":"constrained"}} -->
 <footer class="wp-block-group gema-site-footer">
-	<!-- wp:columns {"className":"gema-footer-grid"} -->
-	<div class="wp-block-columns gema-footer-grid">
-		<!-- wp:column {"width":"38%"} -->
-		<div class="wp-block-column" style="flex-basis:38%">
-			<!-- wp:html -->
-			<img class="gema-footer-logo" src="/wp-content/themes/gema-sovereign/brand/logos/gema-digital/logo-wordmark-v2-inverse.svg" alt="Gema Digital" />
-			<!-- /wp:html -->
-			<!-- wp:paragraph -->
-			<p>Ingenieria de IA, software y gestion empresarial para operar sistemas productivos con observabilidad, seguridad y eficiencia.</p>
-			<!-- /wp:paragraph -->
-		</div>
-		<!-- /wp:column -->
+	<!-- wp:group {"className":"gema-footer-shell","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
+	<div class="wp-block-group gema-footer-shell">
+		<!-- wp:html -->
+		<a class="gema-brand gema-brand-footer" href="/" aria-label="Gema Digital - Inicio">
+			<span class="gema-brand-mark-shell">
+				<img class="gema-brand-mark" src="/wp-content/themes/gema-sovereign/assets/gema-logo-web-mark-160.webp" alt="" aria-hidden="true" width="160" height="160" loading="lazy" decoding="async" />
+			</span>
+			<span class="gema-brand-copy">
+				<span class="gema-brand-name">GEMA</span>
+				<span class="gema-brand-subtitle">DIGITAL</span>
+			</span>
+		</a>
+		<!-- /wp:html -->
 
-		<!-- wp:column -->
-		<div class="wp-block-column">
-			<!-- wp:heading {"level":3} -->
-			<h3 class="wp-block-heading">Contacto</h3>
-			<!-- /wp:heading -->
-			<!-- wp:list -->
-			<ul>
-				<li><a href="tel:08003454474">0800 345 4474</a></li>
-				<li><a href="https://wa.me/5491165980069">WhatsApp: +54 9 11 6598-0069</a></li>
-				<li><a href="mailto:ventas@gema-digital.com">ventas@gema-digital.com</a></li>
-				<li><a href="mailto:info@gema-digital.com">info@gema-digital.com</a></li>
-			</ul>
-			<!-- /wp:list -->
-		</div>
-		<!-- /wp:column -->
+		<!-- wp:html -->
+		<div class="gema-footer-nav-grid" aria-label="Mapa simplificado del sitio">
+			<nav class="gema-footer-nav gema-footer-nav-column" aria-label="GEMA Digital">
+				<h2>GEMA Digital</h2>
+				<a href="/">Inicio</a>
+				<a href="/#soluciones">Soluciones</a>
+				<a href="/servicios">Servicios GEMA</a>
+				<a href="/gema-negocios">GEMA Negocios</a>
+				<a href="/ia-productiva">IA Productiva</a>
+				<a href="/contacto">Contacto</a>
+			</nav>
 
-		<!-- wp:column -->
-		<div class="wp-block-column">
-			<!-- wp:heading {"level":3} -->
-			<h3 class="wp-block-heading">Redes</h3>
-			<!-- /wp:heading -->
-			<!-- wp:list -->
-			<ul>
-				<li><a href="https://www.linkedin.com/company/gema-digital-erp">LinkedIn</a></li>
-				<li><a href="https://www.facebook.com/gema.digital.erp/">Facebook</a></li>
-				<li><a href="https://www.instagram.com/gema.digital.erp/">Instagram</a></li>
-				<li><a href="https://www.youtube.com/@gema_digital_erp">YouTube</a></li>
-				<li><a href="https://www.tiktok.com/@gestiongema">TikTok</a></li>
-			</ul>
-			<!-- /wp:list -->
+			<nav class="gema-footer-nav gema-footer-nav-column" aria-label="ERP Cumbre">
+				<h2>ERP Cumbre</h2>
+				<a href="/erp-cumbre">ERP Cumbre</a>
+				<a href="/cumbre-crm">Cumbre CRM</a>
+				<a href="/cumbre-erp-negocios">ERP Negocios</a>
+				<a href="/erp-cumbre/#cumbre-erp-pymes">ERP PyMEs</a>
+				<a href="/erp-cumbre/#cumbre-empresas">Cumbre Empresas</a>
+				<a href="/erp/precios">Precios y prueba</a>
+				<a href="/erp-cumbre/#modulos-cumbre">Ver todos los módulos</a>
+				<a href="/erp-cumbre/#verticales-cumbre">Verticales por rubro</a>
+				<a href="/erp-cumbre/#faq">FAQs Cumbre</a>
+			</nav>
+
+			<nav class="gema-footer-nav gema-footer-nav-column" aria-label="Módulos destacados Cumbre">
+				<h2>Módulos destacados</h2>
+				<a href="/erp-cumbre/cumbre-ventas">Cumbre Ventas</a>
+				<a href="/erp-cumbre/cumbre-facturador-arca">Facturador ARCA</a>
+				<a href="/erp-cumbre/cumbre-stock">Cumbre Stock</a>
+				<a href="/erp-cumbre/cumbre-compras">Cumbre Compras</a>
+				<a href="/erp-cumbre/cumbre-cobros">Cumbre Cobros</a>
+				<a href="/erp-cumbre/cumbre-tesoreria">Cumbre Tesorería</a>
+				<a href="/erp-cumbre/cumbre-reportes-bi">Reportes BI</a>
+				<a href="/erp-cumbre/cumbre-whatsapp-hub">WhatsApp Hub</a>
+			</nav>
+
+			<nav class="gema-footer-nav gema-footer-nav-column" aria-label="Pagos GEMA">
+				<h2>Pagos</h2>
+				<a href="/pagos">Plataforma de pagos</a>
+				<a href="/erp-cumbre/cumbre-cobros">Cumbre Cobros</a>
+				<a href="/pagos/argentina">Pagos Argentina</a>
+				<a href="/pagos/mercado-pago">Mercado Pago</a>
+				<a href="/pagos/webhooks">Webhooks</a>
+				<a href="/pagos/conciliacion">Conciliación</a>
+			</nav>
+
+			<nav class="gema-footer-nav gema-footer-nav-column" aria-label="Legal y recursos">
+				<h2>Legal y recursos</h2>
+				<a href="/competencia">Comparativas</a>
+				<a href="/faqs">FAQs</a>
+				<a href="/blog">Blog</a>
+				<a href="/terminos">Términos</a>
+				<a href="/privacidad">Privacidad</a>
+				<a href="/politica-de-cookies">Cookies</a>
+				<a href="/legal/cumbre">Legal Cumbre</a>
+			</nav>
 		</div>
-		<!-- /wp:column -->
+		<!-- /wp:html -->
+
+		<!-- wp:paragraph {"className":"gema-footer-legal"} -->
+		<p class="gema-footer-legal">© 2026 Gema Digital. Todos los derechos reservados. Operado actualmente por Generadores Sur SRL · CUIT 33-71752891-9.</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:paragraph {"className":"gema-footer-contact"} -->
+		<p class="gema-footer-contact">Av. Alicia Moreau de Justo 740, CABA · 0800 345 4474 · <a href="mailto:ventas@gema-digital.com">ventas@gema-digital.com</a> · Atención en AMBA, Argentina y remoto para habla hispana.</p>
+		<!-- /wp:paragraph -->
 	</div>
-	<!-- /wp:columns -->
-
-	<!-- wp:paragraph {"className":"gema-footer-legal"} -->
-	<p class="gema-footer-legal">© Gema Digital. ERP Cumbre es software empresarial desarrollado por Gema Digital.</p>
-	<!-- /wp:paragraph -->
+	<!-- /wp:group -->
 </footer>
 <!-- /wp:group -->

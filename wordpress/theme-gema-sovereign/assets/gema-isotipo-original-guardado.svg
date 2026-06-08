@@ -1,0 +1,30 @@
+<svg width="512" height="512" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Circulo de Fondo Blanco -->
+  <circle cx="50" cy="50" r="48" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="0.5"/>
+  <g id="isotipo-red">
+    <!-- Red Hexagonal de Fondo (Lineas de conexion secundarias) -->
+    <path d="M50 15L85 35L85 65L50 85L15 65L15 35Z" stroke="#2563EB" stroke-width="1.5" stroke-linejoin="round" opacity="0.3"/>
+    <path d="M50 15L50 85" stroke="#2563EB" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+    <path d="M15 35L85 35" stroke="#2563EB" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+    <path d="M15 65L85 65" stroke="#2563EB" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+
+    <!-- Estructura de la letra G de la red -->
+    <path d="M50 15L85 35L85 65L50 85L15 65L15 35L50 15" stroke="#1E40AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 15L35 50L50 85" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 15L65 50L50 85" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M15 35L50 50L85 35" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M15 65L50 50L85 65" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Nodos de la Red -->
+    <circle cx="50" cy="15" r="4.5" fill="#3B82F6"/>
+    <circle cx="85" cy="35" r="4.5" fill="#F59E0B"/>
+    <circle cx="85" cy="65" r="4.5" fill="#EF4444"/>
+    <circle cx="50" cy="85" r="4.5" fill="#EF4444"/>
+    <circle cx="15" cy="65" r="4.5" fill="#10B981"/>
+    <circle cx="15" cy="35" r="4.5" fill="#2563EB"/>
+    <circle cx="50" cy="50" r="5.5" fill="#10B981"/>
+
+    <!-- Letra G geometrica superpuesta en el centro -->
+    <path d="M62 42H50V58H58V50" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

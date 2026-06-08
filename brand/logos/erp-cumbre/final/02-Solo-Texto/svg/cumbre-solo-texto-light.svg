@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 230" role="img" aria-label="ERP Cumbre solo texto">
+<defs>
+  <linearGradient id="node-gradient" x1="42" y1="42" x2="148" y2="148" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#38BDF8"/>
+    <stop offset="0.55" stop-color="#22C55E"/>
+    <stop offset="1" stop-color="#F59E0B"/>
+  </linearGradient>
+  <linearGradient id="soft-panel" x1="0" y1="0" x2="164" y2="164" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"/>
+    <stop offset="1" stop-color="#F1F5F9"/>
+  </linearGradient>
+</defs>
+<text x="36" y="78" font-family="Inter, system-ui, sans-serif" font-size="26" font-weight="460" letter-spacing="0.18em" fill="#22C55E">ERP</text>
+<text x="34" y="138" font-family="Inter, system-ui, sans-serif" font-size="76" font-weight="480" letter-spacing="-0.055em" fill="#0F172A">CUMBRE</text>
+<path d="M38 160h330" stroke="#22C55E" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+<text x="203" y="188" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="390" letter-spacing="0.025em" fill="#64748B">El producto de gestion empresarial de GEMA</text>
+</svg>

@@ -4,24 +4,101 @@
 	<div class="wp-block-group gema-header-shell">
 		<!-- wp:html -->
 		<a class="gema-brand" href="/" aria-label="Gema Digital - Inicio">
-			<img src="/wp-content/themes/gema-sovereign/brand/logos/gema-digital/logo-wordmark-v2-inverse.svg" alt="Gema Digital" />
+			<span class="gema-brand-mark-shell">
+				<img class="gema-brand-mark" src="/wp-content/themes/gema-sovereign/assets/gema-logo-web-mark-160.webp" alt="" aria-hidden="true" width="160" height="160" decoding="async" fetchpriority="high" />
+			</span>
+			<span class="gema-brand-copy">
+				<span class="gema-brand-name">GEMA</span>
+				<span class="gema-brand-subtitle">DIGITAL</span>
+			</span>
 		</a>
 		<!-- /wp:html -->
 
-		<!-- wp:navigation {"overlayMenu":"mobile","className":"gema-main-nav","layout":{"type":"flex","justifyContent":"right"}} -->
-			<!-- wp:navigation-link {"label":"Inicio","url":"/"} /-->
-			<!-- wp:navigation-link {"label":"Sectores","url":"/sectores"} /-->
-			<!-- wp:navigation-link {"label":"Tecnologia e IA","url":"/ia/brainstore"} /-->
-			<!-- wp:navigation-link {"label":"Integraciones","url":"/integraciones/mercado-libre"} /-->
-			<!-- wp:navigation-link {"label":"Comparativas","url":"/competencia/tango"} /-->
-			<!-- wp:navigation-link {"label":"Nosotros","url":"/nosotros"} /-->
-			<!-- wp:navigation-link {"label":"Blog","url":"/blog"} /-->
-		<!-- /wp:navigation -->
+		<!-- wp:html -->
+		<nav class="gema-main-nav" aria-label="Navegación principal">
+			<ul class="gema-main-nav__list">
+				<li><a href="/">Inicio</a></li>
+				<li class="gema-main-nav__item--mega">
+					<a href="/erp-cumbre" aria-haspopup="true">Cumbre ERP</a>
+					<div class="gema-mega-menu" aria-label="Secciones de Cumbre ERP">
+						<div class="gema-mega-menu__grid">
+							<section>
+								<h2>Empezar con Cumbre</h2>
+								<a href="/erp-cumbre"><strong>ERP Cumbre</strong><span>Hub principal del ecosistema.</span></a>
+								<a href="/cumbre-crm"><strong>Cumbre CRM</strong><span>Leads, clientes y oportunidades.</span></a>
+								<a href="/cumbre-erp-negocios"><strong>ERP Negocios</strong><span>Gestión simple para comercios.</span></a>
+								<a href="/erp-cumbre/#cumbre-erp-pymes"><strong>ERP PyMEs</strong><span>Administración para empresas en crecimiento.</span></a>
+								<a href="/erp-cumbre/#cumbre-empresas"><strong>Cumbre Empresas</strong><span>Gobernanza, permisos y auditoría.</span></a>
+								<a href="/erp/precios"><strong>Precios y prueba</strong><span>Planes, diagnóstico y demo.</span></a>
+							</section>
+							<section>
+								<h2>Operación diaria</h2>
+								<a href="/erp-cumbre/cumbre-ventas">Ventas</a>
+								<a href="/cumbre/catalogo">Catálogo</a>
+								<a href="/erp-cumbre/cumbre-stock">Stock</a>
+								<a href="/erp-cumbre/cumbre-compras">Compras</a>
+								<a href="/erp-cumbre/cumbre-cobros">Cobros</a>
+								<a href="/erp-cumbre/cumbre-facturador-arca">Facturador ARCA</a>
+							</section>
+							<section>
+								<h2>Administración y control</h2>
+								<a href="/erp-cumbre/cumbre-tesoreria">Tesorería</a>
+								<a href="/erp-cumbre/cumbre-contabilidad">Contabilidad</a>
+								<a href="/erp-cumbre/cumbre-impuestos">Impuestos</a>
+								<a href="/erp-cumbre/cumbre-reportes-bi">Reportes BI</a>
+								<a href="/erp-cumbre/cumbre-planificacion">Planificación</a>
+								<a href="/erp-cumbre/cumbre-activos-fijos">Activos Fijos</a>
+								<a href="/erp-cumbre/cumbre-personal">Personal</a>
+							</section>
+							<section>
+								<h2>Crecimiento e integraciones</h2>
+								<a href="/erp-cumbre/cumbre-whatsapp-hub">WhatsApp Hub</a>
+								<a href="/erp-cumbre/cumbre-marketing">Marketing</a>
+								<a href="/erp-cumbre/cumbre-web">Web</a>
+								<a href="/erp-cumbre/cumbre-automatizaciones">Automatizaciones</a>
+								<a href="/erp-cumbre/tutoriales-api-cumbre">Tutoriales API</a>
+								<a href="/competencia/cumbre-ecommerce-mercado-libre-vs-sync-legacy">eCommerce y Mercado Libre</a>
+							</section>
+							<section>
+								<h2>Verticales por rubro</h2>
+								<a href="/erp-cumbre/cumbre-kioscos">Kioscos</a>
+								<a href="/erp-cumbre/cumbre-resto">Resto</a>
+								<a href="/erp-cumbre/cumbre-depositos-wms">Depósitos WMS</a>
+								<a href="/erp-cumbre/cumbre-constructoras">Constructoras</a>
+								<a href="/erp-cumbre/cumbre-agro">Agro</a>
+								<a href="/erp-cumbre/cumbre-mercados">Mercados</a>
+							</section>
+							<aside class="gema-mega-menu__agent">
+								<strong>No sabés qué módulo necesitás?</strong>
+								<span>Contale al agente tu rubro, volumen y problema principal para recibir una recomendación.</span>
+								<a href="/contacto">Solicitar diagnóstico</a>
+							</aside>
+						</div>
+					</div>
+				</li>
+				<li><a href="/servicios">Servicios GEMA</a></li>
+				<li><a href="/competencia">Comparativas</a></li>
+				<li><a href="/faqs">FAQs</a></li>
+				<li><a href="/blog">Blog</a></li>
+				<li><a href="/nosotros">Empresa</a></li>
+				<li><a href="/contacto">Contacto</a></li>
+			</ul>
+		</nav>
+		<!-- /wp:html -->
 
 		<!-- wp:buttons {"className":"gema-header-actions"} -->
 		<div class="wp-block-buttons gema-header-actions">
+			<!-- wp:html -->
+			<button class="gema-theme-toggle" type="button" aria-label="Cambiar entre modo día y modo noche" aria-pressed="false">
+				<span class="gema-theme-toggle__icon" aria-hidden="true">Día</span>
+				<span class="gema-theme-toggle__text">Modo noche</span>
+			</button>
+			<!-- /wp:html -->
+			<!-- wp:button {"className":"btn-ghost-login"} -->
+			<div class="wp-block-button btn-ghost-login"><a class="wp-block-button__link wp-element-button" href="/login">Iniciar sesión</a></div>
+			<!-- /wp:button -->
 			<!-- wp:button {"className":"btn-cta-primary"} -->
-			<div class="wp-block-button btn-cta-primary"><a class="wp-block-button__link wp-element-button" href="/prueba-gratis">Prueba Gratis</a></div>
+			<div class="wp-block-button btn-cta-primary"><a class="wp-block-button__link wp-element-button" href="/erp/precios">Prueba gratis</a></div>
 			<!-- /wp:button -->
 		</div>
 		<!-- /wp:buttons -->

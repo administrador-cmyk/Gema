@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Variantes de marca — GEMA</title>
+    <style>
+      :root {
+        --blue-950: #08213f;
+        --blue-900: #0b2d52;
+        --cyan: #38bdf8;
+        --green: #22c55e;
+        --yellow: #facc15;
+        --red: #dc2626;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --surface: #ffffff;
+        --soft: #f3f6fa;
+        --border: #e2e8f0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 4%, rgba(56, 189, 248, 0.14), transparent 28rem),
+          #f8fafc;
+      }
+
+      main {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 52px 24px 72px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.4rem, 6vw, 5.5rem);
+        font-weight: 650;
+        letter-spacing: -0.055em;
+        line-height: 0.96;
+      }
+
+      .intro {
+        max-width: 820px;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.65;
+      }
+
+      .section-title {
+        margin: 46px 0 18px;
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 650;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+        gap: 22px;
+      }
+
+      .card {
+        min-height: 238px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 34px;
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        background: var(--surface);
+        box-shadow: 0 22px 70px rgba(15, 23, 42, 0.08);
+      }
+
+      .card.dark {
+        background:
+          radial-gradient(circle at 18% 16%, rgba(56, 189, 248, 0.2), transparent 20rem),
+          linear-gradient(135deg, var(--blue-950), var(--blue-900));
+      }
+
+      .variant {
+        width: 100%;
+        display: grid;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .text-gema {
+        display: block;
+        font-size: clamp(3.5rem, 8vw, 6.35rem);
+        font-weight: 650;
+        letter-spacing: -0.055em;
+        line-height: 0.94;
+        color: var(--blue-950);
+      }
+
+      .text-digital {
+        display: block;
+        margin-top: 12px;
+        color: var(--blue-950);
+        font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+
+      .sigla {
+        display: block;
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: clamp(0.82rem, 1.4vw, 1rem);
+        font-weight: 450;
+        letter-spacing: 0.025em;
+      }
+
+      .dark .text-gema,
+      .dark .text-digital {
+        color: #f8fafc;
+      }
+
+      .dark .sigla {
+        color: rgba(248, 250, 252, 0.78);
+      }
+
+      .logo-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(18px, 3vw, 30px);
+      }
+
+      .mark-shell {
+        display: inline-grid;
+        place-items: center;
+        width: clamp(104px, 12vw, 142px);
+        aspect-ratio: 1;
+        flex: 0 0 auto;
+      }
+
+      .dark .mark-shell {
+        padding: 10px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 999px;
+        background:
+          radial-gradient(circle at 34% 28%, #ffffff 0%, #f7fafc 52%, #eef3f8 100%);
+        box-shadow:
+          0 16px 42px rgba(0, 0, 0, 0.32),
+          0 0 0 7px rgba(255, 255, 255, 0.07);
+      }
+
+      .mark-shell img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .compact .text-gema {
+        font-size: clamp(2.9rem, 6vw, 4.85rem);
+      }
+
+      .compact .mark-shell {
+        width: clamp(88px, 9vw, 112px);
+      }
+
+      .compact .text-digital {
+        font-size: clamp(0.92rem, 1.4vw, 1.18rem);
+      }
+
+      .stack {
+        display: grid;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .stack .mark-shell {
+        margin-bottom: 18px;
+      }
+
+      .note {
+        margin-top: 26px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 560px) {
+        .logo-row {
+          align-items: center;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Variantes GEMA</h1>
+      <p class="intro">
+        Opciones con el logo original sin fondo. En modo oscuro el isotipo usa un fondo blando circular para evitar problemas de contraste, sin modificar la forma de la G.
+      </p>
+
+      <div class="section-title">1. Solo texto GEMA</div>
+      <section class="grid">
+        <article class="card">
+          <div class="variant">
+            <span class="text-gema">GEMA</span>
+          </div>
+        </article>
+        <article class="card dark">
+          <div class="variant">
+            <span class="text-gema">GEMA</span>
+          </div>
+        </article>
+      </section>
+
+      <div class="section-title">2. Texto Gema Digital</div>
+      <section class="grid">
+        <article class="card">
+          <div class="variant">
+            <span class="text-gema">GEMA</span>
+            <span class="text-digital">Digital</span>
+          </div>
+        </article>
+        <article class="card dark">
+          <div class="variant">
+            <span class="text-gema">GEMA</span>
+            <span class="text-digital">Digital</span>
+          </div>
+        </article>
+      </section>
+
+      <div class="section-title">3. Logo + nombre</div>
+      <section class="grid">
+        <article class="card">
+          <div class="variant logo-row compact">
+            <span class="mark-shell"><img src="../logos/gema-digital/original/gema-logo-original-white-bg.png" alt="Logo GEMA original con fondo blanco" /></span>
+            <span>
+              <span class="text-gema">GEMA</span>
+              <span class="text-digital">Digital</span>
+            </span>
+          </div>
+        </article>
+        <article class="card dark">
+          <div class="variant logo-row compact">
+            <span class="mark-shell"><img src="../logos/gema-digital/original/gema-logo-original-white-bg.png" alt="Logo GEMA original con fondo blanco" /></span>
+            <span>
+              <span class="text-gema">GEMA</span>
+              <span class="text-digital">Digital</span>
+            </span>
+          </div>
+        </article>
+      </section>
+
+      <div class="section-title">4. Logo + nombre + sigla completa</div>
+      <section class="grid">
+        <article class="card">
+          <div class="variant logo-row compact">
+            <span class="mark-shell"><img src="../logos/gema-digital/original/gema-logo-original-white-bg.png" alt="Logo GEMA original con fondo blanco" /></span>
+            <span>
+              <span class="text-gema">GEMA</span>
+              <span class="text-digital">Digital</span>
+              <span class="sigla">Gestion · Empresas · Marketing · Automatizacion</span>
+            </span>
+          </div>
+        </article>
+        <article class="card dark">
+          <div class="variant logo-row compact">
+            <span class="mark-shell"><img src="../logos/gema-digital/original/gema-logo-original-white-bg.png" alt="Logo GEMA original con fondo blanco" /></span>
+            <span>
+              <span class="text-gema">GEMA</span>
+              <span class="text-digital">Digital</span>
+              <span class="sigla">Gestion · Empresas · Marketing · Automatizacion</span>
+            </span>
+          </div>
+        </article>
+      </section>
+
+      <div class="section-title">5. Version apilada para redes / favicon extendido</div>
+      <section class="grid">
+        <article class="card">
+          <div class="variant stack compact">
+            <span class="mark-shell"><img src="../logos/gema-digital/original/gema-logo-original-white-bg.png" alt="Logo GEMA original con fondo blanco" /></span>
+            <span class="text-gema">GEMA</span>
+            <span class="sigla">Gestion · Empresas · Marketing · Automatizacion</span>
+          </div>
+        </article>
+        <article class="card dark">
+          <div class="variant stack compact">
+            <span class="mark-shell"><img src="../logos/gema-digital/original/gema-logo-original-white-bg.png" alt="Logo GEMA original con fondo blanco" /></span>
+            <span class="text-gema">GEMA</span>
+            <span class="sigla">Gestion · Empresas · Marketing · Automatizacion</span>
+          </div>
+        </article>
+      </section>
+
+      <p class="note">
+        Recomendacion inicial: usar "Logo + nombre" en header y "Logo + nombre + sigla completa" en footer, presentaciones y piezas institucionales.
+      </p>
+    </main>
+  </body>
+</html>

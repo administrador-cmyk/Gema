@@ -1,0 +1,51 @@
+/**
+ * Typography tokens — cargar fuentes en theme via Google Fonts o self-host
+ */
+
+:root {
+  --font-gema-display: 'Geist', 'Inter Tight', system-ui, sans-serif;
+  --font-gema-body: 'Inter', system-ui, sans-serif;
+
+  --font-cumbre-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-cumbre-data: 'Roboto Mono', ui-monospace, monospace;
+
+  --font-sovereign: 'Geist', system-ui, sans-serif;
+
+  --text-display-lg: 3rem;
+  --text-display-lg-lh: 1.15;
+  --text-headline-lg: 2rem;
+  --text-headline-lg-lh: 1.25;
+  --text-headline-md: 1.5rem;
+  --text-headline-md-lh: 1.33;
+  --text-body-lg: 1.125rem;
+  --text-body-lg-lh: 1.55;
+  --text-body-md: 1rem;
+  --text-body-md-lh: 1.5;
+  --text-label: 0.875rem;
+  --text-label-tracking: 0.05em;
+}
+
+body.gema-site {
+  font-family: var(--font-gema-body);
+  font-size: var(--text-body-md);
+  line-height: var(--text-body-md-lh);
+  color: var(--gema-on-surface);
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-gema-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.cumbre-dashboard,
+.theme-cumbre {
+  font-family: var(--font-cumbre-display);
+}
+
+.cumbre-dashboard .tabular,
+.theme-cumbre .amount,
+.theme-cumbre table {
+  font-family: var(--font-cumbre-data);
+  font-variant-numeric: tabular-nums;
+}

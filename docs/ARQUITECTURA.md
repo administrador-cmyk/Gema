@@ -46,8 +46,10 @@ flowchart LR
 
 ### 4. Producto ERP (futuro)
 
-- Supabase PostgreSQL multi-tenant
-- Frontend separado o área `/app` — fuera del alcance inmediato del sitio WP
+- Firebase / Firestore multi-tenant con Matriz Cumbre modular
+- Entorno local en `cumbre/` con Firebase Emulator Suite
+- Frontend separado o área `/app` — sin mezclar lógica ERP dentro del WordPress marketing
+- Arquitectura faseada del ERP en `../01-Proyecto Cumbre Erp/docs/ARQUITECTURA_FASEADA_CUMBRE.md`: primero núcleo SaaS, permisos, billing, auditoría, Brainstore, workers e integraciones; después módulos base, verticales e IA avanzada.
 
 ## Mapa de páginas (resumen)
 
@@ -69,3 +71,4 @@ flowchart LR
 2. **Credenciales** solo en `00-datos de acceso/`, nunca en git.
 3. **Logos raster** permanecen en `02-Logos/`; SVG de este repo son entregables vectoriales hasta alineación final.
 4. **Prioridad Fase 2:** Home + menú global + 3 landings piloto (Prueba Gratis, Gema Negocios, Competencia Tango).
+5. **Prioridad ERP:** no construir módulos ambiciosos como un bloque único; ordenar por fases: núcleo multi-tenant, Matriz/Billing, seguridad/auditoría, datos/workers, módulos base, integraciones, verticales e IA avanzada.

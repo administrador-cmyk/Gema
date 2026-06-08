@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 128" role="img" aria-label="Gema Digital opcion D humana tech">
+  <defs>
+    <linearGradient id="d-mark" x1="18" y1="12" x2="112" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#38BDF8"/>
+      <stop offset="0.55" stop-color="#22C55E"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="36" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <path d="M91 43c-8-9-23-12-37-6-16 7-24 26-17 43 7 16 27 24 44 17 9-4 16-11 19-21H67V62h53c1 24-12 43-34 52-28 11-59-2-70-29C5 58 18 28 45 17c21-9 45-4 60 11L91 43Z" fill="#0B192C" transform="scale(.86) translate(9 7)"/>
+  <path d="M35 80c12-12 22-18 32-18s17 6 26 18" fill="none" stroke="url(#d-mark)" stroke-width="7" stroke-linecap="round"/>
+  <path d="M48 49h45" stroke="url(#d-mark)" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+  <circle cx="35" cy="80" r="5" fill="#38BDF8"/>
+  <circle cx="67" cy="62" r="5" fill="#22C55E"/>
+  <circle cx="93" cy="80" r="5" fill="#F59E0B"/>
+  <text x="148" y="65" font-family="Geist, Inter, system-ui, sans-serif" font-size="48" font-weight="800" letter-spacing="-0.045em" fill="#0B192C">GEMA</text>
+  <text x="150" y="94" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="750" letter-spacing="0.12em" fill="#0EA5E9">DIGITAL</text>
+  <text x="278" y="94" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#64748B">Gestion, tecnologia y crecimiento</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="ERP Cumbre">
+  <!-- Escudo + montana (3 barras de crecimiento) -->
+  <path d="M100 16 L172 52 V108 C172 148 140 176 100 184 C60 176 28 148 28 108 V52 Z" fill="#0F172A" stroke="#10B981" stroke-width="3"/>
+  <path d="M56 120 L80 72 L104 96 L128 56 L152 120 Z" fill="#10B981" opacity="0.9"/>
+  <rect x="72" y="120" width="16" height="32" rx="2" fill="#F8FAFC" opacity="0.9"/>
+  <rect x="96" y="104" width="16" height="48" rx="2" fill="#F8FAFC"/>
+  <rect x="120" y="88" width="16" height="64" rx="2" fill="#F59E0B" opacity="0.95"/>
+</svg>

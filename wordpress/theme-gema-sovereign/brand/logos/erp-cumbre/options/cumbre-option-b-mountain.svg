@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" role="img" aria-label="ERP Cumbre opcion B montana">
+  <defs>
+    <linearGradient id="b-mark" x1="22" y1="22" x2="154" y2="148" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ECFDF5"/>
+      <stop offset="1" stop-color="#DBEAFE"/>
+    </linearGradient>
+    <linearGradient id="b-peak" x1="36" y1="126" x2="132" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#10B981"/>
+      <stop offset="1" stop-color="#0EA5E9"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(24 20)">
+    <rect x="0" y="0" width="140" height="140" rx="36" fill="url(#b-mark)" stroke="#CFE8F5" stroke-width="2"/>
+    <path d="M28 104 56 62l22 26 32-48 26 64H28Z" fill="none" stroke="url(#b-peak)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="42" y="105" width="11" height="24" rx="2" fill="#0F172A" opacity="0.82"/>
+    <rect x="66" y="91" width="11" height="38" rx="2" fill="#0F172A" opacity="0.82"/>
+    <rect x="90" y="72" width="11" height="57" rx="2" fill="#F59E0B"/>
+  </g>
+  <text x="206" y="74" font-family="Inter, system-ui, sans-serif" font-size="23" font-weight="500" letter-spacing="0.16em" fill="#10B981">ERP</text>
+  <text x="206" y="121" font-family="Inter, system-ui, sans-serif" font-size="58" font-weight="500" letter-spacing="-0.045em" fill="#0F172A">CUMBRE</text>
+  <text x="440" y="121" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="420" fill="#64748B">Sistema de gestion para crecer</text>
+</svg>

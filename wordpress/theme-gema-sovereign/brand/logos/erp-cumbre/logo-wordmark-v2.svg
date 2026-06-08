@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 128" role="img" aria-label="ERP Cumbre">
+  <defs>
+    <linearGradient id="shield-mini" x1="18" y1="8" x2="104" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1E293B"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="growth-mini" x1="38" y1="82" x2="88" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#10B981"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <path d="M64 8 112 30v40c0 30-20 52-48 62-28-10-48-32-48-62V30L64 8Z" fill="url(#shield-mini)"/>
+    <path d="M64 22 101 39v31c0 22-14 39-37 48-23-9-37-26-37-48V39l37-17Z" fill="none" stroke="#10B981" stroke-width="2.6"/>
+    <path d="M32 80 49 57l14 14 22-31 13 40H32Z" fill="none" stroke="url(#growth-mini)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="42" y="80" width="9" height="18" rx="2" fill="#F8FAFC"/>
+    <rect x="60" y="69" width="9" height="29" rx="2" fill="#F8FAFC"/>
+    <rect x="78" y="54" width="9" height="44" rx="2" fill="#F59E0B"/>
+  </g>
+  <text x="148" y="46" font-family="Plus Jakarta Sans, Inter, system-ui, sans-serif" font-size="18" font-weight="800" letter-spacing="0.12em" fill="#10B981">ERP</text>
+  <text x="148" y="86" font-family="Plus Jakarta Sans, Inter, system-ui, sans-serif" font-size="46" font-weight="800" letter-spacing="-0.04em" fill="#0F172A">CUMBRE</text>
+  <text x="370" y="86" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="650" fill="#64748B">Software financiero de mision critica</text>
+  <path d="M148 99h190" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
+</svg>

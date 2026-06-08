@@ -13,6 +13,7 @@ Project scope:
 Default behavior:
 - Continue from the current roadmap in `docs/ROADMAP.md`.
 - Use `docs/CONTEXTO_FUNDACIONAL.md` as the sanitized source for concept, public contact data, social links, and foundational project narrative.
+- Use `docs/V0_WORKFLOW.md` for deciding when to ask the user to use v0. v0 is available at `https://v0.app/info-66077108s-projects` and is preferred for fast visual UI explorations, not for SEO, security, architecture, or final WordPress implementation.
 - Preserve the separation between Gema Digital (agency) and ERP Cumbre (SaaS product).
 - Do not copy, commit, or expose credentials. Real access data lives outside this repo in `../00-datos de acceso/`.
 - Prefer WordPress-local implementation decisions unless the user explicitly changes direction.

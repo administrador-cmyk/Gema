@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 150" role="img" aria-label="Gema Digital opcion E red original">
+  <defs>
+    <linearGradient id="e-blue" x1="20" y1="20" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#1E3A8A"/>
+    </linearGradient>
+    <linearGradient id="e-green" x1="90" y1="34" x2="122" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22C55E"/>
+      <stop offset="1" stop-color="#15803D"/>
+    </linearGradient>
+    <linearGradient id="e-yellow" x1="116" y1="26" x2="176" y2="126" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FDE047"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="e-red" x1="164" y1="42" x2="204" y2="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F97316"/>
+      <stop offset="1" stop-color="#DC2626"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(8 8)">
+    <g fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.78">
+      <path d="M25 46 62 26 102 22 139 42 177 42" stroke="#334155"/>
+      <path d="M25 46 24 78 25 112 65 132 104 126 104 94 139 110 177 110" stroke="#1E3A8A"/>
+      <path d="M62 26 60 78 65 132" stroke="#0EA5E9"/>
+      <path d="M25 112 60 78 25 46" stroke="#1E40AF"/>
+      <path d="M60 78 102 22 104 62 139 42" stroke="#475569"/>
+      <path d="M65 132 104 94 141 130" stroke="#475569"/>
+      <path d="M104 62 139 42 141 78 177 78" stroke="#22C55E"/>
+      <path d="M104 94 141 78 141 130 177 110 177 78" stroke="#EAB308"/>
+      <path d="M139 42 177 42 204 58" stroke="#F59E0B"/>
+      <path d="M141 78 177 78 204 94 204 122 177 110" stroke="#DC2626"/>
+    </g>
+
+    <g>
+      <circle cx="25" cy="46" r="13" fill="url(#e-blue)"/>
+      <circle cx="24" cy="78" r="13" fill="url(#e-blue)"/>
+      <circle cx="25" cy="112" r="13" fill="url(#e-blue)"/>
+      <circle cx="62" cy="26" r="13" fill="url(#e-blue)"/>
+      <circle cx="60" cy="78" r="13" fill="url(#e-blue)"/>
+      <circle cx="65" cy="132" r="13" fill="url(#e-blue)"/>
+      <circle cx="102" cy="22" r="13" fill="url(#e-blue)"/>
+      <circle cx="104" cy="62" r="13" fill="url(#e-green)"/>
+      <circle cx="104" cy="94" r="13" fill="url(#e-green)"/>
+      <circle cx="104" cy="126" r="13" fill="url(#e-green)"/>
+      <circle cx="139" cy="42" r="13" fill="url(#e-yellow)"/>
+      <circle cx="141" cy="78" r="13" fill="url(#e-yellow)"/>
+      <circle cx="141" cy="130" r="13" fill="url(#e-yellow)"/>
+      <circle cx="177" cy="42" r="13" fill="url(#e-red)"/>
+      <circle cx="177" cy="78" r="13" fill="url(#e-red)"/>
+      <circle cx="177" cy="110" r="13" fill="url(#e-red)"/>
+      <circle cx="204" cy="58" r="13" fill="url(#e-red)"/>
+      <circle cx="204" cy="122" r="13" fill="url(#e-red)"/>
+    </g>
+  </g>
+
+  <text x="260" y="74" font-family="Geist, Inter, system-ui, sans-serif" font-size="58" font-weight="850" letter-spacing="-0.055em" fill="#0B192C">GEMA</text>
+  <text x="264" y="108" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="750" letter-spacing="0.14em" fill="#334155">DIGITAL</text>
+  <text x="382" y="108" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="650" fill="#64748B">Gestion, tecnologia y automatizacion</text>
+</svg>

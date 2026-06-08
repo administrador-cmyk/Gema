@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" role="img" aria-label="ERP Cumbre opcion C tech">
+  <defs>
+    <linearGradient id="c-ring" x1="26" y1="18" x2="148" y2="152" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(24 18)">
+    <circle cx="72" cy="72" r="66" fill="#0F172A"/>
+    <path d="M116 43c-13-17-39-24-63-14-28 12-41 45-29 73 12 29 46 43 76 30 16-7 28-19 34-35H74V76h88c0 36-21 67-55 81-44 18-95-3-113-46-18-42 2-92 45-110 33-14 70-8 94 18l-17 24Z" fill="#F8FAFC" transform="scale(.72) translate(18 9)"/>
+    <path d="M34 102 55 74l18 19 28-42 18 51H34Z" fill="none" stroke="url(#c-ring)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M42 118h62" stroke="#334155" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="55" cy="74" r="4" fill="#10B981"/>
+    <circle cx="101" cy="51" r="4" fill="#F59E0B"/>
+  </g>
+  <text x="206" y="74" font-family="Inter, system-ui, sans-serif" font-size="23" font-weight="500" letter-spacing="0.16em" fill="#0EA5E9">ERP</text>
+  <text x="206" y="121" font-family="Inter, system-ui, sans-serif" font-size="58" font-weight="500" letter-spacing="-0.045em" fill="#0F172A">CUMBRE</text>
+  <text x="440" y="121" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="420" fill="#64748B">Datos, control y automatizacion</text>
+</svg>

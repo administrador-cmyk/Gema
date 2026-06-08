@@ -14,6 +14,16 @@ node_modules/
 dist/
 .next/
 
+# Firebase / Cumbre local
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+cumbre/.java/
+cumbre/.firebase-config/
+cumbre/.firebase-cache/
+cumbre/emulator-data/
+
 # WordPress sync artifacts
 wordpress/sync/*.sql
 wordpress/sync/uploads/
