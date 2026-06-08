@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Preview Plataforma Cumbre</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #020617;
+        --orb-a: rgba(16, 185, 129, 0.14);
+        --orb-b: rgba(14, 165, 233, 0.13);
+        --side: rgba(2, 6, 23, 0.74);
+        --panel: rgba(15, 23, 42, 0.78);
+        --panel-strong: rgba(2, 6, 23, 0.72);
+        --line: rgba(148, 163, 184, 0.22);
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --soft: #cbd5e1;
+        --emerald: #34d399;
+        --cyan: #22d3ee;
+        --amber: #fbbf24;
+        --violet: #a78bfa;
+        --danger: #fb7185;
+      }
+
+      [data-theme="light"] {
+        color-scheme: light;
+        --bg: #f8fafc;
+        --orb-a: rgba(16, 185, 129, 0.16);
+        --orb-b: rgba(14, 165, 233, 0.16);
+        --side: rgba(255, 255, 255, 0.78);
+        --panel: rgba(255, 255, 255, 0.82);
+        --panel-strong: rgba(241, 245, 249, 0.9);
+        --line: rgba(15, 23, 42, 0.14);
+        --text: #0f172a;
+        --muted: #475569;
+        --soft: #1e293b;
+        --emerald: #047857;
+        --cyan: #0369a1;
+        --amber: #b45309;
+        --violet: #6d28d9;
+        --danger: #be123c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 8% 0%, var(--orb-a), transparent 34rem),
+          radial-gradient(circle at 88% 0%, var(--orb-b), transparent 32rem),
+          var(--bg);
+        color: var(--text);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      @keyframes fade-up {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse-node {
+        0%,
+        100% {
+          opacity: 0.42;
+          transform: scale(0.9);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes draw-bar {
+        from {
+          transform: scaleX(0);
+        }
+        to {
+          transform: scaleX(1);
+        }
+      }
+
+      @keyframes orbit {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      aside {
+        border-right: 1px solid var(--line);
+        background: var(--side);
+        padding: 24px;
+      }
+
+      main {
+        padding: 32px;
+      }
+
+      main > section {
+        animation: fade-up 0.7s ease both;
+      }
+
+      main > section:nth-child(2) {
+        animation-delay: 0.08s;
+      }
+
+      main > section:nth-child(3) {
+        animation-delay: 0.14s;
+      }
+
+      main > section:nth-child(4) {
+        animation-delay: 0.2s;
+      }
+
+      main > section:nth-child(5) {
+        animation-delay: 0.26s;
+      }
+
+      main > section:nth-child(6) {
+        animation-delay: 0.32s;
+      }
+
+      .eyebrow {
+        color: var(--cyan);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        margin-top: 10px;
+        max-width: 860px;
+        font-size: clamp(2.1rem, 4vw, 4.7rem);
+        line-height: 0.94;
+        letter-spacing: -0.06em;
+      }
+
+      h2 {
+        font-size: 1.35rem;
+        letter-spacing: -0.03em;
+      }
+
+      h3 {
+        font-size: 1rem;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .lead {
+        margin-top: 18px;
+        max-width: 820px;
+        font-size: 1.02rem;
+      }
+
+      .stack {
+        display: grid;
+        gap: 20px;
+      }
+
+      .nav {
+        display: grid;
+        gap: 9px;
+        margin-top: 28px;
+      }
+
+      .nav span,
+      .card,
+      .module,
+      .rule,
+      .mini {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 22px;
+      }
+
+      .nav span {
+        display: block;
+        border-radius: 14px;
+        padding: 11px 13px;
+        color: var(--soft);
+        font-size: 0.92rem;
+        transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+      }
+
+      .nav span:hover {
+        border-color: rgba(34, 211, 238, 0.42);
+        color: var(--text);
+        transform: translateX(3px);
+      }
+
+      .nav span:first-child {
+        border-color: rgba(34, 211, 238, 0.42);
+        color: var(--text);
+        background: rgba(14, 165, 233, 0.12);
+      }
+
+      .panel-note {
+        margin-top: 28px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: var(--panel-strong);
+      }
+
+      .theme-toggle {
+        display: inline-grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        margin-top: 20px;
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel-strong);
+        padding: 4px;
+      }
+
+      .theme-toggle button {
+        appearance: none;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.82rem;
+        font-weight: 800;
+        padding: 9px 10px;
+        transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+      }
+
+      .theme-toggle button:hover {
+        transform: translateY(-2px) scale(1.03);
+      }
+
+      [data-theme="dark"] .theme-toggle button[data-theme-target="dark"],
+      [data-theme="light"] .theme-toggle button[data-theme-target="light"] {
+        background: var(--cyan);
+        color: var(--bg);
+      }
+
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      .action-button {
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+        display: inline-flex;
+        font: inherit;
+        font-size: 0.9rem;
+        font-weight: 850;
+        gap: 8px;
+        overflow: hidden;
+        padding: 12px 16px;
+        position: relative;
+        transition: border-color 0.22s ease, color 0.22s ease, transform 0.22s ease, background 0.22s ease;
+      }
+
+      .action-button::after,
+      .nav span::after {
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+        content: "";
+        inset: 0;
+        position: absolute;
+        transform: translateX(-120%);
+        transition: transform 0.46s ease;
+      }
+
+      .action-button:hover {
+        border-color: rgba(34, 211, 238, 0.48);
+        background: var(--panel-strong);
+        color: var(--cyan);
+        transform: translateY(-4px) scale(1.02);
+      }
+
+      .action-button:hover::after,
+      .nav span:hover::after {
+        transform: translateX(120%);
+      }
+
+      .action-button:active {
+        transform: translateY(-1px) scale(0.99);
+      }
+
+      .card {
+        padding: 22px;
+        transition: border-color 0.22s ease, transform 0.22s ease, background 0.22s ease;
+      }
+
+      .card:hover,
+      .module:hover,
+      .rule:hover,
+      .mini:hover {
+        border-color: rgba(34, 211, 238, 0.42);
+        transform: translateY(-3px);
+      }
+
+      .stat strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 1.55rem;
+        letter-spacing: -0.04em;
+      }
+
+      .pill {
+        display: inline-flex;
+        width: fit-content;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 5px 10px;
+        color: var(--soft);
+        font-size: 0.75rem;
+        font-weight: 800;
+        transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+      }
+
+      .pill:hover {
+        transform: translateY(-2px);
+      }
+
+      .success {
+        border-color: rgba(52, 211, 153, 0.38);
+        color: var(--emerald);
+      }
+
+      .info {
+        border-color: rgba(34, 211, 238, 0.38);
+        color: var(--cyan);
+      }
+
+      .warning {
+        border-color: rgba(251, 191, 36, 0.4);
+        color: var(--amber);
+      }
+
+      .neutral {
+        border-color: rgba(167, 139, 250, 0.35);
+        color: var(--violet);
+      }
+
+      .module,
+      .rule,
+      .mini {
+        position: relative;
+        overflow: hidden;
+        padding: 16px;
+        transition: border-color 0.22s ease, transform 0.22s ease, background 0.22s ease;
+      }
+
+      .nav span {
+        overflow: hidden;
+        position: relative;
+      }
+
+      .module::before {
+        content: "";
+        display: block;
+        height: 3px;
+        inset: 0 0 auto;
+        position: absolute;
+        background: var(--cyan);
+      }
+
+      .module:nth-child(1)::before,
+      .module:nth-child(4)::before {
+        background: var(--emerald);
+      }
+
+      .module:nth-child(2)::before,
+      .module:nth-child(3)::before,
+      .module:nth-child(5)::before {
+        background: var(--amber);
+      }
+
+      .module:nth-child(6)::before {
+        background: var(--violet);
+      }
+
+      .module header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .rule strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .mini strong {
+        display: block;
+        margin-top: 6px;
+        color: var(--text);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: var(--panel);
+      }
+
+      .visual-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 0.8fr;
+        gap: 16px;
+      }
+
+      .chart-card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 24px;
+        padding: 18px;
+      }
+
+      .bar-list {
+        display: grid;
+        gap: 13px;
+        margin-top: 18px;
+      }
+
+      .bar-row {
+        display: grid;
+        gap: 7px;
+      }
+
+      .bar-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .bar-track {
+        height: 10px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel-strong);
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: inherit;
+        transform-origin: left;
+        animation: draw-bar 1.1s ease both;
+      }
+
+      .bar-fill.is-emerald {
+        background: var(--emerald);
+      }
+
+      .bar-fill.is-cyan {
+        background: var(--cyan);
+      }
+
+      .bar-fill.is-amber {
+        background: var(--amber);
+      }
+
+      .bar-fill.is-violet {
+        background: var(--violet);
+      }
+
+      .ops-map {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .ops-step {
+        align-items: center;
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr) auto;
+        gap: 10px;
+      }
+
+      .ops-dot {
+        border-radius: 999px;
+        height: 12px;
+        width: 12px;
+        background: var(--cyan);
+        box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.1);
+        animation: pulse-node 2.6s ease-in-out infinite;
+      }
+
+      .ops-step:nth-child(2) .ops-dot {
+        background: var(--amber);
+        box-shadow: 0 0 0 6px rgba(251, 191, 36, 0.1);
+        animation-delay: 0.25s;
+      }
+
+      .ops-step:nth-child(3) .ops-dot {
+        background: var(--emerald);
+        box-shadow: 0 0 0 6px rgba(52, 211, 153, 0.1);
+        animation-delay: 0.5s;
+      }
+
+      .ops-step:nth-child(4) .ops-dot {
+        background: var(--violet);
+        box-shadow: 0 0 0 6px rgba(167, 139, 250, 0.12);
+        animation-delay: 0.75s;
+      }
+
+      .ops-step strong {
+        color: var(--text);
+        font-size: 0.9rem;
+      }
+
+      .ops-step span:last-child {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .donut-wrap {
+        align-items: center;
+        display: grid;
+        gap: 12px;
+        justify-items: center;
+        margin-top: 18px;
+      }
+
+      .donut {
+        align-items: center;
+        background:
+          radial-gradient(circle, var(--panel) 0 52%, transparent 53%),
+          conic-gradient(var(--emerald) 0 44%, var(--cyan) 44% 70%, var(--amber) 70% 88%, var(--violet) 88% 100%);
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        display: grid;
+        height: 164px;
+        justify-items: center;
+        position: relative;
+        width: 164px;
+      }
+
+      .donut::after {
+        border: 1px solid var(--line);
+        border-radius: inherit;
+        content: "";
+        inset: -7px;
+        position: absolute;
+        animation: orbit 12s linear infinite;
+        border-top-color: var(--cyan);
+      }
+
+      .donut strong {
+        color: var(--text);
+        font-size: 1.45rem;
+      }
+
+      .legend {
+        display: grid;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .legend span {
+        align-items: center;
+        color: var(--muted);
+        display: flex;
+        font-size: 0.84rem;
+        gap: 8px;
+      }
+
+      .legend i {
+        border-radius: 999px;
+        display: inline-block;
+        height: 8px;
+        width: 8px;
+      }
+
+      .sparkline {
+        margin-top: 16px;
+        width: 100%;
+      }
+
+      .sparkline path {
+        fill: none;
+        stroke: var(--cyan);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 3;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 0.001ms !important;
+        }
+      }
+
+      button:focus-visible {
+        outline: 3px solid var(--cyan);
+        outline-offset: 3px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 13px 14px;
+        text-align: left;
+      }
+
+      th {
+        color: var(--soft);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      td {
+        color: var(--muted);
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      @media (max-width: 980px) {
+        .app,
+        .grid-2,
+        .visual-grid {
+          grid-template-columns: 1fr;
+        }
+
+        aside {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .grid-4,
+        .grid-3 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        main,
+        aside {
+          padding: 20px;
+        }
+
+        .grid-4,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside>
+        <div class="eyebrow">GEMA Digital</div>
+        <h2 style="margin-top: 8px">Cumbre ERP</h2>
+        <p style="margin-top: 10px">La web vende. El panel opera. La marca se mantiene.</p>
+        <div class="theme-toggle" aria-label="Selector de modo visual">
+          <button type="button" data-theme-target="dark">Noche</button>
+          <button type="button" data-theme-target="light">Día</button>
+        </div>
+        <nav class="nav">
+          <span>Vista general</span>
+          <span>Panel de control</span>
+          <span>CRM</span>
+          <span>Stock</span>
+          <span>Compras</span>
+          <span>Contabilidad</span>
+          <span>Impuestos</span>
+          <span>Reportes BI</span>
+          <span>Planificación</span>
+          <span>Activos Fijos</span>
+          <span>Personal</span>
+          <span>Ventas</span>
+          <span>Marketing</span>
+          <span>Automatizaciones</span>
+          <span>Web</span>
+          <span>WhatsApp Hub</span>
+          <span>Verticales</span>
+          <span>Cobros</span>
+          <span>Facturador</span>
+          <span>Legal</span>
+          <span>Tutoriales API</span>
+        </nav>
+        <div class="panel-note">
+          <h3>Criterio base</h3>
+          <p>Oscuro profesional, datos claros, acentos por módulo y acciones guiadas.</p>
+        </div>
+      </aside>
+
+      <main class="stack">
+        <section>
+          <div class="eyebrow">Dirección visual Cumbre</div>
+          <h1>Base profesional para la plataforma Cumbre</h1>
+          <p class="lead">
+            Cumbre acompaña la estética del sitio GEMA, pero funciona como herramienta diaria:
+            navegación estable, superficies sobrias, datos legibles, estados claros y personalidad visual por módulo.
+          </p>
+          <div class="actions" aria-label="Acciones principales de la preview Cumbre">
+            <button class="action-button" type="button">Ver panel operativo</button>
+            <button class="action-button" type="button">Explorar módulos</button>
+            <button class="action-button" type="button">Revisar alertas</button>
+          </div>
+        </section>
+
+        <section class="grid-4">
+          <div class="card stat"><p>Familia visual</p><strong>GEMA</strong><span class="pill success">Continuidad</span></div>
+          <div class="card stat"><p>Producto</p><strong>SaaS B2B</strong><span class="pill info">Operativo</span></div>
+          <div class="card stat"><p>Módulos</p><strong>Acento propio</strong><span class="pill neutral">Sistema</span></div>
+          <div class="card stat"><p>Automatización</p><strong>Asistida</strong><span class="pill warning">Control</span></div>
+        </section>
+
+        <section class="grid-2">
+          <div class="card">
+            <span class="pill info">Shell base</span>
+            <h2 style="margin-top: 14px">Sistema común</h2>
+            <p style="margin-top: 10px">
+              La base común define lo que no cambia entre módulos: layout, navegación, estados, acciones,
+              tablas, permisos, alertas, consumo y onboarding.
+            </p>
+            <div class="grid-4" style="margin-top: 18px">
+              <div class="mini"><p>Trial</p><strong>14 días</strong><p>Datos preservados</p></div>
+              <div class="mini"><p>Plan</p><strong>PyMEs Plus</strong><p>Upgrade visible</p></div>
+              <div class="mini"><p>Seguridad</p><strong>Sin secretos</strong><p>credencial_ref</p></div>
+              <div class="mini"><p>IA</p><strong>Asistida</strong><p>Acciones revisables</p></div>
+            </div>
+          </div>
+          <div class="stack">
+            <h2>Reglas de estética</h2>
+            <div class="rule"><strong>Continuidad</strong><p>Debe sentirse hijo de GEMA Digital, no una app ajena.</p></div>
+            <div class="rule"><strong>Prioridad</strong><p>Estado, consumo, riesgo y próxima acción antes que decoración.</p></div>
+            <div class="rule"><strong>Modularidad</strong><p>Cada módulo cambia acento y datos, pero comparte shell y componentes.</p></div>
+            <div class="rule"><strong>Control</strong><p>IA, ARCA, pagos, APIs y stock muestran revisión humana o validación backend.</p></div>
+          </div>
+        </section>
+
+        <section class="stack">
+          <div>
+            <h2>Módulos con personalidad propia</h2>
+            <p>La estética no se decide módulo por módulo desde cero. Cada módulo recibe una capa visual propia sobre la misma arquitectura.</p>
+          </div>
+          <div class="grid-3">
+            <article class="module"><header><h3>CRM</h3><span class="pill success">Comercial</span></header><p>Pipeline, leads, presupuestos, Vista Hoy.</p></article>
+            <article class="module"><header><h3>Stock</h3><span class="pill warning">Operación</span></header><p>Depósitos, saldos, ingesta, aprobación.</p></article>
+            <article class="module"><header><h3>Compras</h3><span class="pill warning">Reposición</span></header><p>Proveedores, órdenes, recepción, trazabilidad.</p></article>
+            <article class="module"><header><h3>Contabilidad</h3><span class="pill info">Formal</span></header><p>Asientos, cierres, libros, reportes y revisión.</p></article>
+            <article class="module"><header><h3>Impuestos</h3><span class="pill warning">Fiscal</span></header><p>IVA, IIBB, vencimientos y reportes revisables.</p></article>
+            <article class="module"><header><h3>Reportes BI</h3><span class="pill info">Ejecutivo</span></header><p>Dashboards, KPIs, alertas y exportaciones.</p></article>
+            <article class="module"><header><h3>Planificación</h3><span class="pill success">Forecast</span></header><p>Escenarios, cashflow, real vs plan y desvíos.</p></article>
+            <article class="module"><header><h3>Activos Fijos</h3><span class="pill neutral">Patrimonio</span></header><p>Bienes de uso, amortizaciones y mantenimiento.</p></article>
+            <article class="module"><header><h3>Personal</h3><span class="pill neutral">RRHH</span></header><p>Legajos, asistencia, novedades y costos laborales.</p></article>
+            <article class="module"><header><h3>Ventas</h3><span class="pill success">Transacción</span></header><p>POS, venta digital, cobros, stock y facturación.</p></article>
+            <article class="module"><header><h3>Marketing</h3><span class="pill info">Growth</span></header><p>Segmentos, campañas, audiencias y atribución.</p></article>
+            <article class="module"><header><h3>Automatizaciones</h3><span class="pill info">Workflows</span></header><p>Triggers, webhooks, idempotencia y auditoría.</p></article>
+            <article class="module"><header><h3>Web</h3><span class="pill info">Captación</span></header><p>Landings, formularios, SEO y eventos conectados.</p></article>
+            <article class="module"><header><h3>WhatsApp Hub</h3><span class="pill success">Conversacional</span></header><p>Meta Cloud API, opt-in, webhooks y agente cerebro.</p></article>
+            <article class="module"><header><h3>Verticales</h3><span class="pill warning">Sectorial</span></header><p>Kioscos, Resto, WMS, Constructoras, Agro y Mercados.</p></article>
+            <article class="module"><header><h3>Cobros</h3><span class="pill success">Finanzas</span></header><p>Links, QR, webhooks, conciliación.</p></article>
+            <article class="module"><header><h3>Facturador</h3><span class="pill warning">Fiscal</span></header><p>Comprobantes, CAE, errores trazables.</p></article>
+            <article class="module"><header><h3>Legal</h3><span class="pill neutral">Documental</span></header><p>Borradores, fuentes, revisión profesional.</p></article>
+            <article class="module"><header><h3>Tutoriales API</h3><span class="pill info">Integración</span></header><p>Checklists, credenciales, validación.</p></article>
+          </div>
+        </section>
+
+        <section class="stack">
+          <div>
+            <div class="eyebrow">Gráficas operativas</div>
+            <h2 style="margin-top: 8px">Movimiento, señales y lectura rápida por sector</h2>
+            <p>La plataforma necesita gráficas útiles: no decoración. Cada visual debe responder qué pasó, qué riesgo hay y cuál es la próxima acción.</p>
+          </div>
+          <div class="visual-grid">
+            <article class="chart-card">
+              <header>
+                <span class="pill info">Demanda por canal</span>
+                <h3 style="margin-top: 12px">Señales que alimentan Compras</h3>
+              </header>
+              <div class="bar-list" aria-label="Demanda operativa por canal">
+                <div class="bar-row">
+                  <div class="bar-meta"><span>Stock mínimo</span><strong>82%</strong></div>
+                  <div class="bar-track"><div class="bar-fill is-amber" style="width: 82%"></div></div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-meta"><span>Ventas mostrador</span><strong>68%</strong></div>
+                  <div class="bar-track"><div class="bar-fill is-emerald" style="width: 68%; animation-delay: 0.12s"></div></div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-meta"><span>Mercado Libre</span><strong>54%</strong></div>
+                  <div class="bar-track"><div class="bar-fill is-cyan" style="width: 54%; animation-delay: 0.24s"></div></div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-meta"><span>eCommerce</span><strong>41%</strong></div>
+                  <div class="bar-track"><div class="bar-fill is-violet" style="width: 41%; animation-delay: 0.36s"></div></div>
+                </div>
+              </div>
+              <svg class="sparkline" viewBox="0 0 320 72" role="img" aria-label="Tendencia de señales de reposición">
+                <path d="M4 58 C 42 42, 58 48, 88 34 S 144 18, 176 30 230 54, 262 28 300 18 316 24" />
+              </svg>
+            </article>
+
+            <article class="chart-card">
+              <header>
+                <span class="pill success">Flujo activo</span>
+                <h3 style="margin-top: 12px">De venta a reposición</h3>
+              </header>
+              <div class="ops-map" aria-label="Flujo operativo Cumbre">
+                <div class="ops-step"><span class="ops-dot"></span><strong>Ventas detecta rotación alta</strong><span>Ahora</span></div>
+                <div class="ops-step"><span class="ops-dot"></span><strong>Compras sugiere reposición</strong><span>+2 min</span></div>
+                <div class="ops-step"><span class="ops-dot"></span><strong>Usuario aprueba orden</strong><span>Manual</span></div>
+                <div class="ops-step"><span class="ops-dot"></span><strong>Stock recibe mercadería</strong><span>Trazado</span></div>
+              </div>
+              <p style="margin-top: 18px">El movimiento visual debe acompañar estados reales: pendiente, sugerido, aprobado, observado o recibido.</p>
+            </article>
+
+            <article class="chart-card">
+              <header>
+                <span class="pill neutral">Composición</span>
+                <h3 style="margin-top: 12px">Peso visual del panel</h3>
+              </header>
+              <div class="donut-wrap">
+                <div class="donut"><strong>100%</strong></div>
+                <div class="legend">
+                  <span><i style="background: var(--emerald)"></i> Operación comercial</span>
+                  <span><i style="background: var(--cyan)"></i> Sistemas e integraciones</span>
+                  <span><i style="background: var(--amber)"></i> Stock, compras y fiscal</span>
+                  <span><i style="background: var(--violet)"></i> Gobierno y documentos</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="grid-2">
+          <div class="card">
+            <span class="pill success">Profesional</span>
+            <h2 style="margin-top: 14px">Cómo se ve el panel</h2>
+            <p style="margin-top: 10px">
+              Una pantalla Cumbre abre con contexto de empresa, estado del plan, alertas y próxima acción.
+              La información aparece en capas, no como una pared de botones.
+            </p>
+            <p style="margin-top: 14px; color: var(--soft)">Contexto → estado → acción → detalle → auditoría.</p>
+          </div>
+          <div>
+            <h2 style="margin-bottom: 12px">Componentes base</h2>
+            <table>
+              <thead><tr><th>Componente</th><th>Uso</th><th>Regla</th></tr></thead>
+              <tbody>
+                <tr><td>Sidebar</td><td>Navegación estable</td><td>Común a todos los módulos</td></tr>
+                <tr><td>Topbar</td><td>Empresa, plan, alertas</td><td>Contexto operativo</td></tr>
+                <tr><td>Cards</td><td>Resumen y próxima acción</td><td>No todas iguales</td></tr>
+                <tr><td>Tablas</td><td>Datos, permisos y estados</td><td>Alta legibilidad</td></tr>
+                <tr><td>Badges</td><td>Trial, activo, asistido, error</td><td>Texto corto</td></tr>
+                <tr><td>Panel IA</td><td>Explica, sugiere, anticipa</td><td>Sin prometer automatismo total</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script>
+      const root = document.documentElement;
+      const savedTheme = localStorage.getItem("cumbre-preview-theme") || "dark";
+      root.dataset.theme = savedTheme;
+
+      document.querySelectorAll("[data-theme-target]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const theme = button.getAttribute("data-theme-target");
+          root.dataset.theme = theme;
+          localStorage.setItem("cumbre-preview-theme", theme);
+        });
+      });
+    </script>
+  </body>
+</html>

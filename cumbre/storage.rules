@@ -1,0 +1,30 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && request.auth.token.admin == true;
+    }
+
+    function isTenantOwner(tenantId) {
+      return signedIn() && request.auth.uid == tenantId;
+    }
+
+    match /artifacts/{appId}/public/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /artifacts/{appId}/users/{tenantId}/{allPaths=**} {
+      allow read, write: if isTenantOwner(tenantId) || isAdmin();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

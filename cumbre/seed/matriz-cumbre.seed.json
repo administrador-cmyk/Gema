@@ -1,0 +1,85 @@
+{
+  "documents": [
+    {
+      "path": "artifacts/cumbre-erp/public/data/modulos_disponibles/modulo_estabilidad_sre",
+      "data": {
+        "id": "modulo_estabilidad_sre",
+        "nombre": "Centro de Estabilidad y Seguridad",
+        "descripcion": "Monitoreo preventivo de infraestructura, APIs, Firebase, WordPress, seguridad, costos, alertas IA y remediacion controlada.",
+        "categoria": "operaciones",
+        "dependencias": [],
+        "costo_mensual_usd": 19,
+        "version": "0.1.0",
+        "estado": "mvp"
+      }
+    },
+    {
+      "path": "artifacts/cumbre-erp/public/data/modulos_disponibles/modulo_facturacion_ar",
+      "data": {
+        "id": "modulo_facturacion_ar",
+        "nombre": "Facturacion Electronica ARCA",
+        "descripcion": "Emision automatica de comprobantes A, B, C y MiPyMEs con obtencion de CAE en tiempo real.",
+        "categoria": "fiscal",
+        "dependencias": [],
+        "costo_mensual_usd": 15,
+        "version": "2.1.0",
+        "endpoint_worker": "https://api-arca-worker-rt2s.a.run.app"
+      }
+    },
+    {
+      "path": "artifacts/cumbre-erp/public/data/modulos_disponibles/modulo_crm_basic",
+      "data": {
+        "id": "modulo_crm_basic",
+        "nombre": "CRM Comercial",
+        "descripcion": "Gestion de leads, pipeline, oportunidades y seguimiento comercial.",
+        "categoria": "ventas",
+        "dependencias": [],
+        "costo_mensual_usd": 9,
+        "version": "1.0.0"
+      }
+    },
+    {
+      "path": "artifacts/cumbre-erp/public/data/modulos_disponibles/modulo_control_stock",
+      "data": {
+        "id": "modulo_control_stock",
+        "nombre": "Control de Stock",
+        "descripcion": "Inventario, movimientos, alertas y trazabilidad de productos.",
+        "categoria": "operaciones",
+        "dependencias": [],
+        "costo_mensual_usd": 12,
+        "version": "1.0.0"
+      }
+    },
+    {
+      "path": "artifacts/cumbre-erp/users/tenant_demo/suscripcion_modulos/config",
+      "data": {
+        "tenantId": "tenant_demo",
+        "fecha_actualizacion": "2026-06-05T14:47:00Z",
+        "modulos_activos": {
+          "modulo_estabilidad_sre": {
+            "habilitado": true,
+            "fecha_activacion": "2026-06-06T00:00:00Z",
+            "modo": "mvp_preventivo"
+          },
+          "modulo_crm_basic": {
+            "habilitado": true,
+            "fecha_activacion": "2026-01-10T00:00:00Z",
+            "limite_leads": 1000
+          },
+          "modulo_facturacion_ar": {
+            "habilitado": true,
+            "fecha_activacion": "2026-03-15T00:00:00Z",
+            "config_fiscal": {
+              "cuit": "20334445559",
+              "punto_venta": 5,
+              "condicion_iva": "Responsable Inscripto"
+            }
+          },
+          "modulo_control_stock": {
+            "habilitado": false
+          }
+        }
+      }
+    }
+  ]
+}
