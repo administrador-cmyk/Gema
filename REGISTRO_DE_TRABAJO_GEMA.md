@@ -2237,6 +2237,17 @@ Estado observado:
   - Verificación en emulador: última corrida `demo_p1_20260608_f24587fe` quedó `completada`, con `finalizado_el` y hallazgos.
   - Validación ejecutada: `npm run test:contracts`, `npm run typecheck`, `npm run test:rules`, `npm run functions:typecheck`.
 
+- 2026-06-08: Trigésimo cuarto hito técnico de Cumbre ERP.
+  - Se amplió `shared/p1DemoExecution.ts` con contrato de decisión de gate (`P1DemoGateDecisionRecord`) y validadores.
+  - Se agregó `registrarP1DemoGateDecision` en `src/lib/p1DemoExecutionTools.ts`.
+  - `src/components/CumbreP1Readiness.tsx` ahora permite registrar decisión formal de gate:
+    - `Gate: repetir demo`
+    - `Gate: abrir beta`
+    - `Gate: volver a construir`
+  - Se agregó regla Firestore para `demo_p1_gate_decisiones` con write restringido a owner/admin.
+  - Verificación en emulador: decisión `abrir_beta_controlada` persistida con siguiente acción.
+  - Validación ejecutada: `npm run test:contracts`, `npm run typecheck`, `npm run test:rules`, `npm run functions:typecheck`.
+
 - 2026-06-08: Optimización inicial de perfiles Meta / Instagram de GEMA.
   - Alcance autorizado: operar solo sobre `Gema Sistemas ERP` / `gema.digital.erp` para perfil publico; sin tocar Genera Tu Energia, pagos, anuncios, propietarios ni eliminar activos.
   - Facebook `Gema Sistemas ERP`: se actualizo la presentacion publica con posicionamiento de gestion, marketing, automatizacion, software, ERP Cumbre, IA y soluciones digitales.
@@ -2287,3 +2298,38 @@ Estado observado:
   - Los conectores trabajan en modo seguro: `dryRun`, `skipped` si faltan tokens y `blocked` si la red requiere media o permisos no completados.
   - Validacion ejecutada: `npm --prefix cumbre run typecheck` sin errores.
   - Pendiente: crear apps developer, aprobar OAuth/permisos y guardar tokens fuera del repositorio.
+
+- 2026-06-08: Trigésimo quinto hito técnico de Cumbre ERP.
+  - Se incorporó `buildPresupuestoItemFromCatalogo` en `shared/catalogo.ts` para centralizar la construcción segura de `PresupuestoItem`.
+  - El helper evita serializar `proveedor_sugerido_id` cuando no existe proveedor principal, eliminando escrituras Firestore con `undefined`.
+  - `src/lib/catalogoTools.ts` y `src/components/CumbreMvpDemo.tsx` quedaron unificados sobre el helper compartido para evitar divergencias entre librería y UI.
+  - Se agregaron pruebas en `scripts/test-domain-contracts.ts` para verificar casos con y sin proveedor principal.
+  - Verificación browser sobre emulador: corrida MVP manual completada de punta a punta con `Flujo completo` y sin error de datos inválidos.
+  - Validación ejecutada: `npm run typecheck`, `npm run test:contracts`, `npm run test:rules`, `npm run functions:typecheck`.
+
+- 2026-06-08: Trigésimo sexto hito técnico de Cumbre ERP.
+  - Se extendió `shared/p1DemoExecution.ts` con el contrato `P1BetaAperturaChecklistRecord`, checks y validadores de apertura beta.
+  - Se agregó `registrarP1BetaAperturaChecklist(...)` en `src/lib/p1DemoExecutionTools.ts`.
+  - `src/components/CumbreP1Readiness.tsx` ahora permite registrar y visualizar la checklist final (`Registrar checklist beta P1`) con estado, bloqueos y siguiente acción.
+  - Se agregó regla Firestore para `demo_p1_beta_checklists` con write restringido a owner/admin.
+  - Se ampliaron pruebas en `scripts/test-domain-contracts.ts` y `scripts/test-security-rules.ts`.
+  - Verificación browser sobre emulador: secuencia corrida cerrada + decisión `abrir_beta_controlada` + checklist registrada con estado `lista_apertura`.
+  - Validación ejecutada: `npm run typecheck`, `npm run test:contracts`, `npm run test:rules`, `npm run functions:typecheck`.
+
+- 2026-06-08: Trigésimo séptimo hito técnico de Cumbre ERP.
+  - Se extendió `shared/p1DemoExecution.ts` con `P1BetaSeguimientoRecord` para monitoreo diario de beta controlada.
+  - Se agregó `registrarP1BetaSeguimiento(...)` en `src/lib/p1DemoExecutionTools.ts`.
+  - `src/components/CumbreP1Readiness.tsx` incorporó el botón `Registrar seguimiento beta hoy` y visualización del último seguimiento (estado, fecha, incidentes, siguiente acción).
+  - Se agregó regla Firestore para `demo_p1_beta_seguimientos` con write restringido a owner/admin.
+  - Se ampliaron pruebas en `scripts/test-domain-contracts.ts` y `scripts/test-security-rules.ts`.
+  - Verificación browser sobre emulador: seguimiento diario registrado con estado `estable` y trazabilidad visible en UI.
+  - Validación ejecutada: `npm run typecheck`, `npm run test:contracts`, `npm run test:rules`, `npm run functions:typecheck`.
+
+- 2026-06-08: Trigésimo octavo hito técnico de Cumbre ERP.
+  - Se extendió `shared/p1DemoExecution.ts` con `P1BetaSalidaRecord` para compuerta formal de salida de beta.
+  - Se agregó `registrarP1BetaSalida(...)` en `src/lib/p1DemoExecutionTools.ts`.
+  - `src/components/CumbreP1Readiness.tsx` incorporó `Evaluar salida beta P1` con decisión automática (`aprobar_salida`, `extender_beta`, `bloquear_salida`) y resumen visible.
+  - Se agregó regla Firestore para `demo_p1_beta_salidas` con write restringido a owner/admin.
+  - Se ampliaron pruebas en `scripts/test-domain-contracts.ts` y `scripts/test-security-rules.ts`.
+  - Verificación browser sobre emulador: salida evaluada y persistida con `extender_beta` al no cumplir aún monitoreo mínimo de 3 días.
+  - Validación ejecutada: `npm run typecheck`, `npm run test:contracts`, `npm run test:rules`, `npm run functions:typecheck`.
