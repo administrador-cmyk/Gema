@@ -1,0 +1,239 @@
+{
+  "name": "GEMA - Social Campaign Dry Run",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "target-day",
+              "name": "targetDay",
+              "type": "number",
+              "value": 1
+            },
+            {
+              "id": "target-network",
+              "name": "targetNetwork",
+              "type": "string",
+              "value": "linkedin"
+            },
+            {
+              "id": "first-batch-only",
+              "name": "firstBatchOnly",
+              "type": "boolean",
+              "value": true
+            },
+            {
+              "id": "dry-run",
+              "name": "dryRun",
+              "type": "boolean",
+              "value": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "campaign-config",
+      "name": "Campaign Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.GEMA_SOCIAL_QUEUE_JSON_URL || 'https://raw.githubusercontent.com/administrador-cmyk/Gema/cursor/brand-wordpress-foundation/docs/social-publication-queue/gema-cumbre-20-dias.queue.json'}}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "load-queue",
+      "name": "Load Queue JSON",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 0]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const config = $('Campaign Config').first().json;\nconst queue = $input.first().json;\n\nconst targetDay = Number(config.targetDay || 1);\nconst targetNetwork = String(config.targetNetwork || '').trim();\nconst firstBatchOnly = Boolean(config.firstBatchOnly);\nconst dryRun = Boolean(config.dryRun);\nconst firstBatch = new Set(queue.firstBatchIds || []);\n\nconst items = (queue.items || [])\n  .filter((item) => item.status === 'draft_pending_review')\n  .filter((item) => Number(item.day) <= targetDay)\n  .filter((item) => !firstBatchOnly || firstBatch.has(item.id))\n  .filter((item) => !targetNetwork || (item.networks || []).includes(targetNetwork))\n  .map((item) => {\n    const separator = String(item.url).includes('?') ? '&' : '?';\n    const urlWithUtm = `${item.url}${separator}utm_source=${targetNetwork || 'manual'}&utm_medium=${queue.utm?.medium || 'social'}&utm_campaign=${queue.utm?.campaign || queue.campaign?.id}`;\n\n    return {\n      json: {\n        campaignId: queue.campaign?.id,\n        dryRun,\n        postId: item.id,\n        day: item.day,\n        network: targetNetwork || item.networks?.[0],\n        title: item.title,\n        pillar: item.pillar,\n        url: urlWithUtm,\n        mediaStatus: item.mediaStatus,\n        status: 'ready_for_human_review',\n        copySource: queue.campaign?.copySource,\n        calendarSource: queue.campaign?.calendarSource,\n        publishingRule: queue.campaign?.publishingRule,\n        reviewChecklist: [\n          'Confirmar cuenta destino GEMA/Cumbre',\n          'Revisar copy final en el documento fuente',\n          'Confirmar URL con UTM',\n          'Confirmar asset visual si la red lo requiere',\n          'Aprobar manualmente antes de publicar'\n        ]\n      }\n    };\n  });\n\nreturn items;"
+      },
+      "id": "prepare-review-items",
+      "name": "Prepare Review Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-items",
+              "leftValue": "={{$json.postId}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "has-review-items",
+      "name": "Has Review Items?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [940, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "approval-status",
+              "name": "approvalStatus",
+              "type": "string",
+              "value": "pending_human_approval"
+            },
+            {
+              "id": "next-action",
+              "name": "nextAction",
+              "type": "string",
+              "value": "Send this item to the selected human approval channel before any publication node is enabled."
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "mark-human-review",
+      "name": "Mark Human Review",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1180, -100]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "empty-reason",
+              "name": "message",
+              "type": "string",
+              "value": "No matching items for selected day/network/batch."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "no-items",
+      "name": "No Items",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1180, 120]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Campaign Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Campaign Config": {
+      "main": [
+        [
+          {
+            "node": "Load Queue JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Queue JSON": {
+      "main": [
+        [
+          {
+            "node": "Prepare Review Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Review Items": {
+      "main": [
+        [
+          {
+            "node": "Has Review Items?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Review Items?": {
+      "main": [
+        [
+          {
+            "node": "Mark Human Review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "GEMA"
+    },
+    {
+      "name": "Social"
+    },
+    {
+      "name": "Dry Run"
+    }
+  ],
+  "triggerCount": 0,
+  "versionId": "gema-social-campaign-dry-run-v1"
+}
