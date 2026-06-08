@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "subagentStop": [
+      {
+        "command": ".cursor/hooks/cumbre-modules-chain.sh",
+        "timeout": 10,
+        "failClosed": false,
+        "loop_limit": 30
+      }
+    ]
+  }
+}

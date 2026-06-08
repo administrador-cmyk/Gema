@@ -12,6 +12,7 @@
 .pycache_tmp/
 __pycache__/
 *.pyc
+.cursor/hooks/*.state
 
 # Node (fase 2+)
 node_modules/

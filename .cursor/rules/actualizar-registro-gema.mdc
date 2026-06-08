@@ -1,0 +1,27 @@
+---
+description: Mantener actualizado el registro maestro de trabajo del proyecto GEMA
+alwaysApply: true
+---
+
+# Registro Maestro y Sincronización Cumbre
+
+Al realizar cualquier cambio en este proyecto, actualizar `REGISTRO_DE_TRABAJO_GEMA.md` antes de cerrar la tarea.
+
+Cuando el cambio afecte ERP Cumbre, módulos, verticales, comparativas, pagos, cobros, precios, integraciones, servicios o contenido comercial, aplicarlo en dos superficies:
+
+- Web WordPress: páginas, menús, interlinks, SEO, comparativas, estilos y despliegue si corresponde.
+- Asistente IA: respuestas guiadas, conocimiento local, flujos de lead, handoff o documentación del agente para que comunique el cambio de forma consistente.
+
+Si una de las dos superficies no puede actualizarse en el momento, registrar explícitamente el pendiente y la razón.
+
+Cada entrada nueva debe incluir:
+
+- Fecha y objetivo del cambio.
+- Archivos, plugins, páginas, servicios o infraestructura afectados.
+- Impacto en web.
+- Impacto en asistente IA.
+- Si se desplegó a producción o sólo quedó local.
+- Validaciones realizadas.
+- Pendientes o riesgos restantes.
+
+No registrar credenciales, tokens, claves privadas ni datos sensibles.
