@@ -8,6 +8,10 @@
 .DS_Store
 .idea/
 .vscode/
+.pycache-validation/
+.pycache_tmp/
+__pycache__/
+*.pyc
 
 # Node (fase 2+)
 node_modules/
