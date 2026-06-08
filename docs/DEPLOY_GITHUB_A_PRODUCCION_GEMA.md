@@ -30,11 +30,17 @@ Secrets:
 
 No guardar estos valores en archivos versionados.
 
-## Workflow creado
+## Workflow preparado
 
 Archivo:
 
+- `docs/templates/deploy-wordpress-theme.yml`
+
+Para activarlo, copiarlo a:
+
 - `.github/workflows/deploy-wordpress-theme.yml`
+
+Nota operativa: GitHub exige que el token usado para pushear archivos bajo `.github/workflows/` tenga permiso `workflow`. Si el push se hace con un token sin ese scope, GitHub rechaza la subida.
 
 Modo de ejecucion:
 

@@ -15,7 +15,7 @@ Esto evita que caches generados por validaciones locales contaminen futuros comm
 ## Cambios preparados para siguiente commit
 
 - `.gitignore`: limpieza de temporales.
-- `.github/workflows/deploy-wordpress-theme.yml`: workflow manual para deploy del theme WordPress.
+- `docs/templates/deploy-wordpress-theme.yml`: plantilla del workflow manual para deploy del theme WordPress.
 - `docs/DEPLOY_GITHUB_A_PRODUCCION_GEMA.md`: runbook de deploy controlado desde GitHub a produccion.
 - `docs/ESTADO_ARBOL_LOCAL_GEMA.md`: este inventario.
 

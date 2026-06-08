@@ -1,0 +1,54 @@
+name: Deploy WordPress theme
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_domain:
+        description: "Type gema-digital.com to confirm production deploy"
+        required: true
+        type: string
+
+jobs:
+  deploy-theme:
+    if: ${{ github.event.inputs.confirm_domain == 'gema-digital.com' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.GEMA_PROD_SSH_KEY }}" > ~/.ssh/gema_prod_key
+          chmod 600 ~/.ssh/gema_prod_key
+          ssh-keyscan -p "${{ secrets.GEMA_PROD_SSH_PORT || '22' }}" "${{ secrets.GEMA_PROD_SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Backup current production theme
+        run: |
+          ssh -i ~/.ssh/gema_prod_key -p "${{ secrets.GEMA_PROD_SSH_PORT || '22' }}" \
+            "${{ secrets.GEMA_PROD_SSH_USER }}@${{ secrets.GEMA_PROD_SSH_HOST }}" \
+            "set -euo pipefail; \
+             BACKUP_DIR='${{ secrets.GEMA_PROD_WP_PATH }}/../gema-production-backups'; \
+             THEME_DIR='${{ secrets.GEMA_PROD_WP_PATH }}/wp-content/themes/gema-sovereign'; \
+             mkdir -p \"$BACKUP_DIR\"; \
+             if [ -d \"$THEME_DIR\" ]; then tar -czf \"$BACKUP_DIR/gema-sovereign-$(date +%Y%m%d-%H%M%S).tgz\" -C \"$(dirname \"$THEME_DIR\")\" \"$(basename \"$THEME_DIR\")\"; fi"
+
+      - name: Sync theme
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/gema_prod_key -p ${{ secrets.GEMA_PROD_SSH_PORT || '22' }}" \
+            wordpress/theme-gema-sovereign/ \
+            "${{ secrets.GEMA_PROD_SSH_USER }}@${{ secrets.GEMA_PROD_SSH_HOST }}:${{ secrets.GEMA_PROD_WP_PATH }}/wp-content/themes/gema-sovereign/"
+
+      - name: Fix ownership and flush WordPress cache
+        run: |
+          ssh -i ~/.ssh/gema_prod_key -p "${{ secrets.GEMA_PROD_SSH_PORT || '22' }}" \
+            "${{ secrets.GEMA_PROD_SSH_USER }}@${{ secrets.GEMA_PROD_SSH_HOST }}" \
+            "set -euo pipefail; \
+             chown -R '${{ secrets.GEMA_PROD_THEME_OWNER }}' '${{ secrets.GEMA_PROD_WP_PATH }}/wp-content/themes/gema-sovereign'; \
+             if command -v wp >/dev/null 2>&1; then cd '${{ secrets.GEMA_PROD_WP_PATH }}' && wp cache flush && wp rewrite flush; fi"
+
+      - name: Smoke check
+        run: |
+          curl -fsSIL https://gema-digital.com/ >/dev/null
+          curl -fsSIL https://gema-digital.com/erp-cumbre/ >/dev/null
