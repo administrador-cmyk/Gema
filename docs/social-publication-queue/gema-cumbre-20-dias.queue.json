@@ -1,0 +1,225 @@
+{
+  "campaign": {
+    "id": "gema-cumbre-institucional-20-dias",
+    "name": "GEMA Digital / ERP Cumbre - Campana institucional 20 dias",
+    "createdAt": "2026-06-08",
+    "copySource": "docs/CONTENIDO_INSTITUCIONAL_GEMA_CUMBRE_20_PUBLICACIONES.md",
+    "calendarSource": "docs/COLA_PUBLICACION_GEMA_CUMBRE_20_DIAS.md",
+    "structuredSource": "cumbre/src/lib/socialPublisher/institutionalCampaign.ts",
+    "defaultStatus": "draft_pending_review",
+    "publishingRule": "No publicar sin revision humana, assets visuales aprobados y credenciales OAuth fuera del repositorio."
+  },
+  "utm": {
+    "medium": "social",
+    "campaign": "contenido_institucional_20"
+  },
+  "firstBatchIds": [
+    "gema-digital-nace-para-ordenar",
+    "que-es-erp-cumbre",
+    "menos-carga-mental-dueno",
+    "cobros-trazabilidad",
+    "marketing-medible"
+  ],
+  "items": [
+    {
+      "id": "gema-digital-nace-para-ordenar",
+      "day": 1,
+      "title": "GEMA Digital nace para ordenar empresas reales",
+      "pillar": "Identidad GEMA",
+      "url": "https://gema-digital.com/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube", "google_business"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "que-es-erp-cumbre",
+      "day": 2,
+      "title": "Que es ERP Cumbre",
+      "pillar": "ERP Cumbre",
+      "url": "https://gema-digital.com/erp-cumbre/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube", "google_business"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "menos-carga-mental-dueno",
+      "day": 3,
+      "title": "Menos carga mental para el dueno de negocio",
+      "pillar": "Transformacion cotidiana",
+      "url": "https://gema-digital.com/contacto/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "orden-operativo-diario",
+      "day": 4,
+      "title": "Del caos operativo al orden diario",
+      "pillar": "Gestion y procesos",
+      "url": "https://gema-digital.com/erp-cumbre/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "crm-conectado-negocio-real",
+      "day": 5,
+      "title": "CRM conectado al negocio real",
+      "pillar": "CRM y ventas",
+      "url": "https://gema-digital.com/cumbre-crm/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "pos-comercios-mostrador",
+      "day": 6,
+      "title": "POS y mostrador con mas control",
+      "pillar": "POS y comercios",
+      "url": "https://gema-digital.com/cumbre-erp-negocios/",
+      "networks": ["facebook", "instagram", "x", "pinterest", "youtube", "google_business"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "cobros-trazabilidad",
+      "day": 7,
+      "title": "Cobrar, registrar y conciliar",
+      "pillar": "Cobros y administracion",
+      "url": "https://gema-digital.com/erp-cumbre/cumbre-cobros/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "facturacion-arca-controlada",
+      "day": 8,
+      "title": "Facturacion conectada al flujo administrativo",
+      "pillar": "Facturacion y cumplimiento",
+      "url": "https://gema-digital.com/erp-cumbre/cumbre-facturador-arca/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "ia-productiva-supervisada",
+      "day": 9,
+      "title": "IA productiva con supervision humana",
+      "pillar": "IA y automatizacion",
+      "url": "https://gema-digital.com/ia-productiva/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "marketing-medible",
+      "day": 10,
+      "title": "Marketing que se puede medir",
+      "pillar": "Marketing y medicion",
+      "url": "https://gema-digital.com/marketing-digital/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube", "google_business"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "menos-herramientas-sueltas",
+      "day": 11,
+      "title": "Menos herramientas sueltas",
+      "pillar": "Integracion",
+      "url": "https://gema-digital.com/erp-cumbre/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "delegar-sin-perder-control",
+      "day": 12,
+      "title": "Delegar sin perder control",
+      "pillar": "Roles y equipos",
+      "url": "https://gema-digital.com/contacto/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "reportes-para-decidir",
+      "day": 13,
+      "title": "Reportes para decidir, no para decorar",
+      "pillar": "Datos y BI",
+      "url": "https://gema-digital.com/erp-cumbre/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "whatsapp-seguimiento-real",
+      "day": 14,
+      "title": "Del WhatsApp al seguimiento real",
+      "pillar": "WhatsApp y CRM",
+      "url": "https://gema-digital.com/erp-cumbre/cumbre-whatsapp-hub/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "implementacion-asistida",
+      "day": 15,
+      "title": "Implementacion asistida",
+      "pillar": "Acompanamiento",
+      "url": "https://gema-digital.com/contacto/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "google_business"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "tecnologia-con-criterio-humano",
+      "day": 16,
+      "title": "Tecnologia con criterio humano",
+      "pillar": "Cultura GEMA",
+      "url": "https://gema-digital.com/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "crecer-sin-perder-trazabilidad",
+      "day": 17,
+      "title": "Crecer sin perder trazabilidad",
+      "pillar": "Escalabilidad",
+      "url": "https://gema-digital.com/erp-cumbre/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "saber-que-hacer-despues",
+      "day": 18,
+      "title": "El valor de saber que hacer despues",
+      "pillar": "Proximas acciones",
+      "url": "https://gema-digital.com/prueba-gratis/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "socio-de-transformacion",
+      "day": 19,
+      "title": "GEMA como socio de transformacion",
+      "pillar": "Marca institucional",
+      "url": "https://gema-digital.com/contacto/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube", "google_business"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    },
+    {
+      "id": "invitacion-diagnostico",
+      "day": 20,
+      "title": "Invitacion institucional a diagnostico",
+      "pillar": "Conversion",
+      "url": "https://gema-digital.com/contacto/",
+      "networks": ["facebook", "instagram", "linkedin", "x", "pinterest", "youtube", "google_business"],
+      "mediaStatus": "pending_asset",
+      "status": "draft_pending_review"
+    }
+  ]
+}
