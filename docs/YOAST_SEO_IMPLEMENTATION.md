@@ -2,7 +2,7 @@
 
 ## Estado
 
-Yoast SEO fue instalado y activado en el WordPress local de Studio.
+Yoast SEO fue instalado, activado y sincronizado en WordPress local y producción.
 
 Plugin:
 
@@ -89,11 +89,41 @@ Sitemaps verificados:
 - `http://localhost:8881/sitemap_index.xml`
 - `http://localhost:8881/page-sitemap.xml`
 
-## Pendientes para produccion
+## Producción
 
-Antes de publicar el sitio real, reemplazar URLs locales `localhost:8881` por el dominio final:
+El 2026-06-06 se aplicó una sincronización sitewide de Yoast SEO en `https://gema-digital.com/`.
+
+Componentes agregados:
+
+- `wordpress/theme-gema-sovereign/inc/seo-yoast.php`
+- `wordpress/theme-gema-sovereign/assets/seo-visuals/gema-digital-og.png`
+- `wordpress/theme-gema-sovereign/assets/seo-visuals/erp-cumbre-og.png`
+- `wordpress/theme-gema-sovereign/assets/seo-visuals/cumbre-crm-og.png`
+- `wordpress/theme-gema-sovereign/assets/seo-visuals/cumbre-erp-negocios-og.png`
+- `wordpress/theme-gema-sovereign/assets/seo-visuals/ia-productiva-og.png`
+- `wordpress/theme-gema-sovereign/assets/seo-visuals/marketing-digital-og.png`
+- `wordpress/theme-gema-sovereign/assets/seo-visuals/pagos-cobros-og.png`
+- `wordpress/theme-gema-sovereign/assets/seo-visuals/comparativas-erp-og.png`
+
+Se sincronizaron:
+
+- Frase objetivo principal por página.
+- Sinónimos semánticos.
+- SEO title.
+- Meta description.
+- Open Graph title, description e image.
+- Twitter title, description e image.
+- Opciones globales de Yoast.
+- Home SEO global vía opciones y fallback `og:image`.
+
+Verificaciones de producción:
 
 - `https://gema-digital.com/`
+- `https://gema-digital.com/erp-cumbre/`
+- `https://gema-digital.com/cumbre-crm/`
+- `https://gema-digital.com/marketing/`
+- `https://gema-digital.com/pagos/`
+- `https://gema-digital.com/competencia/cumbre-crm-vs-hubspot-salesforce/`
 
 Datos confirmados:
 
@@ -109,7 +139,6 @@ Datos confirmados:
 
 Datos pendientes:
 
-- Imagen social principal definitiva.
 - Confirmar si se usara razon social legal publica o solo nombre comercial.
 
 ## Accesos de produccion

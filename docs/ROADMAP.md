@@ -39,8 +39,31 @@ ERP CUMBRE (producto SaaS)
 
 ### Fase 3 — Datos & seguridad (ERP)
 
-- Supabase: multi-tenant + RLS
+- Firebase Emulator Suite local para ERP Cumbre
+- Firestore multi-tenant con Matriz Cumbre modular
 - Auditoría Claude Code en CI local
+- Arquitectura faseada Cumbre: núcleo SaaS, Matriz/Billing, roles/permisos, auditoría, Brainstore, workers backend, Secret Manager, Tutoriales API, módulos base e integraciones.
+- Plan maestro de ejecución Cumbre: inventario real, demo funcional interna, compuertas go/no-go, orden técnico de módulos base, tablero de validación y criterios de beta cerrada.
+- Filosofía de construcción tipo edificio: arquitectura completa, cimientos auditados, columnas, vigas, instalaciones, pisos funcionales, terminaciones, inspección interna y beta cerrada.
+- Blueprint `Cumbre Seguridad y Auditoría` para roles, permisos, secretos, aprobaciones, trazabilidad e implementadores autorizados.
+- Prioridad antes de profundizar módulos insignia: CRM, Catálogo, Cobros, Facturador ARCA, Stock, Compras, Ventas, Tesorería, Contabilidad, Impuestos y Reportes BI.
+
+### Fase 3B — Plataforma Cumbre operable
+
+- Panel de control general por tenant.
+- Activación/desactivación de módulos desde `config_suscripcion/modulos_billing`.
+- Router de UI por Matriz Cumbre.
+- Importador Universal.
+- Workers backend para operaciones fiscales, cobros, stock, importaciones, notificaciones e integraciones.
+- Blueprint `Cumbre Backend, Workers e Integraciones Seguras` para Cloud Run/API Gateway, webhooks, OAuth, colas, reintentos, dead letters, Secret Manager e idempotencia.
+- Secretos externos por `credencial_ref`, nunca en WordPress ni Firestore.
+
+### Fase 3C — Módulos insignia y verticales
+
+- `Cumbre WhatsApp Hub` como comunicación transversal con API oficial Meta por cliente.
+- `Cumbre Marketing` por fases: primero calendario, IA creativa, previews, aprobación y carga asistida; luego APIs oficiales; finalmente publicación automática y generación audiovisual avanzada.
+- `Cumbre Prospección B2B` como social selling y outbound inteligente conectado a CRM, Marketing, Ventas y BI, con automatización responsable y control humano.
+- Verticales sectoriales como empaquetados sobre módulos base, no como sistemas paralelos.
 
 ### Fase 4 — Ventas & despliegue
 
@@ -54,7 +77,7 @@ ERP CUMBRE (producto SaaS)
 | WordPress 7 + Studio | Sitio marketing local |
 | v0.dev | Prototipos UI rápidos |
 | Cursor | IDE / tema / automatización |
-| Supabase | ERP PostgreSQL |
+| Firebase / Firestore | ERP Cumbre modular + emuladores locales |
 | GCP | Producción |
 | Claude | Auditoría DevOps |
 
