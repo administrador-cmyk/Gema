@@ -35,6 +35,38 @@ Este archivo es el registro maestro del proyecto GEMA Digital / ERP Cumbre. Debe
 
 ## Historial de Cambios
 
+### 2026-06-11 - X (@GemaDigitalERP) conectado — créditos API diferidos a producción
+
+Objetivo:
+Cerrar OAuth X sin bucles de navegador, dejar batch V02–V40 listo y **no pagar API hasta producción comercial**.
+
+Hecho (hub `15-Produccion-Audiovisual`):
+- App **GEMA Upload Bot** (`33067405`), cuenta **@GemaDigitalERP`.
+- OAuth 2.0 desde portal (**Claves de OAuth 2.0** → botón **Generar**), sin flujo OAuth en navegador.
+- Tokens en `marketing/01-videos/scripts/secrets/.env.social` (local, no commitear).
+
+Validaciones:
+- `verificar-x-token.py` → OK `@GemaDigitalERP`
+- `subir-x-serie.py --dry-run --video 2` → OK
+- Publicación real V02 → **402 CreditsDepleted** (`POST /2/tweets`); media upload **403** (sin créditos).
+
+Impacto web:
+Ninguno hasta publicar tweets con links a gema-digital.com.
+
+Impacto asistente IA:
+Ninguno; canal X no activo en batch hasta créditos.
+
+Despliegue:
+Ninguno (scripts locales en hub audiovisual).
+
+Deferido explícito:
+Activar **billing / créditos API** en console.x.com cuando la serie salga a producción comercial.
+Referencia: `marketing/03-produccion/00-X-DEFERIDO-CREDITOS-PRODUCCION.md`
+Comando batch: `subir-x-serie.py --video 2-40 --skip-existing --delay 90`
+
+Riesgo:
+Tokens expuestos en chat → rotar Client Secret y **Generar** de nuevo antes de prod.
+
 ### 2026-06-08 - Preparación de herramientas Google SEO, SEM y GEO
 
 Objetivo:
