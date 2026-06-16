@@ -1,0 +1,487 @@
+{
+  "generado_el": "2026-06-16T06:12:58.700Z",
+  "veredicto_global": "pass",
+  "total_checks": 64,
+  "passed_checks": 64,
+  "failed_checks": 0,
+  "entornos": {
+    "beta": {
+      "generado_el": "2026-06-16T06:12:07.333Z",
+      "tier": "beta_dogfood_panels_e2e",
+      "url": "https://cumbre-erp-beta.web.app",
+      "tenant": "tenant_prueba_interna",
+      "module_ids": [
+        "modulo_crm_hubspot",
+        "modulo_facturador_arca",
+        "modulo_cumbre_cobros",
+        "modulo_cumbre_tesoreria",
+        "modulo_cumbre_legal",
+        "modulo_cumbre_catalogo",
+        "modulo_cumbre_stock",
+        "modulo_cumbre_compras",
+        "modulo_cumbre_ecommerce",
+        "modulo_cumbre_mercado_libre",
+        "modulo_cumbre_erp_negocios",
+        "modulo_cumbre_erp_pymes",
+        "modulo_cumbre_empresas",
+        "modulo_cumbre_contabilidad",
+        "modulo_cumbre_impuestos",
+        "modulo_cumbre_reportes_bi",
+        "modulo_cumbre_importador_datos",
+        "modulo_cumbre_planificacion",
+        "modulo_cumbre_whatsapp_hub",
+        "modulo_cumbre_agente_chatbot",
+        "modulo_cumbre_activos_fijos",
+        "modulo_cumbre_marketing",
+        "modulo_cumbre_automatizaciones",
+        "modulo_cumbre_web",
+        "modulo_cumbre_prospeccion_b2b",
+        "modulo_cumbre_core",
+        "modulo_cumbre_ventas",
+        "modulo_cumbre_personal",
+        "modulo_cumbre_marketing_organico",
+        "capa_empaquetado_verticales_cumbre",
+        "modulo_cumbre_backend_workers",
+        "modulo_cumbre_seguridad_auditoria"
+      ],
+      "total_modulos": 32,
+      "total_vistas_unicas": 32,
+      "passed": 32,
+      "failed": 0,
+      "veredicto": "pass",
+      "results": [
+        {
+          "moduleId": "modulo_crm_hubspot",
+          "view": "crm",
+          "ok": true,
+          "detail": "Panel crm OK"
+        },
+        {
+          "moduleId": "modulo_facturador_arca",
+          "view": "facturador_arca",
+          "ok": true,
+          "detail": "Panel facturador_arca OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_cobros",
+          "view": "cobros",
+          "ok": true,
+          "detail": "Panel cobros OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_tesoreria",
+          "view": "tesoreria",
+          "ok": true,
+          "detail": "Panel tesoreria OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_legal",
+          "view": "legal",
+          "ok": true,
+          "detail": "Panel legal OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_catalogo",
+          "view": "catalogo",
+          "ok": true,
+          "detail": "Panel catalogo OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_stock",
+          "view": "stock",
+          "ok": true,
+          "detail": "Panel stock OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_compras",
+          "view": "compras",
+          "ok": true,
+          "detail": "Panel compras OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_ecommerce",
+          "view": "ecommerce",
+          "ok": true,
+          "detail": "Panel ecommerce OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_mercado_libre",
+          "view": "mercado_libre",
+          "ok": true,
+          "detail": "Panel mercado_libre OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_erp_negocios",
+          "view": "negocios",
+          "ok": true,
+          "detail": "Panel negocios OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_erp_pymes",
+          "view": "pymes",
+          "ok": true,
+          "detail": "Panel pymes OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_empresas",
+          "view": "empresas",
+          "ok": true,
+          "detail": "Panel empresas OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_contabilidad",
+          "view": "contabilidad",
+          "ok": true,
+          "detail": "Panel contabilidad OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_impuestos",
+          "view": "impuestos",
+          "ok": true,
+          "detail": "Panel impuestos OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_reportes_bi",
+          "view": "reportes_bi",
+          "ok": true,
+          "detail": "Panel reportes_bi OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_importador_datos",
+          "view": "panel",
+          "ok": true,
+          "detail": "Panel panel OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_planificacion",
+          "view": "planificacion",
+          "ok": true,
+          "detail": "Panel planificacion OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_whatsapp_hub",
+          "view": "whatsapp_hub",
+          "ok": true,
+          "detail": "Panel whatsapp_hub OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_agente_chatbot",
+          "view": "agente_chatbot",
+          "ok": true,
+          "detail": "Panel agente_chatbot OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_activos_fijos",
+          "view": "activos_fijos",
+          "ok": true,
+          "detail": "Panel activos_fijos OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_marketing",
+          "view": "marketing",
+          "ok": true,
+          "detail": "Panel marketing OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_automatizaciones",
+          "view": "automatizaciones",
+          "ok": true,
+          "detail": "Panel automatizaciones OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_web",
+          "view": "web",
+          "ok": true,
+          "detail": "Panel web OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_prospeccion_b2b",
+          "view": "prospeccion_b2b",
+          "ok": true,
+          "detail": "Panel prospeccion_b2b OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_core",
+          "view": "core_plataforma",
+          "ok": true,
+          "detail": "Panel core_plataforma OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_ventas",
+          "view": "ventas",
+          "ok": true,
+          "detail": "Panel ventas OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_personal",
+          "view": "personal",
+          "ok": true,
+          "detail": "Panel personal OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_marketing_organico",
+          "view": "marketing_organico",
+          "ok": true,
+          "detail": "Panel marketing_organico OK"
+        },
+        {
+          "moduleId": "capa_empaquetado_verticales_cumbre",
+          "view": "verticales",
+          "ok": true,
+          "detail": "Panel verticales OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_backend_workers",
+          "view": "operations",
+          "ok": true,
+          "detail": "Panel operations OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_seguridad_auditoria",
+          "view": "security_audit",
+          "ok": true,
+          "detail": "Panel security_audit OK"
+        }
+      ]
+    },
+    "prod": {
+      "generado_el": "2026-06-16T06:12:58.697Z",
+      "tier": "prod_dogfood_panels_e2e",
+      "url": "https://cumbre-erp-prod.web.app",
+      "tenant": "tenant_gema_prod_interno",
+      "module_ids": [
+        "modulo_crm_hubspot",
+        "modulo_facturador_arca",
+        "modulo_cumbre_cobros",
+        "modulo_cumbre_tesoreria",
+        "modulo_cumbre_legal",
+        "modulo_cumbre_catalogo",
+        "modulo_cumbre_stock",
+        "modulo_cumbre_compras",
+        "modulo_cumbre_ecommerce",
+        "modulo_cumbre_mercado_libre",
+        "modulo_cumbre_erp_negocios",
+        "modulo_cumbre_erp_pymes",
+        "modulo_cumbre_empresas",
+        "modulo_cumbre_contabilidad",
+        "modulo_cumbre_impuestos",
+        "modulo_cumbre_reportes_bi",
+        "modulo_cumbre_importador_datos",
+        "modulo_cumbre_planificacion",
+        "modulo_cumbre_whatsapp_hub",
+        "modulo_cumbre_agente_chatbot",
+        "modulo_cumbre_activos_fijos",
+        "modulo_cumbre_marketing",
+        "modulo_cumbre_automatizaciones",
+        "modulo_cumbre_web",
+        "modulo_cumbre_prospeccion_b2b",
+        "modulo_cumbre_core",
+        "modulo_cumbre_ventas",
+        "modulo_cumbre_personal",
+        "modulo_cumbre_marketing_organico",
+        "capa_empaquetado_verticales_cumbre",
+        "modulo_cumbre_backend_workers",
+        "modulo_cumbre_seguridad_auditoria"
+      ],
+      "total_modulos": 32,
+      "total_vistas_unicas": 32,
+      "passed": 32,
+      "failed": 0,
+      "veredicto": "pass",
+      "results": [
+        {
+          "moduleId": "modulo_crm_hubspot",
+          "view": "crm",
+          "ok": true,
+          "detail": "Panel crm OK"
+        },
+        {
+          "moduleId": "modulo_facturador_arca",
+          "view": "facturador_arca",
+          "ok": true,
+          "detail": "Panel facturador_arca OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_cobros",
+          "view": "cobros",
+          "ok": true,
+          "detail": "Panel cobros OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_tesoreria",
+          "view": "tesoreria",
+          "ok": true,
+          "detail": "Panel tesoreria OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_legal",
+          "view": "legal",
+          "ok": true,
+          "detail": "Panel legal OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_catalogo",
+          "view": "catalogo",
+          "ok": true,
+          "detail": "Panel catalogo OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_stock",
+          "view": "stock",
+          "ok": true,
+          "detail": "Panel stock OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_compras",
+          "view": "compras",
+          "ok": true,
+          "detail": "Panel compras OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_ecommerce",
+          "view": "ecommerce",
+          "ok": true,
+          "detail": "Panel ecommerce OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_mercado_libre",
+          "view": "mercado_libre",
+          "ok": true,
+          "detail": "Panel mercado_libre OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_erp_negocios",
+          "view": "negocios",
+          "ok": true,
+          "detail": "Panel negocios OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_erp_pymes",
+          "view": "pymes",
+          "ok": true,
+          "detail": "Panel pymes OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_empresas",
+          "view": "empresas",
+          "ok": true,
+          "detail": "Panel empresas OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_contabilidad",
+          "view": "contabilidad",
+          "ok": true,
+          "detail": "Panel contabilidad OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_impuestos",
+          "view": "impuestos",
+          "ok": true,
+          "detail": "Panel impuestos OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_reportes_bi",
+          "view": "reportes_bi",
+          "ok": true,
+          "detail": "Panel reportes_bi OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_importador_datos",
+          "view": "panel",
+          "ok": true,
+          "detail": "Panel panel OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_planificacion",
+          "view": "planificacion",
+          "ok": true,
+          "detail": "Panel planificacion OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_whatsapp_hub",
+          "view": "whatsapp_hub",
+          "ok": true,
+          "detail": "Panel whatsapp_hub OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_agente_chatbot",
+          "view": "agente_chatbot",
+          "ok": true,
+          "detail": "Panel agente_chatbot OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_activos_fijos",
+          "view": "activos_fijos",
+          "ok": true,
+          "detail": "Panel activos_fijos OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_marketing",
+          "view": "marketing",
+          "ok": true,
+          "detail": "Panel marketing OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_automatizaciones",
+          "view": "automatizaciones",
+          "ok": true,
+          "detail": "Panel automatizaciones OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_web",
+          "view": "web",
+          "ok": true,
+          "detail": "Panel web OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_prospeccion_b2b",
+          "view": "prospeccion_b2b",
+          "ok": true,
+          "detail": "Panel prospeccion_b2b OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_core",
+          "view": "core_plataforma",
+          "ok": true,
+          "detail": "Panel core_plataforma OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_ventas",
+          "view": "ventas",
+          "ok": true,
+          "detail": "Panel ventas OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_personal",
+          "view": "personal",
+          "ok": true,
+          "detail": "Panel personal OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_marketing_organico",
+          "view": "marketing_organico",
+          "ok": true,
+          "detail": "Panel marketing_organico OK"
+        },
+        {
+          "moduleId": "capa_empaquetado_verticales_cumbre",
+          "view": "verticales",
+          "ok": true,
+          "detail": "Panel verticales OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_backend_workers",
+          "view": "operations",
+          "ok": true,
+          "detail": "Panel operations OK"
+        },
+        {
+          "moduleId": "modulo_cumbre_seguridad_auditoria",
+          "view": "security_audit",
+          "ok": true,
+          "detail": "Panel security_audit OK"
+        }
+      ]
+    }
+  }
+}

@@ -12,14 +12,24 @@
 				<span class="gema-brand-subtitle">DIGITAL</span>
 			</span>
 		</a>
+		<button class="gema-mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="gema-main-nav" aria-label="Abrir menú de navegación">
+			<span class="gema-mobile-nav-toggle__bar" aria-hidden="true"></span>
+			<span class="gema-mobile-nav-toggle__bar" aria-hidden="true"></span>
+			<span class="gema-mobile-nav-toggle__bar" aria-hidden="true"></span>
+		</button>
 		<!-- /wp:html -->
 
 		<!-- wp:html -->
-		<nav class="gema-main-nav" aria-label="Navegación principal">
+		<nav id="gema-main-nav" class="gema-main-nav" aria-label="Navegación principal">
 			<ul class="gema-main-nav__list">
 				<li><a href="/">Inicio</a></li>
 				<li class="gema-main-nav__item--mega">
-					<a href="/erp-cumbre" aria-haspopup="true">Cumbre ERP</a>
+					<div class="gema-mega-menu__trigger-row">
+						<a href="/erp-cumbre" aria-haspopup="true" aria-expanded="false">Cumbre ERP</a>
+						<button type="button" class="gema-mega-menu__mobile-toggle" aria-expanded="false" aria-label="Mostrar secciones de Cumbre ERP">
+							<span class="gema-mega-menu__mobile-toggle-icon" aria-hidden="true"></span>
+						</button>
+					</div>
 					<div class="gema-mega-menu" aria-label="Secciones de Cumbre ERP">
 						<div class="gema-mega-menu__grid">
 							<section>
@@ -30,6 +40,7 @@
 								<a href="/erp-cumbre/#cumbre-erp-pymes"><strong>ERP PyMEs</strong><span>Administración para empresas en crecimiento.</span></a>
 								<a href="/erp-cumbre/#cumbre-empresas"><strong>Cumbre Empresas</strong><span>Gobernanza, permisos y auditoría.</span></a>
 								<a href="/erp/precios"><strong>Precios y prueba</strong><span>Planes, diagnóstico y demo.</span></a>
+								<a href="https://cumbre-erp-prod.web.app" rel="noopener noreferrer" target="_blank"><strong>Acceder a ERP</strong><span>Panel Cumbre en producción.</span></a>
 							</section>
 							<section>
 								<h2>Operación diaria</h2>
@@ -53,6 +64,7 @@
 							<section>
 								<h2>Crecimiento e integraciones</h2>
 								<a href="/erp-cumbre/cumbre-whatsapp-hub">WhatsApp Hub</a>
+								<a href="/erp-cumbre/cumbre-agente-chatbot">Agente Chatbot</a>
 								<a href="/erp-cumbre/cumbre-marketing">Marketing</a>
 								<a href="/erp-cumbre/cumbre-web">Web</a>
 								<a href="/erp-cumbre/cumbre-automatizaciones">Automatizaciones</a>

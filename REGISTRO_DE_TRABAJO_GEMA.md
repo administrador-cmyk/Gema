@@ -1,6 +1,6 @@
 # Registro de Trabajo GEMA Digital
 
-Última actualización: 2026-06-08 06:35 ART
+Última actualización: 2026-06-16 ART (arquitectura ideal GEMA+Cumbre post-investigación web 2025–2026)
 
 Este archivo es el registro maestro del proyecto GEMA Digital / ERP Cumbre. Debe actualizarse en cada cambio relevante del sitio, backend, infraestructura, contenido, SEO, integraciones, plugins, despliegues o validaciones.
 
@@ -19,7 +19,9 @@ Este archivo es el registro maestro del proyecto GEMA Digital / ERP Cumbre. Debe
 - Theme principal: `wordpress/theme-gema-sovereign`
 - Plugin de leads: `wordpress/plugins/gema-leads-api`
 - Plugin de pagos propio: `wordpress/plugins/gema-payments-platform`
-- Backend de agente IA: proyecto FastAPI `gema_agent_api` fuera de esta carpeta de WordPress.
+- Plugin agente IA WP: `wordpress/plugins/gema-agent-api` (bridge Cumbre `agentChat`)
+- Plugin notificaciones: `wordpress/plugins/gema-notifications-orchestrator`
+- Backend de agente IA: proyecto FastAPI `gema_agent_api` fuera de esta carpeta de WordPress (legacy n8n reemplazado por plugin WP + Cumbre).
 - Producción WordPress: servidor remoto con WP-CLI, theme sincronizado por `rsync` y regeneración programática de páginas.
 - SEO activo: contenido programático, páginas locales, comparativas, Yoast SEO en producción, meta tags dinámicos y schema para ERP Cumbre.
 
@@ -34,6 +36,783 @@ Este archivo es el registro maestro del proyecto GEMA Digital / ERP Cumbre. Debe
 - Las credenciales reales de pasarelas de pago todavía no están conectadas; la plataforma está preparada en estado `ready_for_credentials`.
 
 ## Historial de Cambios
+
+### 2026-06-16 — Balance módulo a módulo Cumbre ERP (64/64 E2E PASS)
+
+**Objetivo:** Validar y cerrar dogfood 32 módulos × beta + prod; documentar bloqueos ADC; corregir smoke Web GEMA.
+
+**Archivos Cumbre (`~/.cumbre-mirror`):**
+- `docs/BALANCE_MODULO_A_MODULO_2026-06-16.md` — matriz final módulo × entorno
+- `docs/BETA_DOGFOOD_PANELS_E2E.latest.json`, `docs/PROD_DOGFOOD_PANELS_E2E.latest.json`, `docs/AUDITORIA_MODULO_A_MODULO.latest.json` — reportes E2E 2026-06-16
+- `scripts/run-audit-cierre.ts` — fix TS6133 parámetro no usado (desbloquea `build:prod`)
+
+**Archivos Web GEMA:**
+- `wordpress/theme-gema-sovereign/parts/header.html` — enlace `Acceder a ERP` → `cumbre-erp-prod.web.app`
+- `docs/BALANCE_MODULO_A_MODULO_2026-06-16.md` + sync JSON E2E en `docs/`
+
+**Impacto web:** Smoke integración Web↔Cumbre 16/16 pass (header prod ERP). Pendiente rsync theme a producción.
+
+**Impacto asistente IA:** Sin cambios de conocimiento; 32 módulos operativos en prod/beta alineados con matriz comercial.
+
+**Despliegue:** No ejecutado — ADC `invalid_grant`. Hosting beta/prod ya servía 32/32 en E2E live.
+
+**Validaciones:**
+- `npm run beta:e2e:dogfood-panels` → 32/32 PASS
+- `npm run prod:e2e:dogfood-panels` → 32/32 PASS
+- `bash scripts/smoke-integracion-web-cumbre.sh` → 16 pass, 0 fail
+- `npm run beta:check:adc` → FAIL (`invalid_grant`)
+- `npm run test:bank:fast` → FAIL parcial (ADC + prod:health CLI; E2E skip por `--fast`)
+
+**Pendientes:** Renovar ADC (`docs/fase4/PASO3_RENOVAR_ADC.md`); deploy theme header; `npm run test:bank` completo post-ADC.
+
+### 2026-06-16 — Ola 1 Sprint 1: flujo cliente (event bus + provisioning + signup + Fase C prep)
+
+**Objetivo:** Cerrar MVP local del flujo lead → checkout → signup → tenant trial sin scripts admin (O1-01, O1-04, O1-05, O1-02 prep, O1-03).
+
+**Archivos Cumbre (`~/.cumbre-mirror`):**
+- `shared/commercialEvents.ts` — schema v1 + publish idempotente
+- `shared/provisionTrialTenant.ts` — state machine idempotente
+- `functions/src/commercialEventSubscribers.ts` — audit + CRM side effects (2 subscribers)
+- `functions/src/index.ts` — `gemaCommercialEventRouter`, `provisionTrialTenant`, `provisionTrialTenantHttp`, `lead.captured` en `wordpressIngestLead`
+- `shared/crm.ts` — UTM en `WordPressLeadPayload`
+- `shared/cumbreMultiAgentRouter.ts` — roles recepcionista/asesor/vendedor/derivador
+- `src/App.tsx` + `src/lib/firebaseConfig.ts` — signup público + callable provisioning
+- `.env.beta.example` — `VITE_CUMBRE_SIGNUP_PUBLIC`, `VITE_CUMBRE_SIGNUP_ALLOWED_DOMAINS`
+
+**Archivos Web GEMA:**
+- `wordpress/plugins/gema-leads-api/gema-leads-api.php` v0.2 — `gema_leads_api_sync_lead_data`, POST `/gema/v1/contact` + UTM → Cumbre
+- `wordpress/plugins/gema-payments-platform/gema-payments-platform.php` v0.2 — checkout con UTM
+- `wordpress/theme-gema-sovereign/assets/gema-cart-checkout.js` — UI checkout `/erp/precios`
+- `wordpress/theme-gema-sovereign/assets/gema-contact-form.js` — form `/contacto`
+- `wordpress/theme-gema-sovereign/functions.php` — enqueue widgets cart + contacto
+- `scripts/deploy-fase-c-prod-checklist.sh`, `scripts/smoke-ola1-flujo-cliente.sh`
+
+**Impacto web:** Carrito y contacto con REST + bridge CRM; widgets en precios/contacto; checklist deploy Fase C para Norberto.
+
+**Impacto asistente IA:** Router comercial 4 roles en Cumbre (determinístico); agent plugin depende de leads-api completo.
+
+**Despliegue:** Solo local/mirror. Prod pendiente Norberto (wp-config + rsync + Firebase functions/hosting).
+
+**Validaciones:**
+- `npm run typecheck` + `npm run functions:typecheck` OK en mirror Cumbre
+- `scripts/smoke-ola1-flujo-cliente.sh` → 14 pass, 0 fail, 2 skip (REST WP local 404 — plugins no activos en Studio)
+- `scripts/smoke-integracion-web-cumbre.sh` → 16 pass, 0 fail, 3 skip
+
+**Pendientes deploy humano:**
+1. WP prod: activar plugins + wp-config Cumbre (checklist §scripts/deploy-fase-c-prod-checklist.sh)
+2. Firebase prod: deploy functions `provisionTrialTenant`, `gemaCommercialEventRouter`, `wordpressIngestLead` actualizado
+3. Hosting Cumbre prod: build con signup público habilitado
+4. Smoke E2E real: signup → tenant visible en panel (<120s)
+
+### 2026-06-16 — Arquitectura ideal GEMA+Cumbre (investigación web, no HubSpot-copy)
+
+**Objetivo:** Definir stack/arquitectura óptima 2026 para web GEMA + Cumbre ERP hermanados, con investigación web extensiva (PLG, composable billing, AI-native sales, Firebase multi-tenant, LATAM fintech, WhatsApp, Odoo/Zoho patterns) y análisis profundo del proyecto. HubSpot solo como contraste puntual.
+
+**Archivos:**
+- `docs/ARQUITECTURA_IDEAL_GEMA_CUMBRE_2026-06-16.md` (nuevo)
+- `docs/PLAN_IMPLEMENTACION_ARQUITECTURA_IDEAL_2026-06-16.md` (nuevo)
+- `docs/PLAN_ACCION_SISTEMA_100_INTEGRADO_2026-06-16.md` (cross-ref north star)
+
+**Veredicto arquitectónico:** ERP Cumbre como sistema de verdad + WordPress headless captación + Gema Commercial Events Bus + Agent Router nativo + billing ledger MP/Nave/ARCA. Integración ~38% hoy; objetivo 85% en 12m.
+
+**Impacto web:** Sin código. Próximo Ola 1: deploy Fase C + event bus + provisioning SM.
+
+**Impacto asistente IA:** Router 4 roles + knowledge API dinámica (Ola 2); guardrails honestos hasta self-serve Ola 3.
+
+**Despliegue:** Solo documentación local.
+
+**Validaciones:** Repos GEMA + mirror Cumbre; docs FLUJO_CLIENTE, RELEVAMIENTO_VENTA, INTEGRACION_WEB_CUMBRE, BENCHMARK; 10+ búsquedas web jun-2026.
+
+**Pendientes:** Aprobación 3 decisiones arquitectónicas Norberto; O1-02 deploy Fase C prod.
+
+### 2026-06-15 — Menú móvil: submenú Cumbre ERP accesible
+
+Objetivo:
+Corregir navegación en celulares: el mega menú Cumbre ERP no era accesible en producción (solo `:hover` desktop; tap en móvil iba directo a `/erp-cumbre`).
+
+Archivos:
+- `wordpress/theme-gema-sovereign/parts/header.html` — botón Menú + toggle submenú Cumbre
+- `wordpress/theme-gema-sovereign/assets/gema-mobile-nav.js` (nuevo)
+- `wordpress/theme-gema-sovereign/style.css` — panel móvil colapsable + mega menú expandible
+- `wordpress/theme-gema-sovereign/functions.php` — enqueue script
+
+Impacto web:
+- Mobile ≤980px: **Menú** → **Cumbre ERP** → chevron despliega módulos/verticales.
+- Desktop sin cambio (hover mega menú).
+
+Impacto asistente IA:
+- Sin cambio.
+
+Despliegue:
+- JS mejorado en `00-Proyecto Gema/wordpress/theme-gema-sovereign/assets/gema-mega-menu.js` (tap en «Cumbre ERP» expande submenú en móvil).
+- Deploy pendiente: `gcloud auth login` + `bash 00-Proyecto\ Gema/scripts/deploy-theme-production.sh` (token GCP expirado en sesión agente).
+
+Validaciones:
+- Revisión código local; smoke test móvil post-deploy.
+
+Pendientes:
+- Desplegar theme a `https://gema-digital.com`.
+
+### 2026-06-16 — Benchmark HubSpot/Salesforce + plan acción post-benchmark
+
+**Objetivo:** Investigación profunda sistemas primera línea (HubSpot Breeze, Salesforce Agentforce, Pipedrive/Zoho, Intercom Fin); tabla capacidad×gap; plan acción MVP 90d y sprint 2 semanas con roles agente.
+
+**Archivos:** `docs/BENCHMARK_SISTEMAS_PRIMERA_LINEA_2026-06-16.md` (nuevo), `docs/PLAN_ACCION_GEMA_CUMBRE_BENCHMARK_2026-06-16.md` (nuevo), `docs/PLAN_ACCION_SISTEMA_100_INTEGRADO_2026-06-16.md` (actualizado cross-ref benchmark).
+
+**Veredicto:** ~22% stack HubSpot-like hoy; MVP 90d ~40–45%; 12 meses ~55–65%. Top gap: provisioning trial, deploy Fase C, signup, checkout, form+UTM, agente multi-rol sync prod.
+
+**Impacto web:** Sin código. Sprint 1: QW-01 deploy Fase C, QW-02 form contacto, QW-04 checkout UI.
+
+**Impacto asistente IA:** Roles recepcionista/asesor/vendedor/derivador definidos; guardrails anti promesa self-service; pendiente implementación M1-06.
+
+**Despliegue:** Solo documentación local.
+
+**Validaciones:** Web search features 2025–2026; cruce relevamientos 2026-06-16 + mirror Cumbre (`shared/crm.ts`, `cumbreAgentsRegistry.ts`, `wordpressIngestLead`).
+
+**Pendientes:** Ejecutar Sprint 1 §8 plan benchmark. Ver `docs/PLAN_ACCION_GEMA_CUMBRE_BENCHMARK_2026-06-16.md`.
+
+---
+
+### 2026-06-16 — Plan de acción sistema 100% integrado (web → agente → carrito → ERP)
+
+**Objetivo:** Documento maestro de coordinación del flujo integrado. Actualizado post-benchmark con cross-ref a fases QW/M1/M2/M3.
+
+**Archivos:** `docs/PLAN_ACCION_SISTEMA_100_INTEGRADO_2026-06-16.md` (actualizado).
+
+**Contenido:** Definición sistema integrado, estado por capa (~38%), roadmap IDs unificados con plan benchmark, checklist MVP 90d, mapeo P0/P1.
+
+**Impacto web / asistente IA:** Ver plan benchmark; superficies duales obligatorias.
+
+**Despliegue:** Solo documentación local.
+
+**Pendientes:** Consolidado en `docs/PLAN_ACCION_GEMA_CUMBRE_BENCHMARK_2026-06-16.md`.
+
+---
+
+### 2026-06-16 — Relevamiento venta GEMA/Cumbre (cupones, pagos, agente, catálogo)
+
+**Objetivo:** Auditar si está todo lo necesario para **vender productos GEMA y Cumbre** antes de construir MVP self-service. Áreas: cupones, sistemas de pago, chatbot/agente, catálogo comercial, flujo venta completo.
+
+**Archivos:** `docs/RELEVAMIENTO_VENTA_GEMA_CUMBRE_2026-06-16.md` (nuevo), `docs/PLAN_CIERRE_100_FUNCIONAL_2026-06-16.md` (nuevo).
+
+**Veredicto:** **Venta asistida OK** (web, landings, precios, agente, contacto, ventas@, WhatsApp). **Self-service NO** (sin cupones, carrito REST 404 en prod, sin checkout/cobro, sin provisioning automático tenant/trial, sin signup ERP).
+
+**Impacto web:** Sin cambio de código. Matriz componente×estado documentada. P0: deploy Fase C prod, `provisionTrialTenant`, checkout UI, signup Cumbre.
+
+**Impacto asistente IA:** Agente responde en prod pero `cumbre_synced: false` (wp-config Cumbre incompleto). Riesgo: promete trial self-service cuando el flujo real termina en contacto comercial. Pendiente P1: proxy Cumbre + prompts alineados.
+
+**Despliegue:** Solo documentación local.
+
+**Validaciones:** curl prod — `GET /wp-json/gema-payments/v1/cart` → 404; `POST /wp-json/gema/v1/agent/chat` → 200 genérico. Auditoría código WP plugins + mirror Cumbre (`shared/billing.ts`, adapters MP/Nave, `bootstrap-beta-tenant.ts`). Precios web ↔ código OK (CRM, Cobros, Negocios, PyMEs).
+
+**Pendientes P0:** ver `docs/PLAN_CIERRE_100_FUNCIONAL_2026-06-16.md`. No implementar MVP en esta entrada.
+
+---
+
+### 2026-06-16 — Cambio de enfoque: flujo cliente real vs bootstrap dev
+
+**Objetivo:** Norberto corrige el enfoque del relevamiento: **no** bootstrap técnico (tenants pre-creados, `apply-claims`, `repair-panel`), sino simular lo que haría un **cliente real** que compra GEMA/Cumbre desde cero. Documentar recorrido exacto, gaps y MVP mínimo self-serve.
+
+**Archivos:** `docs/FLUJO_CLIENTE_DESDE_CERO_2026-06-16.md` (nuevo, fusión auditoría código + verificación prod).
+
+**Enfoque descartado:** `tenant_prueba_interna`, `tenant_gema_prod_interno`, scripts `beta:bootstrap-tenant`, `apply-claims`, `repair-panel` como proxy de «cliente nuevo».
+
+**Enfoque actual:** Embudo web W1–W6 → contacto comercial → (post-ventas) uso ERP G2–G11 / M2–M7. Empresas piloto: (1) Genera tu energía / Generadores Sur SRL, (2) GEMA Digital.
+
+**Impacto web:** Ningún cambio de código. Veredicto prod: landings y planes **OK**; checkout/trial self-serve y provisioning tenant **FALTA**; `/login` placeholder; API cart 404; CTAs Fase C («Acceder a ERP») no desplegados en header prod.
+
+**Impacto asistente IA:** Sin cambio de conocimiento. Agente responde en prod; bridge Cumbre `cumbre_synced: false` si wp-config incompleto. Pendiente: alinear respuestas del agente para no prometer self-service inexistente.
+
+**Despliegue:** Solo documentación local.
+
+**Validaciones:** curl prod — home, `/erp/precios`, `/contacto`, `/login`, `/cumbre-erp-negocios`, `cumbre-erp-prod.web.app` 200; `GET /wp-json/gema-payments/v1/cart` 404; agent chat OK. Código Cumbre: sin signup, sin provisioning UI, login solo con claims preexistentes.
+
+**Pendientes MVP self-serve (G1–G8):** deploy Fase C WP + plugin pagos (G1); Cloud Function `provisionTrialTenant` (G3+G4); signup/wizard Cumbre (G2+G6); SSO web→ERP (G5); billing real (G1 billing); allowlist dominios (G7); acta fiscal GEMA vs Generadores Sur (G8).
+
+---
+
+### 2026-06-15 — Banco de pruebas unificado (`test:bank` / `audit:full`)
+
+- **Objetivo:** Interconectar y activar suite maestra de pruebas Cumbre ERP + integración Web GEMA (Fase C), con reporte JSON/MD y matriz 32×2 entornos.
+- **Archivos / sistemas:**
+  - Espejo `~/.cumbre-mirror`: `scripts/run-test-bank.ts`, `package.json` (`test:bank`, `test:bank:fast`, `audit:full`)
+  - Docs: `docs/BANCO_PRUEBAS_COMPLETO.md`, `docs/BANCO_PRUEBAS_COMPLETO.latest.json|.md`
+  - Repo GEMA: `docs/BANCO_PRUEBAS_COMPLETO.md`, sync automático de reportes E2E
+  - `scripts/smoke-integracion-web-cumbre.sh` — REST 404 → SKIP (plugins WP no activados localmente)
+- **Impacto web:** Smoke Fase C 15/15 estáticos PASS; REST local SKIP hasta activar plugins (`sync-wordpress-local.sh`).
+- **Impacto asistente IA:** Sin cambio de conocimiento; E2E valida `agente_chatbot` y `whatsapp_hub` en beta+prod.
+- **Despliegue:** Solo local/scripts — sin deploy productivo.
+- **Validaciones (`npm run test:bank`, ~135s):**
+  - **64/64 E2E módulos PASS** (32 beta + 32 prod) — matriz `AUDITORIA_MODULO_A_MODULO.latest.json`
+  - **25 PASS | 4 FAIL | 2 SKIP** en orquestador (31 pasos)
+  - PASS: cimientos (contracts/rules/functions/nav), integración GEMA, 8 adapters, health beta (6/6), E2E×2
+  - FAIL: ADC `invalid_rapt`, typecheck (corregido post-run), prod:health (Firebase CLI), smoke WP REST (→ SKIP tras fix)
+  - SKIP: bootstrap GEMA dry-run (ADC), validate:cimientos:local (solo en `audit:full`)
+- **Comandos activos:**
+  - `npm run test:bank` — suite completa con E2E
+  - `npm run test:bank:fast` — sin E2E ni readiness
+  - `npm run audit:full` — incluye `validate:cimientos:local`
+- **Pendientes:** Renovar ADC (`docs/fase4/PASO3_RENOVAR_ADC.md`); `npm run beta:repair:auth`; activar plugins WP local para REST smoke PASS.
+
+### 2026-06-15 — CIERRE DEFINITIVO: auditoría 32 módulos × 2 entornos (64/64 PASS)
+
+- **Objetivo:** Cierre autorizado por Norberto — auditar cada módulo de `listPlatformFullModuleIds()` en prod y beta hasta PASS total, sin pruebas manuales.
+- **Archivos / sistemas:** `~/.cumbre-mirror/scripts/run-beta-dogfood-panels-e2e.ts` (reportes beta/prod separados + `AUDITORIA_MODULO_A_MODULO.latest.json`); evidencia en `docs/AUDITORIA_*`, `docs/BETA_DOGFOOD_PANELS_E2E.latest.json`, `docs/PROD_DOGFOOD_PANELS_E2E.latest.json`; `docs/AUDITORIA_CIERRE_DEFINITIVO_2026-06-15.md`.
+- **Impacto web:** Fase C smoke estático 6/6 PASS (`scripts/smoke-integracion-web-cumbre.sh`); deploy WP prod sigue pendiente (sin cambio).
+- **Impacto asistente IA:** Sin cambio de conocimiento; paneles agente_chatbot/whatsapp_hub validados E2E en ambos entornos.
+- **Despliegue:** Solo local (rebuild `build:beta` en mirror). Hosting prod/beta ya desplegado — E2E contra URLs live.
+- **Validaciones:**
+  - `npm run beta:e2e:dogfood-panels` → **32/32 PASS** (`tenant_prueba_interna`)
+  - `npm run prod:e2e:dogfood-panels` → **32/32 PASS** (`tenant_gema_prod_interno`)
+  - `docs/AUDITORIA_MODULO_A_MODULO.latest.json` → **64/64 PASS**
+  - `npm run beta:health` → 6/7 (ADC backup `invalid_grant`; signin, smoke, agentes, roles, build, hosting OK)
+  - `npm run prod:health` → build + hosting OK; Firebase CLI sin sesión local
+  - Fase C smoke estático 6/6 PASS
+- **Veredicto:** **PROYECTO CERRADO** (UI dogfood). Gaps no bloqueantes: ADC/CLI local, ML KYC, MP OAuth, deploy WP Fase C prod.
+- **Pendientes:** Renovar ADC (`docs/fase4/PASO3_RENOVAR_ADC.md`); `npm run beta:repair:auth` para CLI prod; deploy Fase C WP; trámites ML/MP externos.
+
+### 2026-06-15 — P0 revalidación: módulos bloqueados prod (ADC/CLI vencidos; E2E 32/32 OK)
+
+- **Objetivo:** Re-ejecutar runbook bootstrap + claims + repair + deploy tras reporte Norberto de módulos bloqueados en prod y beta.
+- **Causa raíz confirmada (sesión usuario):** JWT/cache del browser con claims o tenant desalineados tras fix anterior; backend Firestore ya bootstrapado (fix matutino mismo día).
+- **Bloqueo operativo agente:** ADC Google (`invalid_grant` / `invalid_rapt`) y Firebase CLI sin sesión — impide re-ejecutar `beta:bootstrap:dogfood`, `beta:apply-claims`, `beta:repair-panel` y `deploy:prod:hosting` / `deploy:beta:hosting` desde espejo sin terminal interactiva.
+- **Archivos / sistemas:** espejo `~/.cumbre-mirror` (sync OK); wrappers `prod:bootstrap:dogfood`, `prod:apply-claims`, `prod:repair-panel` ya existentes en `package.json`.
+- **Impacto web GEMA:** ninguno.
+- **Impacto asistente IA:** ninguno.
+- **Despliegue:** no ejecutado (auth CLI vencida); hosting prod HTTP 200 con build actual.
+- **Validaciones:**
+  - `CUMBRE_BETA_E2E_URL=https://cumbre-erp-prod.web.app npm run beta:e2e:dogfood-panels` → **32/32 PASS** (CRM + Cobros OK).
+  - Beta `beta:test:dogfood-smoke --from-credentials` → ok (`tenant_prueba_interna`, 32 módulos).
+  - Beta `beta:health` → ADC FAIL + dist beta contaminado con refs prod (rebuild beta pendiente tras deploy).
+  - Prod `prod:health` → hosting OK, Firebase CLI FAIL.
+- **Acción requerida Norberto (2 min):** cerrar sesión → `Cmd+Shift+R` → login `beta@gema-digital.com` → tenant `tenant_gema_prod_interno`.
+- **Acción requerida terminal (5 min, una vez):** `cd ~/.cumbre-mirror && npm run beta:repair:auth` (renueva gcloud ADC + Firebase CLI); luego runbook completo si hace falta re-bootstrap.
+- **Pendientes:** renovar ADC/CLI; opcional redeploy hosting tras auth; screenshot manual CRM/Cobros si persiste bloqueo tras logout.
+
+### 2026-06-15 — P0 prod: módulos bloqueados `tenant_gema_prod_interno` (Firestore bootstrap)
+
+- **Objetivo:** Restaurar acceso a los 32 módulos en producción Cumbre (`https://cumbre-erp-prod.web.app`) tras soft launch; mismo patrón que beta (faltaba bootstrap Firestore + claims + repair panel).
+- **Causa raíz:** Tenant piloto `tenant_gema_prod_interno` sin matriz `suscripcion_modulos`, panel `panel_control/configuracion` ni configs P0 (CRM, Cobros, etc.); claims JWT del usuario owner apuntaban al tenant incorrecto o incompletos.
+- **Archivos / sistemas afectados:**
+  - Espejo `~/.cumbre-mirror`: scripts existentes `beta:bootstrap:dogfood`, `beta:apply-claims`, `beta:repair-panel` ejecutados contra `cumbre-erp-prod`.
+  - Nuevos wrappers en `package.json`: `prod:bootstrap:dogfood`, `prod:apply-claims`, `prod:repair-panel`, `prod:e2e:dogfood-panels`.
+  - Firestore prod: `artifacts/cumbre-erp/users/tenant_gema_prod_interno/*` (matriz 32 módulos, panel, billing, CRM, Cobros, agente, etc.).
+  - Firebase Auth prod: claims `beta@gema-digital.com` → `tenant_gema_prod_interno` / rol `owner` (`--single-tenant`).
+- **Impacto web GEMA:** ninguno directo (incidente aislado a hosting Cumbre prod).
+- **Impacto asistente IA:** ninguno; no cambia copy comercial ni conocimiento WP.
+- **Despliegue:** no requirió `deploy:prod:hosting` (fix backend/datos, no UI).
+- **Validaciones:**
+  - Firestore Admin: `suscripcion_modulos/config` OK (32 módulos), `panel_control/configuracion` OK (32), `crm_configuracion/general` OK, `config_integraciones/cumbre_cobros` OK.
+  - E2E Playwright prod: **32/32 PASS** (`CUMBRE_BETA_E2E_URL=https://cumbre-erp-prod.web.app npm run beta:e2e:dogfood-panels`).
+  - Reporte: `~/.cumbre-mirror/docs/BETA_DOGFOOD_PANELS_E2E.latest.json`.
+- **Pasos para Norberto post-fix:** cerrar sesión → Cmd+Shift+R → login `beta@gema-digital.com` → verificar tenant `tenant_gema_prod_interno` y sidebar con 32 módulos.
+- **Runbook repro:** `cd ~/.cumbre-mirror && npm run prod:bootstrap:dogfood && npm run prod:apply-claims && npm run prod:repair-panel && npm run prod:e2e:dogfood-panels`.
+- **Pendientes:** ninguno para este incidente.
+
+### 2026-06-15 — Fase C integración Web GEMA ↔ ERP Cumbre (plan + quick wins local)
+
+**Objetivo:** Vincular sitio WordPress con app Cumbre prod: CTAs ERP, chatbot Cumbre bridge, carrito institucional MVP y orquestador de notificaciones email/WhatsApp stub.
+
+**Archivos afectados:**
+- `docs/INTEGRACION_WEB_CUMBRE_FASE_C_2026-06-15.md` — arquitectura, inventario, fases, checklist Norberto
+- `wordpress/theme-gema-sovereign/functions.php` — `gema_sovereign_get_cumbre_urls()`, agent REST config, `/login`, `/erp/precios`
+- `wordpress/theme-gema-sovereign/parts/header.html`, `footer.html`, `templates/page-erp-cumbre.html` — CTAs **Acceder a ERP** → https://cumbre-erp-prod.web.app
+- `wordpress/theme-gema-sovereign/assets/gema-floating-agent.js`, `gema-agent-engine.js` — widget v8 vía `/wp-json/gema/v1/agent/chat`
+- `wordpress/plugins/gema-agent-api/**` — bridge Cumbre `agentChat`, leads, WhatsApp handoff
+- `wordpress/plugins/gema-payments-platform/gema-payments-platform.php` — REST carrito institucional (`/cart`, `/cart/items`, `/cart/checkout`)
+- `wordpress/plugins/gema-notifications-orchestrator/**` — eventos factura/cobro/recibo → `wp_mail` + cola Hermes stub
+- `scripts/sync-wordpress-local.sh`, `scripts/smoke-integracion-web-cumbre.sh`
+- `.env.example` — placeholders `GEMA_CUMBRE_*` / notificaciones
+
+**Impacto web:** CTAs prod listos en código local; carrito comercial-contact; login explica Firebase Auth. **Sin deploy prod aún.**
+
+**Impacto asistente IA:** Widget apunta a plugin REST (Cumbre proxy cuando `wp-config` tenga API key). Conocimiento agente debe citar URL prod para clientes; beta solo dogfood.
+
+**Despliegue:** Solo local/documental. Restaurado `wordpress/` desde git HEAD + plugins nuevos.
+
+**Validaciones:**
+- `scripts/smoke-integracion-web-cumbre.sh` → 7/7 checks estáticos PASS; REST local FAIL hasta `sync-wordpress-local.sh` + activar plugins
+
+**Pendientes Norberto (Fase C prod):**
+- `wp-config.php`: `GEMA_CUMBRE_TENANT_ID`, `GEMA_CUMBRE_API_KEY`, URLs Cloud Functions prod
+- rsync theme + plugins prod; activar `gema-agent-api`, `gema-notifications-orchestrator`
+- Regenerar página `/login` vía WP-CLI
+- SMTP host para `wp_mail`; ticket org policy prod; validar lead CRM desde widget
+
+---
+
+### 2026-06-15 — PROYECTO TERMINADO: validación final prod + docs cierre
+
+**Objetivo:** Cerrar deploy prod Fase A+B iniciado por agente 7ce80140; validar prod live; documentar checklist Norberto y declaración PROYECTO TERMINADO.
+
+**Autorización:** Norberto — "te autorizo terminalo".
+
+**Validaciones ejecutadas:**
+- `curl https://cumbre-erp-prod.web.app` → HTTP 200
+- `curl https://cumbre-erp-beta.web.app` → HTTP 200
+- `npm run prod:health` → TODO OK
+- `CUMBRE_BETA_E2E_URL=https://cumbre-erp-prod.web.app npm run beta:e2e:dogfood-panels` → **32/32 PASS**
+- Bootstrap dry-run tenant prod → 32 módulos OK
+
+**Archivos actualizados:**
+- `docs/PLAN_BETA_A_PRODUCCION_2026-06-15.md` §10 PROYECTO TERMINADO
+- `docs/NORBERTO_PASOS_PARALELOS_2026-06-15.md` — paso 0 prod + DevCenter URLs prod + org policy dual
+- `docs/ENTREGA_FINAL_PROYECTO_2026-06-15.md` (repo Cumbre ERP) — E2E prod + declaración final
+
+**Impacto web:** Prod https://cumbre-erp-prod.web.app operativo; **sin CTA WordPress** (Fase C comercial pendiente).
+
+**Impacto asistente IA:** Pendiente actualizar conocimiento URL prod vs beta interna.
+
+**Despliegue:** Sin redeploy adicional — infra prod ya live desde sesión anterior.
+
+**Pendientes Norberto (~20 min):** login prod, Auth authorized domains, ticket org policy beta+prod, DevCenter MP/ML URLs prod.
+
+---
+
+### 2026-06-15 — Soft launch producción ERP Cumbre (Fase A + B ejecutadas)
+
+**Objetivo:** Desplegar infraestructura prod en `cumbre-erp-prod` y tenant piloto interno GEMA, manteniendo beta operativa en paralelo.
+
+**Autorización:** Norberto — explícita ("te autorizo a hacerlo").
+
+**Archivos / sistemas afectados:**
+- Repo Cumbre ERP: `firebase.json` (multi-site beta+prod), `package.json` (scripts `deploy:prod:*`, `prod:health`), scripts prod, `functions/src/index.ts` (SA dinámico por proyecto)
+- Firebase `cumbre-erp-prod`: Firestore rules, Hosting, Cloud Functions (18/20), Secret Manager
+- Tenant Firestore: `tenant_gema_prod_interno` (32 módulos, claims owner `beta@gema-digital.com`)
+- `docs/PLAN_BETA_A_PRODUCCION_2026-06-15.md` §9 ejecución
+
+**Impacto web:** URL prod live https://cumbre-erp-prod.web.app — **no publicar en marketing aún** (sin CTA WordPress). Beta https://cumbre-erp-beta.web.app intacta.
+
+**Impacto asistente IA:** Pendiente actualizar conocimiento URL prod vs beta interna cuando Norberto confirme soft launch estable.
+
+**Despliegue:** Ejecutado desde `~/.cumbre-mirror` — hosting HTTP 200, functions críticas desplegadas, bootstrap tenant OK.
+
+**Validaciones:**
+- `curl https://cumbre-erp-prod.web.app` → 200
+- `npm run deploy:prod:firestore-rules` OK
+- `npm run deploy:prod:hosting` OK
+- `npm run deploy:prod:functions` — 18/20 OK; `cumbreMercadoLibreWebhook` + `cumbreWhatsappWebhook` sin invoker `allUsers` (org policy)
+- Bootstrap + claims + repair panel tenant prod OK
+
+**Pendientes Norberto:**
+- Ticket org policy GCP `allUsers` en `cumbre-erp-prod`
+- Re-registrar URLs OAuth/webhooks ML/MP en DevCenter (prod)
+- Firebase Auth → authorized domains prod
+- Login manual prod y smoke paneles
+
+---
+
+### 2026-06-15 — Plan evaluación beta → producción ERP Cumbre
+
+**Objetivo:** Responder factibilidad de promover ERP Cumbre de beta a producción; documentar fases, checklists y comandos sin ejecutar deploy prod.
+
+**Archivos / sistemas afectados:**
+- `docs/PLAN_BETA_A_PRODUCCION_2026-06-15.md` (nuevo)
+- Referencia cruzada repos Cumbre ERP: `CIERRE_PROYECTO_FINAL.md`, `ENTREGA_FINAL_PROYECTO_2026-06-15.md`, `HOJA_DE_RUTA_ACCIONES_USUARIO.md`, `fase6/HOSTING_BETA_PLAN.md`
+
+**Impacto web:** Ninguno desplegado. Plan recomienda no publicar URL beta en marketing; CTA prod ERP pendiente hasta URL prod estable.
+
+**Impacto asistente IA:** Pendiente alinear conocimiento URL prod vs beta interna cuando exista cutover (registrado en plan §4.3).
+
+**Despliegue:** Solo local/documental. **No** se ejecutó deploy a `cumbre-erp-prod`.
+
+**Validaciones:** Revisión docs deploy, `package.json` scripts, `.firebaserc`, `firebase.json`, estado prod Hito 207 vs beta cierre 2026-06-15.
+
+**Veredicto documentado:** **Parcial** — no recomendado cutover comercial ahora; continuar beta dogfood + Fase 7 hasta 2026-07-14; prep prod Fase A–B en paralelo post-autorización.
+
+**Pendientes:** Decisión Norberto soft launch vs GA; ticket org policy prod; crear scripts `deploy:prod:*`; acta go/no-go prod post-Fase 7.
+
+---
+
+### 2026-06-15 — E2E beta dogfood 32/32 paneles (retoma agente)
+
+**Objetivo:** Completar gate E2E Playwright 32/32 módulos panel en beta real (`tenant_prueba_interna`).
+
+**Archivos / sistemas afectados:**
+- Cumbre ERP (source + mirror): `scripts/run-beta-dogfood-panels-e2e.ts`, `shared/platformFullModuleIds.ts`, `shared/appNavigation.ts`, `src/components/AppSidebar.tsx`
+- Deploy hosting beta `cumbre-erp-beta`
+- Docs: `docs/BETA_DOGFOOD_PANELS_E2E.latest.json`, `docs/ENTREGA_FINAL_PROYECTO_2026-06-15.md`, `docs/AUDITORIA_TOTAL_2026-06-15.md`, `docs/MATRIZ_MODULOS_CIERRE_2026-06-15.md`
+
+**Impacto web:** ninguno directo (ERP beta dogfood, no WordPress).
+
+**Impacto asistente IA:** ninguno directo; panel 100% funcional refuerza demos comerciales desde beta.
+
+**Despliegue:** `npm run deploy:beta:hosting` → https://cumbre-erp-beta.web.app (2026-06-15 sesión retoma).
+
+**Validaciones:**
+- `npm run beta:bootstrap:dogfood` → ok (32 módulos)
+- `npm run beta:apply-claims` (rol **owner**) + `beta:repair-panel` → ok
+- `npm run beta:e2e:dogfood-panels` → **32/32 PASS** (32 vistas únicas)
+- `npm run beta:health` → TODO OK
+- `npm run beta:test:dogfood-smoke` → ok (32 módulos matriz)
+
+**Fixes aplicados:**
+- Script E2E extendido de 13 vistas mínimas a `listPlatformFullModuleIds()` (32)
+- Mapeos `MODULE_ID_TO_VIEW` para core, importador, backend_workers, seguridad_auditoria
+- Link sidebar `operations` en sección Plataforma
+
+**Pendientes / gaps únicos para 100% APIs reales:** org policy GCP `allUsers`, ML KYC DevCenter, MP OAuth seller humano, Meta App Review.
+
+### 2026-06-15 — Auditoría total ERP Cumbre + GEMA
+
+**Objetivo:** Auditoría integral solicitada por Norberto — health, tests, Firestore dogfood, seguridad, docs, integraciones.
+
+**Repo Cumbre:** `01-Proyecto Cumbre Erp` (ejecución `~/.cumbre-mirror`).
+
+**Resultado global:** 🟢 CERRADO FUNCIONAL DOGFOOD verificado. Sin P0 bugs. Conectores reales gated (org policy, ML KYC, MP OAuth humano).
+
+**Tests ejecutados (resumen):** `beta:health` TODO OK · signin/dogfood-smoke OK · Hermes direct OK · preflight A–I 9/9 · arquitectura 30/30 · security rules OK · bootstrap dogfood dry-run OK · E2E Playwright 13/13 · readiness subset 7/7 · ML webhook local 9/9 · integraciones GEMA OK.
+
+**Hallazgos P1:** org policy `allUsers` (admin) · ML aprobación pendiente · MP OAuth seller humano · webhooks anon 403.
+
+**Entregable:** `docs/AUDITORIA_TOTAL_2026-06-15.md` (este repo).
+
+**Impacto web WordPress:** ninguno.
+**Impacto asistente IA:** ninguno.
+**Despliegue:** ninguno (auditoría read-only + tests).
+**Pendientes:** mismos externos post-cierre (tabla en auditoría).
+
+---
+
+### 2026-06-15 — Guía acciones humanas Norberto (paralelo agentes)
+
+**Objetivo:** Documento único en español simple con pasos P0/P1/P2 que Norberto debe hacer en paralelo mientras agentes cierran el proyecto.
+
+**Archivos afectados:**
+- `01-Proyecto Cumbre Erp/docs/NORBERTO_PASOS_PARALELOS_2026-06-15.md` (nuevo).
+
+**Impacto web WordPress:** ninguno.
+**Impacto asistente IA:** ninguno.
+**Despliegue:** solo documentación local; sin commit.
+
+**Contenido:** P0 (~15 min) refresh sesión beta + MP OAuth + ticket org policy; P1 post-aprobación ML; P2 Meta WhatsApp y PayPal opcional. Checkboxes, comandos, éxito/fallo, links. Sin credenciales.
+
+**Validaciones:** documento creado; referencias cruzadas a `CIERRE_PROYECTO_FINAL.md`, `ENTREGA_FINAL`, `ACCESO_BETA_SIMPLE.md`.
+
+---
+
+### 2026-06-15 — CIERRE FUNCIONAL dogfood ERP Cumbre (bootstrap + E2E 13/13)
+
+**Objetivo:** Cierre final real autorizado por Norberto — panel beta operativo sin crashes en módulos P0/P1.
+
+**Repo:** `01-Proyecto Cumbre Erp` + mirror `~/.cumbre-mirror`.
+
+**Causa raíz P0:** configs Firestore faltantes en `tenant_prueba_interna` (CRM `catalogo_ref`, Cobros `limite_medios_activos`, Core panel vacío).
+
+**Acciones ejecutadas:**
+- `beta:bootstrap:dogfood` → `ok:true` (32 módulos matriz + configs P0/P1)
+- `beta:apply-claims` owner + `beta:repair-panel` (32 módulos sidebar)
+- UI defensiva: `shared/cobros.ts`, `cobrosReadiness.ts`, `corePlataformaReadiness.ts`, `CumbreCobrosPanel.tsx`, `cobrosTools.ts`
+- Script `npm run beta:e2e:dogfood-panels` (Playwright hosting) → **13/13 PASS**
+- `deploy:beta:hosting` 2026-06-15
+
+**Impacto web WordPress:** ninguno directo.
+**Impacto asistente IA:** ninguno (dogfood ERP independiente del widget WP).
+**Despliegue:** Firestore beta + hosting `cumbre-erp-beta.web.app` OK.
+**Validaciones:** `beta:health` TODO OK · dogfood-smoke OK · integracion-local-preflight 9/9 · ML webhook 9/9 · Hermes direct OK · E2E 13/13.
+
+**Pendientes SOLO externos (no bloquean dogfood):** ML KYC/aprobación app · org policy `allUsers` webhooks · MP OAuth seller (login humano) · Meta App Review WhatsApp Cloud.
+
+**Norberto — refresh sesión (único comando):**
+```bash
+cd ~/.cumbre-mirror && npm run beta:apply-claims -- --email beta@gema-digital.com --tenant-id tenant_prueba_interna --role owner
+```
+Logout → Cmd+Shift+R → login beta.
+
+**Docs:** `docs/ENTREGA_FINAL_PROYECTO_2026-06-15.md`, `docs/CIERRE_PROYECTO_FINAL.md`.
+
+---
+
+### 2026-06-15 — P0 ERP Cumbre beta: crash módulos dogfood (repo Cumbre Erp)
+
+**Objetivo:** Norberto no podía usar Core/CRM/Cobros en https://cumbre-erp-beta.web.app por configs Firestore faltantes en `tenant_prueba_interna`.
+
+**Repo:** `01-Proyecto Cumbre Erp` (no este repo WordPress).
+
+**Cambios:**
+- Script `npm run beta:bootstrap:dogfood` — merge matriz + configs CRM/Cobros/Core en Firestore beta.
+- UI defensiva en paneles Core/CRM/Cobros (optional chaining).
+- Bootstrap ejecutado en `cumbre-erp-beta`; hosting beta desplegado.
+
+**Impacto web WordPress:** ninguno directo.
+**Impacto asistente IA:** ninguno (pendiente si se documenta en conocimiento local).
+**Despliegue:** Firestore beta + hosting `cumbre-erp-beta.web.app` OK.
+**Validaciones:** `beta:bootstrap:dogfood --dry-run`, bootstrap remoto, `deploy:beta:hosting`.
+**Norberto:** logout → Cmd+Shift+R → login → ver §4b en `01-Proyecto Cumbre Erp/docs/fase7/ACCESO_BETA_SIMPLE.md`.
+
+---
+
+
+### 2026-06-15 - Cierre técnico formal proyecto ERP Cumbre + GEMA IA
+
+Objetivo:
+- Ejecutar validaciones finales, documentar entrega formal y declarar **CERRADO TÉCNICO** con pendientes externos tabulados.
+
+Archivos / sistemas afectados:
+- Proyecto Cumbre ERP: `docs/ENTREGA_FINAL_PROYECTO_2026-06-15.md` (nuevo), `docs/CIERRE_PROYECTO_FINAL.md` (actualizado).
+- Este registro: `REGISTRO_DE_TRABAJO_GEMA.md`.
+- Beta: https://cumbre-erp-beta.web.app — validaciones vía `~/.cumbre-mirror`.
+
+Impacto en web:
+- Ninguno WordPress. Sin deploy (solo documentación).
+
+Impacto en asistente IA:
+- Sin cambio de código. Estado operativo documentado: dogfood ~97%, conectores comerciales gated.
+
+Despliegue:
+- **No desplegado** — sin cambios de código pendientes en esta sesión.
+
+Validaciones (`~/.cumbre-mirror`, 2026-06-15 sesión cierre formal):
+- `npm run beta:health` → TODO OK
+- `npm run beta:hermes:direct-local` → OK
+- `npm run test:mercado-libre-webhook-local` → 9/9 OK
+- `npm run test:integracion-local-preflight` → 9/9 OK
+
+Pendientes externos (post-cierre, no bloquean dogfood):
+- **ML:** aprobación app/KYC (Mercado Libre, 3–15 días hábiles).
+- **ORG:** excepción `allUsers` Cloud Run Gen2 (admin org GEMA, 1–3 días).
+- **MP:** OAuth seller panel Cobros — login auth.mercadopago.com (Norberto, ~10 min).
+- **Meta:** App Review WhatsApp Cloud API (deferido, semanas).
+- **Opcionales:** ARCA mock panel, UI §B Cobros, Fase 7 revisiones hasta 2026-07-14.
+
+Browser MCP panel MP OAuth: no disponible sesión — pasos exactos en `docs/ENTREGA_FINAL_PROYECTO_2026-06-15.md`.
+
+### 2026-06-15 - Mercado Libre DevCenter: URLs y OAuth validados (Capa A Norberto)
+
+Objetivo:
+- Cerrar el trámite externo Capa A en DevCenter ML tras verificación humana de redirect, notifications y grants OAuth (sin activar gate productivo).
+
+Archivos / sistemas afectados:
+- DevCenter ML: app `Gema Digital` (App ID 2046078242418312).
+- Documentación: `REGISTRO_DE_TRABAJO_GEMA.md` (este registro); proyecto Cumbre ERP `docs/CIERRE_PROYECTO_FINAL.md`.
+
+Impacto en web:
+- Ninguno WordPress. Redirect OAuth beta: `https://cumbre-erp-beta.web.app/oauth/mercado-libre/callback`.
+
+Impacto en asistente IA:
+- Sin cambio de código. Gate `gate_integraciones_mercado_libre_real_bloqueado` sigue hasta aprobación ML + `prueba_conexion` sandbox.
+
+Despliegue:
+- Solo validación en consola DevCenter. Sin commit. Sin registrar credenciales.
+
+Validaciones (Norberto, DevCenter ML):
+- Redirect URI beta: validado.
+- Notifications URL webhook beta: validado (`cumbreMercadoLibreWebhook`).
+- OAuth habilitado: Authorization Code, Client Credentials, Refresh Token + PKCE.
+
+Pendientes:
+- **ML (async):** aprobación app / KYC por Mercado Libre.
+- **ORG (async):** excepción org policy `allUsers` en webhook para notifications reales desde servidores ML (GET/POST anónimo hoy 403; dogfood con token IAM OK).
+- **Post-aprobación ML:** panel beta → Mercado Libre → OAuth seller → `prueba_conexion` sandbox → aprobar gate `gate_integraciones_mercado_libre_real_bloqueado` (decisión humana).
+- **MP (opcional):** app OAuth Mercado Pago (~10 min); no bloquea Capa A ML ni dogfood.
+
+### 2026-06-15 - Mercado Pago OAuth: credenciales locales y Secret Manager beta
+
+Objetivo:
+- Guardar credenciales app Mercado Pago OAuth (tramite Ola 4) en repo Cumbre ERP sin commitear; subir client_id/client_secret a GCP beta.
+
+Archivos / sistemas afectados:
+- Proyecto Cumbre ERP (fuera de este repo): `.credentials/mercado-pago-oauth.local`, `.credentials/mercado-pago.local` (chmod 600, gitignored).
+- GCP `cumbre-erp-beta`: Secret Manager `MERCADOPAGO_OAUTH_CLIENT_ID`, `MERCADOPAGO_OAUTH_CLIENT_SECRET`, placeholder `tenant_prueba_interna__mercado_pago_oauth__access_token_sandbox`.
+- Documentación: `REGISTRO_DE_TRABAJO_GEMA.md` (este registro).
+
+Impacto en web:
+- Ninguno WordPress. Redirect OAuth beta: `https://cumbre-erp-beta.web.app/oauth/mercado-pago/callback`.
+
+Impacto en asistente IA:
+- Sin cambio de código. Tramite MP OAuth listo para conexion seller desde panel beta Cobros.
+
+Despliegue:
+- Solo local + `npm run beta:setup:integraciones-secrets` (OK en proyecto Cumbre ERP). Sin deploy functions en esta tarea.
+
+Validaciones:
+- `.gitignore` incluye `.credentials/`.
+- Script beta creó/actualizó secrets MP OAuth en Secret Manager.
+
+Pendientes:
+- Panel beta **Cobros → Conectar Mercado Pago** (OAuth seller; token tenant reemplaza placeholder SM).
+- Configurar redirect URI en developers.mercadopago.com si no coincide con beta.
+- Webhook MP post-deploy functions; aprobar gate `gate_cobros_mercado_pago_real_bloqueado` con evidencia sandbox.
+- Rotar client secret en MP si se compartió por canal inseguro (chat).
+
+### 2026-06-15 - Reporte cierre dogfood Norberto: panel Hermes OK · ML en aprobación
+
+Objetivo:
+- Registrar validación humana en panel beta (`Enviar prueba Hermes`) y estado del trámite Mercado Libre DevCenter (KYC / revisión de app).
+
+Archivos / sistemas afectados:
+- Documentación: `REGISTRO_DE_TRABAJO_GEMA.md` (este registro).
+- Proyecto Cumbre ERP: `docs/CIERRE_PROYECTO_FINAL.md`, `docs/MATRIZ_MODULOS_CIERRE_2026-06-15.md`.
+- Beta: https://cumbre-erp-beta.web.app — WhatsApp Hub (path panel con sesión Firebase).
+
+Impacto en web:
+- Ninguno WordPress. Dogfood Generadores Sur (`tenant_prueba_interna`) con WhatsApp Hermes interim cerrado en panel.
+
+Impacto en asistente IA:
+- Sin cambio de código. Conocimiento operativo: WhatsApp dogfood **cerrado**; Mercado Libre **esperando aprobación** ML (no bloquea operación interna).
+
+Despliegue:
+- Sin deploy. Solo actualización documental de cierre.
+
+Validaciones (reporte Norberto 2026-06-15):
+- Panel beta → WhatsApp Hub → **Enviar prueba Hermes**: **FUNCIONÓ** (mensaje vía path panel; CLI sigue 401/403 por org policy — esperado).
+- Mercado Libre DevCenter: app GEMA + creds locales OK; **esperando aprobación** (KYC / revisión app ML).
+
+Pendientes:
+- **ML (async):** cuando ML apruebe app/KYC → OAuth seller desde panel beta, `prueba_conexion`, aprobar gate `gate_integraciones_mercado_libre_real_bloqueado` con evidencia sandbox; notification URL ya registrada (webhook live; invoker público pendiente org policy).
+- **MP (~10 min):** si aún no conectó — app OAuth developers.mercadopago.com → `.credentials/mercado-pago-oauth.local` → panel Cobros.
+- **ORG (async):** excepción `allUsers` Cloud Run Gen2 (copy-paste en `CIERRE_PROYECTO_FINAL.md`).
+- Opcionales: ARCA mock panel, UI manual §B, Meta WhatsApp Cloud API **DEFERIDO**.
+
+### 2026-06-15 - Cierre total 30 módulos ERP Cumbre: validación batch + matriz
+
+Objetivo:
+- Maximizar cierre de todos los módulos Cumbre ERP (autorización Norberto): inventario, validaciones batch, gaps, documentación final.
+
+Archivos / sistemas afectados:
+- Proyecto Cumbre ERP: `scripts/test-domain-contracts.ts` (catálogo conectores 18 gates).
+- Documentación: `docs/MATRIZ_MODULOS_CIERRE_2026-06-15.md`, `docs/CIERRE_PROYECTO_FINAL.md`, `docs/REGISTRO_AVANCE_PROYECTO.md`.
+
+Impacto en web:
+- Ninguno WordPress directo. Estado dogfood beta documentado para asistente IA y operación Generadores Sur.
+
+Impacto en asistente IA:
+- Sin cambio de código. Conocimiento operativo: 26/30 módulos HECHO, 4 PARCIAL (cobros MP, ML webhook, WhatsApp panel, ARCA real).
+
+Despliegue:
+- Sin deploy adicional en esta sesión. Beta ya live.
+
+Validaciones:
+- `beta:health` TODO OK · `validate:cimientos:local` OK (`listo_cimientos_local`) · `audit:arquitectura:modulos` 30/30 8/8 · preflight 9/9 · retail readiness 11/11 · Hermes direct OK · org policy IAM reintento único bloqueado.
+
+Pendientes:
+- **HUMANO 2 min:** panel WhatsApp Enviar prueba Hermes.
+- **HUMANO 10 min:** app Mercado Pago OAuth.
+- **ORG 15 min:** excepción `allUsers` Cloud Run.
+- Meta WhatsApp Cloud API: DEFERIDO.
+
+### 2026-06-15 - Cierre final dogfood ERP Cumbre: ML webhook deploy + validaciones
+
+Objetivo:
+- Completar deploy `cumbreMercadoLibreWebhook` (SA firebase-adminsdk), validar POST IAM 200, health checks y documentación cierre final.
+
+Archivos / sistemas afectados:
+- Proyecto Cumbre ERP: `functions/src/index.ts` (ack graceful ML webhook, `initializeApp()` estándar).
+- Cloud Function beta: `cumbreMercadoLibreWebhook` (mirror deploy 2026-06-15).
+- Documentación: `docs/CIERRE_PROYECTO_FINAL.md`, `docs/REGISTRO_AVANCE_PROYECTO.md` (repo Cumbre ERP).
+
+Impacto en web:
+- Ninguno WordPress. Webhook ML beta operativo con ack 200 (persistencia Firestore bloqueada Admin SDK Cloud Run).
+
+Impacto en asistente IA:
+- Sin cambio. Callables/agentes requieren sesión Firebase; org policy bloquea HTTP público CLI.
+
+Despliegue:
+- **Live** en `cumbre-erp-beta` vía mirror. Sin commit git.
+
+Validaciones:
+- `beta:health` TODO OK · `test:mercado-libre-webhook-local` 9/9 · `beta:hermes:direct-local` OK · curl ML POST IAM 200 · `beta:fix:functions-invoker` bloqueado org.
+
+Pendientes:
+- **ORG (async):** excepción `allUsers` invoker — copy-paste en CIERRE.
+- **HUMANO 2 min:** panel WhatsApp → Enviar prueba Hermes (browser MCP no disponible en sesión).
+- **HUMANO 10 min:** app Mercado Pago OAuth (placeholder en `.credentials/mercado-pago-oauth.local`).
+- **IAM root cause:** Admin SDK Firestore PERMISSION_DENIED en Cloud Run (persistencia real pendiente admin GCP).
+
+### 2026-06-15 - Cierre dogfood ERP Cumbre: deploy panel runner + IAM org
+
+Objetivo:
+- Maximizar cierre técnico dogfood beta (~95%) con deploy functions pendientes, validaciones npm/curl y documentación de bloqueo org policy.
+
+Archivos / sistemas afectados:
+- Cloud Functions beta: `cumbreWhatsappHubPanelJobRunner` (nuevo), `cumbreWhatsappHubDispatchGateway`, `whatsappHubHermesDispatchCallable` (update).
+- Hosting beta: `cumbre-erp-beta.web.app` (release 2026-06-15).
+- Documentación Cumbre ERP: `docs/CIERRE_PROYECTO_FINAL.md`, `docs/REGISTRO_AVANCE_PROYECTO.md`.
+
+Impacto en web:
+- Ninguno WordPress. Beta ERP hosting actualizado.
+
+Impacto en asistente IA:
+- Sin cambio. Agentes/callables requieren sesión Firebase; org policy bloquea HTTP público (403 esperado en tests CLI).
+
+Despliegue:
+- **Live** en `cumbre-erp-beta` vía mirror (`~/.cumbre-mirror`). Sin commit git.
+
+Validaciones:
+- `beta:health` TODO OK · `beta:hermes:direct-local` OK · `test:mercado-libre-webhook-local` 9/9 · curl ML GET IAM 200 / anon 403.
+
+Pendientes:
+- **BLOQUEADO ORG:** excepción `allUsers` invoker (copy-paste en CIERRE para admin org).
+- **HUMANO 2 min:** panel WhatsApp → Enviar prueba Hermes.
+- **HUMANO 10 min:** crear app Mercado Pago OAuth (placeholder en creds).
+- **Meta WhatsApp:** pausado (restricción Business).
+- ~~Fix menor: ML webhook POST~~ → **HECHO** ack 200 (`persisted:false` hasta fix IAM Admin SDK Cloud Run).
+
+### 2026-06-15 - Webhook Mercado Libre beta (`cumbreMercadoLibreWebhook`)
+
+Objetivo:
+- Implementar stub productivo del notification URL ya registrado en DevCenter ML, persistir eventos en Firestore dogfood y desplegar en beta si auth Firebase OK.
+
+Archivos / sistemas afectados:
+- Proyecto Cumbre ERP: `shared/mercadoLibreWebhook.ts`, `shared/mercadoLibre.ts` (tipo `MlWebhookEvento`, path `mercado_libre_webhook_events`), `functions/src/mercadoLibreWebhooks.ts`, `functions/src/index.ts`, `firestore.rules`, `scripts/test-mercado-libre-webhook-local.ts`, `scripts/fix-beta-functions-public-invoker.sh`, `shared/integracionesEnlacesExternos.ts`, `docs/tramites/runbooks/RUNBOOK_MERCADO_LIBRE.md`, `docs/CIERRE_PROYECTO_FINAL.md`.
+- Cloud Function beta: `cumbreMercadoLibreWebhook` (region `southamerica-east1`, invoker public).
+- Tenant dogfood default: `tenant_prueba_interna`.
+
+Impacto en web:
+- Ninguno en WordPress. Panel ML beta muestra webhook URL vía `IntegracionEnlacesExternosCard` tras deploy hosting (ya centralizado).
+
+Impacto en asistente IA:
+- Ninguno directo. Gate `gate_integraciones_mercado_libre_real_bloqueado` sigue bloqueando API seller real.
+
+Despliegue:
+- Firestore rules beta **desplegadas** (`mercado_libre_webhook_events` live).
+- Cloud Function `cumbreMercadoLibreWebhook` **live** en `cumbre-erp-beta` — URL `https://southamerica-east1-cumbre-erp-beta.cloudfunctions.net/cumbreMercadoLibreWebhook` (deploy Norberto 2026-06-15; secrets Meta placeholder OK).
+- IAM invoker público (`allUsers` / `roles/run.invoker`) **bloqueado por org policy GEMA** — mismo patrón que `gemaPagosWebhook` y agentes HTTP; `npm run beta:fix:functions-invoker` ya incluye `cumbreMercadoLibreWebhook` pero falla con *permitted customer*.
+
+Validaciones:
+- `npm run test:mercado-libre-webhook-local` — 9/9 OK.
+- `npm run typecheck` + `functions:typecheck` en repo Cumbre ERP.
+- `npm run beta:fix:functions-invoker` (mirror) — ejecutado; binding `allUsers` rechazado por org policy en todas las functions listadas.
+- `curl` GET anónimo al webhook → **403 Forbidden** (Cloud Run IAM antes del handler).
+- `curl` GET con `Authorization: Bearer $(gcloud auth print-identity-token)` → **200** JSON `{"ok":true,"service":"cumbreMercadoLibreWebhook","tenant_default":"tenant_prueba_interna","stub_unsigned":true}` — confirma function desplegada y handler OK.
+
+Pendientes Norberto:
+- **Org / GCP:** excepción de org policy para permitir `allUsers` invoker en webhooks externos (ML notification URL requiere HTTP público desde servidores ML). Hasta entonces DevCenter ML no recibirá 200 en health check anónimo.
+- Firebase Console → env `CUMBRE_MERCADO_LIBRE_WEBHOOK_STUB_ACCEPT_UNSIGNED=true` en la function (dogfood).
+- Post-gate: `CUMBRE_MERCADO_LIBRE_CLIENT_SECRET` en env/SM y desactivar stub unsigned.
+- OAuth seller desde panel cuando gate aprobado.
+
+---
+
+### 2026-06-15 - Trámite Mercado Libre (Capa A) — app GEMA creada y credenciales locales
+
+Objetivo:
+- Cerrar el paso externo de Norberto en developers.mercadolibre.com.ar: app seller GEMA, redirect URI beta, notification callback y guardado local de OAuth (sin activar gate productivo).
+
+Archivos / sistemas afectados:
+- Proyecto Cumbre ERP: `.credentials/mercado-libre-oauth.local` (gitignored, permisos 600).
+- DevCenter ML: app `Gema Digital` — App ID registrado; redirect `https://cumbre-erp-beta.web.app/oauth/mercado-libre/callback`; notification URL `https://southamerica-east1-cumbre-erp-beta.cloudfunctions.net/cumbreMercadoLibreWebhook`.
+- Runbook existente: `docs/tramites/runbooks/RUNBOOK_MERCADO_LIBRE.md` (sin cambio de código).
+
+Impacto en web:
+- Ninguno desplegado. OAuth y webhook ML aún no operativos en beta.
+
+Impacto en asistente IA:
+- Ninguno. Gate `gate_integraciones_mercado_libre_real_bloqueado` sigue bloqueando conexión real.
+
+Despliegue:
+- Solo local (credenciales en Mac de Norberto). No commit ni producción.
+
+Validaciones:
+- Archivo local creado desde `.example`, chmod 600, no trackeado por git.
+- Variables completadas: `MERCADOLIBRE_OAUTH_CLIENT_ID`, `MERCADOLIBRE_OAUTH_CLIENT_SECRET`, redirect MLA y scopes del template.
+
+Pendientes:
+- ~~Implementar y desplegar Cloud Function `cumbreMercadoLibreWebhook` en beta.~~ **Live** — ver entrada webhook 2026-06-15; pendiente IAM público (org policy) para callback ML anónimo.
+- OAuth seller desde panel cuando gate aprobado con evidencia sandbox.
+- KYC/titular ML si la consola lo solicita (1–3 días).
+
+---
 
 ### 2026-06-11 - X (@GemaDigitalERP) conectado — créditos API diferidos a producción
 
@@ -66,6 +845,49 @@ Comando batch: `subir-x-serie.py --video 2-40 --skip-existing --delay 90`
 
 Riesgo:
 Tokens expuestos en chat → rotar Client Secret y **Generar** de nuevo antes de prod.
+
+### 2026-06-11 - Meta OAuth script serie GEMA (IG/FB Reels)
+
+Objetivo:
+Evitar errores al pegar tokens manualmente (190, tokens duplicados) con flujo OAuth local como LinkedIn/Pinterest.
+
+Hecho (hub audiovisual):
+- `autorizar-meta-token.py` — OAuth Facebook Login, long-lived token, verify + persist merge en `.env.social`.
+- `verificar-meta-token.py` — prompt interactivo si falta token; `merge_env_file` no borra credenciales X/Pinterest.
+- Guia `marketing/03-produccion/00-META-OAUTH-TOKEN.md`.
+
+Impacto web:
+Ninguno.
+
+Impacto asistente IA:
+Ninguno.
+
+Despliegue:
+Local. Pendiente Norberto: META_APP_ID/SECRET en `.env.social` + ejecutar autorizar-meta-token.py.
+
+---
+
+### 2026-06-11 - Plan accion redes sociales Cumbre multi-tenant (Capa A + B)
+
+Objetivo:
+Documentar tramites developer y desarrollo por red para que tenants Cumbre publiquen en sus cuentas (Metricool interno), separado de apps GEMA institucional.
+
+Hecho:
+- Runbook `01-Proyecto Cumbre Erp/docs/tramites/runbooks/RUNBOOK_REDES_SOCIALES_CUMBRE.md` — Meta, LinkedIn, YouTube, TikTok, Pinterest, X, GBP.
+- Paso a paso operativo Norberto + dev: `01-Proyecto Cumbre Erp/docs/tramites/00-PASO-A-PASO-REDES-CUMBRE.md` (7 redes + checklist semanal + bloque implementación Capa B).
+- Enlace desde hub `00-CONECTAR-REDES-CUMBRE.md`, checklist tramites externos Cumbre (`ENLACES_TRAMITES_EXTERNOS_CHECKLIST.md`).
+
+Impacto web:
+Ninguno directo; verificaciones dominio reutilizables.
+
+Impacto asistente IA:
+Pendiente tutoriales `api_tutorial_*` por red cuando existan gates marketing.
+
+Despliegue:
+Pendiente — OAuth callbacks beta + Secret Manager + worker marketing real.
+
+Pendiente:
+Implementacion Fase 1 Cumbre (OAuth tenant, worker, gates); apps Capa A por red en portales developer.
 
 ### 2026-06-08 - Preparación de herramientas Google SEO, SEM y GEO
 
@@ -2365,3 +3187,46 @@ Estado observado:
   - Se ampliaron pruebas en `scripts/test-domain-contracts.ts` y `scripts/test-security-rules.ts`.
   - Verificación browser sobre emulador: salida evaluada y persistida con `extender_beta` al no cumplir aún monitoreo mínimo de 3 días.
   - Validación ejecutada: `npm run typecheck`, `npm run test:contracts`, `npm run test:rules`, `npm run functions:typecheck`.
+
+- 2026-06-15: Beta dogfood tenant_prueba_interna — bootstrap, hosting y smoke.
+  - Repo Cumbre ERP: corrección `shared/catalogo.ts` (omitir campos fiscales/stock opcionales `undefined` en writes Firestore) y `shared/crm.ts` (referencia catálogo sin import circular).
+  - Espejo `~/.cumbre-mirror`: sync + `npm run beta:bootstrap:dogfood` OK (`documentos_modulo`: 7, `modulos_matriz`: 32).
+  - Firestore Admin: existen CRM (`crm_configuracion/general`), Cobros (`config_integraciones/cumbre_cobros`), panel y matriz módulos para `tenant_prueba_interna`.
+  - `npm run deploy:beta:hosting` desde espejo OK → https://cumbre-erp-beta.web.app (functions no desplegadas; Drive path timeout conocido).
+  - `npm run beta:test:dogfood-smoke -- --from-credentials` OK (tenant, owner, 32 módulos, agente_chatbot).
+  - Impacto web GEMA: ninguno directo.
+  - Impacto asistente IA: pendiente sincronizar conocimiento si se comunica estado panel beta.
+  - Producción: solo hosting beta Cumbre; cambios de código en repo Cumbre local/espejo, no commit automático.
+
+- 2026-06-15: Prod dogfood bootstrap/claims/repair — bloqueo `invalid_rapt` (auth Google, no ERP).
+  - Norberto ejecutó `prod:bootstrap:dogfood`, `prod:apply-claims`, `prod:repair-panel` contra `cumbre-erp-prod` y falló con `invalid_grant` / `reauth related error (invalid_rapt)`.
+  - Diagnóstico agente: ADC expirada (`gcloud auth application-default print-access-token` → reauth non-interactive); gcloud usuario activo `info@gema-digital.com`; proyecto CLI por defecto `cumbre-erp-beta` (ajustar a prod tras reauth).
+  - Agente no puede completar login en browser; documentados pasos en `docs/fase7/ACCESO_BETA_SIMPLE.md` (espejo `~/.cumbre-mirror/docs/fase7/`) sección `invalid_rapt`.
+  - Pendiente Norberto: `cd ~/.cumbre-mirror && npm run beta:repair:auth` → `npm run beta:check:adc` → re-ejecutar scripts prod dogfood + E2E.
+  - Impacto web GEMA: ninguno. Impacto asistente IA: ninguno. Producción Cumbre: scripts admin no aplicados hasta reauth.
+  - Auditoría módulo a módulo (agente efc83a6e): pendiente retomar tras prod dogfood OK.
+
+### 2026-06-16 — Relevamiento previo pruebas empresas reales (Genera tu energía + GEMA Digital)
+
+- **Objetivo:** Inventariar estado existente antes de pruebas con 2 empresas reales; sin bootstrap prod ni cambios productivos.
+- **Archivos creados/consultados:** `docs/RELEVAMIENTO_EMPRESAS_REALES_2026-06-16.md` (espejo `~/.cumbre-mirror/docs/`); docs E2E/BANCO_PRUEBAS, ENTREGA_FINAL, PLAN_BETA_A_PRODUCCION, integraciones GEMA, REGISTRO mirror.
+- **Impacto web:** Ninguno directo; relevamiento documenta bridge Fase C hacia `tenant_gema_prod_interno`.
+- **Impacto asistente IA:** Pendiente alinear respuestas si GEMA Digital ≠ Generadores Sur fiscalmente.
+- **Despliegue:** Solo local/documental (relevamiento persistido en docs/ + espejo mirror).
+- **Validaciones:** E2E 32/32 beta+prod según reportes 2026-06-15; ADC vencida — no re-verificación Firestore live.
+- **Pendientes:** Norberto completar checklist UNKNOWN; acta prueba; Fase 1 beta Genera; Fase 2 prod GEMA con re-bootstrap fiscal.
+
+### 2026-06-16 — Cierre proyecto autorizado (Norberto) — documentación balance
+
+- **Objetivo:** Coordinar documentación de cierre mientras otros agentes implementan P0 (Fase C prod, provisionTrialTenant, checkout, signup). Sin implementación de features en esta sesión.
+- **Autorización:** Norberto — cierre proyecto autorizado; misión paralela documentación + auditoría.
+- **Archivos creados/actualizados:**
+  - `docs/CIERRE_PROYECTO_BALANCE_FINAL_2026-06-16.md` — checklist cierre (32/32, flujo cliente, comercial, integraciones), estado por dimensión (%), bugs P0/P1/P2, prueba final Genera tu energía (W1–W6 + G2–G11).
+  - `~/.cumbre-mirror/scripts/run-audit-cierre.ts` — orquestador cierre.
+  - `~/.cumbre-mirror/package.json` — `npm run audit:cierre`, `audit:cierre:fast`, `audit:cierre:checklist`.
+- **Impacto web:** Ninguno directo; documento referencia deploy Fase C y carrito 404 prod como P0-1.
+- **Impacto asistente IA:** Pendiente alinear respuestas post-P0 cuando agentes completen wp-config y provisioning.
+- **Despliegue:** Solo local/documental (GEMA repo + mirror scripts).
+- **Validaciones:** Baseline `BANCO_PRUEBAS_COMPLETO.latest.md` (25 PASS · 2 FAIL · 4 SKIP, ADC vencida); `AUDITORIA_MODULO_A_MODULO.latest.json` 64/64 PASS (15/06). Ejecutar `npm run audit:cierre` tras reauth ADC para sign-off automatizado.
+- **Pendientes:** P0.1–P0.4 implementación (otros agentes); prueba cliente Fase A Norberto; sign-off final post-P0; revisión balance cada ~30 min si hay reportes nuevos.
+
