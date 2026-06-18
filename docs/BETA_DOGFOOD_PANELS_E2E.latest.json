@@ -1,5 +1,5 @@
 {
-  "generado_el": "2026-06-16T06:12:07.333Z",
+  "generado_el": "2026-06-16T19:32:30.349Z",
   "tier": "beta_dogfood_panels_e2e",
   "url": "https://cumbre-erp-beta.web.app",
   "tenant": "tenant_prueba_interna",
@@ -26,6 +26,7 @@
     "modulo_cumbre_agente_chatbot",
     "modulo_cumbre_activos_fijos",
     "modulo_cumbre_marketing",
+    "modulo_cumbre_studio_ia",
     "modulo_cumbre_automatizaciones",
     "modulo_cumbre_web",
     "modulo_cumbre_prospeccion_b2b",
@@ -37,9 +38,9 @@
     "modulo_cumbre_backend_workers",
     "modulo_cumbre_seguridad_auditoria"
   ],
-  "total_modulos": 32,
-  "total_vistas_unicas": 32,
-  "passed": 32,
+  "total_modulos": 33,
+  "total_vistas_unicas": 33,
+  "passed": 33,
   "failed": 0,
   "veredicto": "pass",
   "results": [
@@ -174,6 +175,12 @@
       "view": "marketing",
       "ok": true,
       "detail": "Panel marketing OK"
+    },
+    {
+      "moduleId": "modulo_cumbre_studio_ia",
+      "view": "studio_ia",
+      "ok": true,
+      "detail": "Panel studio_ia OK"
     },
     {
       "moduleId": "modulo_cumbre_automatizaciones",

@@ -1,74 +1,49 @@
-# Plataforma de Pagos GEMA
+# Plataforma de Pagos GEMA — Métodos activos vs diferidos
 
-## Alcance
+Fecha: 2026-06-16 · Fuentes: `~/.cumbre-mirror/shared/paymentPlatformPolicy.ts`, plugin `gema-payments-platform` v0.2.3
 
-La plataforma queda preparada para operar pagos nacionales e internacionales sin exponer credenciales reales en el repositorio.
+## Política operativa (pruebas sin MP/ML)
 
-Medios contemplados:
+| Método | Estado checkout | Rol |
+|--------|-----------------|-----|
+| **Nave Galicia** | **Activo** (primario) | Tarjetas, QR, Naranja X — cobro online post-trial |
+| **Transferencia bancaria** | **Activo** | CBU/CVU/Alias Galicia + confirmación manual |
+| **GEMA Pagos** | **Activo** (interno) | Orquestador billing, webhooks `gemaPagosWebhook`, trial→paid sandbox |
+| Mercado Pago | Diferido — Próximamente | Adapter + OAuth en código; `habilitado: false` en tenant GEMA |
+| Mercado Libre | Diferido — Próximamente | Módulo ML + webhook; gate productivo bloqueado |
+| PayPal | Diferido — Próximamente | Stub sandbox; no checkout live |
+| Stripe | Diferido — Próximamente | Catálogo WP only |
 
-- Argentina: transferencia bancaria, CBU/CVU/Alias, QR interoperable, MODO, Mercado Pago, Nave, tarjetas, links de pago, POS/terminales y comprobantes manuales.
-- Global: PayPal y Stripe.
-- Backoffice: webhooks, auditoría, idempotencia, conciliación y seguridad.
+## WordPress (`gema-payments-platform`)
 
-Módulo funcional:
+- REST `GET /wp-json/gema-payments/v1/providers` expone `status`, `checkout_active`, `deferred_label`.
+- REST cart incluye `checkout.active_providers`: `nave`, `bank_transfer`.
+- Webhooks de proveedores diferidos responden `503 deferred_provider` (no rompe el sitio).
 
-- `Cumbre Cobros`: página y módulo editable para configurar cobros por cliente, concepto, importe, vencimiento, moneda, medios habilitados, instrucciones y estado operativo.
+## Cumbre ERP (mirror)
 
-## WordPress
+- Política central: `shared/paymentPlatformPolicy.ts`
+- Router: `resolveActiveCheckoutPaymentAdapter()` excluye MP/PayPal del checkout live
+- Simulación trial→paid activa: `nave_galicia`, `transferencia_bancaria`, `gema_pagos`
+- Tenant GEMA prod (`tenant_gema_prod_interno`): default `nave_galicia` + transferencia; MP deshabilitado en seed
 
-Páginas creadas por el generador del theme:
+## Comandos de validación
 
-- `/erp-cumbre/cumbre-cobros`
-- `/pagos`
-- `/pagos/argentina`
-- `/pagos/transferencia-bancaria`
-- `/pagos/mercado-pago`
-- `/pagos/nave`
-- `/pagos/global`
-- `/pagos/paypal`
-- `/pagos/stripe`
-- `/pagos/seguridad`
-- `/pagos/webhooks`
-- `/pagos/conciliacion`
+```bash
+cd ~/.cumbre-mirror
+npm run test:payment-simulation-trial-paid
+npm run test:nave-galicia-cobros-adapter
+npm run test:mercado-pago-adapter   # adapter sigue registrado; checkout bloqueado
+```
 
-Plugin propio:
+## Flujo end-to-end (dogfood, sin MP)
 
-- `gema-payments-platform`
-- Endpoint de estado: `/wp-json/gema-payments/v1/providers`
-- Endpoint de webhooks: `/wp-json/gema-payments/v1/webhooks/{provider}`
+1. Carrito WP → signup Cumbre → trial 14 días
+2. Día 14: `npm run admin:advance-trial-day14 -- --tenant-id tenant_gema_prod_interno`
+3. Cobro sandbox vía Nave o transferencia manual → webhook billing → `payment.approved`
 
-Proveedores válidos:
+## Pendientes productivos (no bloquean pruebas)
 
-- `bank_transfer`
-- `mercado_pago`
-- `nave`
-- `paypal`
-- `stripe`
-
-## Seguridad
-
-- No guardar PAN, CVV ni datos completos de tarjetas en GEMA.
-- Usar checkout/tokenización del proveedor cuando corresponda.
-- Guardar secretos como opciones protegidas o secretos de infraestructura, nunca en código.
-- Separar sandbox y producción.
-- Validar firma o secreto por webhook.
-- Registrar eventos con idempotencia para evitar duplicados.
-
-## Próxima conexión de cuentas
-
-Cuando GEMA confirme accesos y cuentas reales:
-
-- Transferencia: cargar razón social, CUIT, CBU/CVU/Alias y texto comercial aprobado.
-- Mercado Pago: vincular cuenta, access token/public key, configurar webhook HTTPS y probar sandbox/producción.
-- Nave: confirmar documentación/API/plugin oficial vigente y método de conciliación.
-- PayPal: vincular business account, client ID/secret sandbox y live, configurar webhooks.
-- Stripe: confirmar entidad legal/país, publicar/sandbox keys, webhook signing secret, monedas y productos.
-
-## Validación mínima antes de cobrar
-
-- Página pública responde `200 OK`.
-- Plugin activo responde estado `ready_for_credentials`.
-- Webhook sin secreto devuelve `503 not_configured`.
-- Webhook con secreto incorrecto devuelve `401 invalid_signature`.
-- Webhook con secreto correcto registra un evento privado e ignora duplicados.
-- Cada proveedor tiene flujo de conciliación definido antes de operar producción.
+- OAuth Mercado Pago seller + habilitar en `paymentPlatformPolicy`
+- Aprobación app Mercado Libre + IAM invoker webhook (org policy GCP — ver ticket aparte)
+- Nave Galicia production + credenciales reales en `.credentials/gema-integraciones.local`

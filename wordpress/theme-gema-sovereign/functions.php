@@ -9,6 +9,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * URLs públicas del ERP Cumbre (prod por defecto; beta solo dogfood interno).
+ *
+ * @return array{prod:string,beta:string,app:string,login:string}
+ */
+function gema_sovereign_get_cumbre_urls(): array {
+	$prod = defined( 'GEMA_CUMBRE_ERP_PROD_URL' ) ? (string) GEMA_CUMBRE_ERP_PROD_URL : 'https://cumbre-erp-prod.web.app';
+	$beta = defined( 'GEMA_CUMBRE_ERP_BETA_URL' ) ? (string) GEMA_CUMBRE_ERP_BETA_URL : 'https://cumbre-erp-beta.web.app';
+	$use_beta = defined( 'GEMA_CUMBRE_ERP_USE_BETA' ) && GEMA_CUMBRE_ERP_USE_BETA;
+	$app = $use_beta ? $beta : $prod;
+
+	return array(
+		'prod'  => untrailingslashit( $prod ),
+		'beta'  => untrailingslashit( $beta ),
+		'app'   => untrailingslashit( $app ),
+		'login' => untrailingslashit( $app ),
+	);
+}
+
+function gema_sovereign_get_cumbre_app_url(): string {
+	return gema_sovereign_get_cumbre_urls()['app'];
+}
+
+/**
+ * Login ERP con retorno al portal cliente (misma query que redirect WP /login y /mi-cuenta).
+ */
+function gema_sovereign_get_cumbre_customer_login_url(): string {
+	return trailingslashit( gema_sovereign_get_cumbre_urls()['app'] ) . 'login?view=customer_portal&from=gema-web';
+}
+
+function gema_sovereign_get_site_login_url(): string {
+	return home_url( '/login/' );
+}
+
+function gema_sovereign_get_site_mi_cuenta_url(): string {
+	return home_url( '/mi-cuenta/' );
+}
+
 function gema_sovereign_asset_version( string $relative_path ): string {
 	$path = get_stylesheet_directory() . '/' . ltrim( $relative_path, '/' );
 	if ( file_exists( $path ) ) {
@@ -36,11 +74,56 @@ function gema_sovereign_enqueue_assets(): void {
 	);
 
 	wp_enqueue_script(
+		'gema-mega-menu',
+		get_stylesheet_directory_uri() . '/assets/gema-mega-menu.js',
+		array(),
+		gema_sovereign_asset_version( 'assets/gema-mega-menu.js' ),
+		true
+	);
+
+	wp_enqueue_script(
+		'gema-agent-engine',
+		get_stylesheet_directory_uri() . '/assets/gema-agent-engine.js',
+		array(),
+		gema_sovereign_asset_version( 'assets/gema-agent-engine.js' ),
+		true
+	);
+
+	wp_enqueue_script(
 		'gema-floating-agent',
 		get_stylesheet_directory_uri() . '/assets/gema-floating-agent.js',
-		array(),
+		array( 'gema-agent-engine' ),
 		gema_sovereign_asset_version( 'assets/gema-floating-agent.js' ),
 		true
+	);
+
+	$catalog           = gema_sovereign_get_cumbre_module_link_catalog();
+	$localized_catalog = array();
+
+	foreach ( $catalog as $key => $item ) {
+		$localized_catalog[ $key ] = array(
+			'label'   => $item[0],
+			'url'     => home_url( $item[1] ),
+			'summary' => $item[2],
+		);
+	}
+
+	$cumbre_urls = gema_sovereign_get_cumbre_urls();
+
+	wp_localize_script(
+		'gema-floating-agent',
+		'GEMA_AGENT_CONFIG',
+		array(
+			'siteUrl'          => home_url( '/' ),
+			'contactUrl'       => home_url( '/contacto/' ),
+			'erpAppUrl'        => $cumbre_urls['app'],
+			'apiEndpoint'      => rest_url( 'gema/v1/agent/chat' ),
+			'ttsEndpoint'      => rest_url( 'gema/v1/agent/tts' ),
+			'ttsEnabled'       => function_exists( 'gema_agent_api_tts_is_configured' ) && gema_agent_api_tts_is_configured(),
+			'ttsVoiceLabel'    => function_exists( 'gema_agent_api_tts_voice_label' ) ? gema_agent_api_tts_voice_label() : 'Lorena',
+			'agentDisplayName' => 'Gema IA',
+			'moduleCatalog'    => $localized_catalog,
+		)
 	);
 
 	wp_enqueue_script(
@@ -50,11 +133,129 @@ function gema_sovereign_enqueue_assets(): void {
 		gema_sovereign_asset_version( 'assets/gema-google-events.js' ),
 		true
 	);
+
+	if ( gema_sovereign_is_cart_checkout_page() ) {
+		wp_enqueue_script(
+			'gema-cart-checkout',
+			get_stylesheet_directory_uri() . '/assets/gema-cart-checkout.js',
+			array(),
+			gema_sovereign_asset_version( 'assets/gema-cart-checkout.js' ),
+			true
+		);
+
+		$cumbre_urls = gema_sovereign_get_cumbre_urls();
+		wp_localize_script(
+			'gema-cart-checkout',
+			'GEMA_CART_CONFIG',
+			array(
+				'restBase'     => rest_url( 'gema-payments/v1' ),
+				'contactUrl'   => home_url( '/contacto/' ),
+				'erpSignupUrl' => $cumbre_urls['app'],
+			)
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'gema_sovereign_enqueue_assets' );
 
+function gema_sovereign_is_cart_checkout_page(): bool {
+	if ( ! is_page() ) {
+		return false;
+	}
+
+	$post = get_queried_object();
+	if ( ! ( $post instanceof WP_Post ) ) {
+		return false;
+	}
+
+	$path = trim( (string) get_page_uri( $post ), '/' );
+	return 'erp/precios' === $path;
+}
+
+function gema_sovereign_print_cart_checkout_widget(): void {
+	if ( ! gema_sovereign_is_cart_checkout_page() ) {
+		return;
+	}
+	?>
+	<section class="gema-cart-checkout" data-gema-cart-checkout aria-label="Carrito institucional ERP Cumbre">
+		<h2>Probar ERP Cumbre — checkout comercial</h2>
+		<p>Elegí un plan trial, dejá tus datos y activá cuenta en Cumbre ERP (self-serve en evolución).</p>
+		<div class="gema-cart-status" data-cart-status>Cargando…</div>
+		<div class="gema-cart-catalog" data-cart-catalog></div>
+		<form data-cart-form class="gema-cart-form">
+			<label>Nombre<input type="text" name="name" required autocomplete="name" /></label>
+			<label>Email<input type="email" name="email" required autocomplete="email" /></label>
+			<label>Teléfono / WhatsApp<input type="tel" name="phone" required autocomplete="tel" /></label>
+			<label>Empresa<input type="text" name="company" autocomplete="organization" /></label>
+			<button type="submit">Registrar intención de trial</button>
+		</form>
+		<div data-cart-next></div>
+	</section>
+	<?php
+}
+add_action( 'wp_footer', 'gema_sovereign_print_cart_checkout_widget', 20 );
+
+function gema_sovereign_is_contact_page(): bool {
+	if ( ! is_page() ) {
+		return false;
+	}
+
+	$post = get_queried_object();
+	if ( ! ( $post instanceof WP_Post ) ) {
+		return false;
+	}
+
+	$path = trim( (string) get_page_uri( $post ), '/' );
+	return 'contacto' === $path;
+}
+
+function gema_sovereign_print_contact_form_widget(): void {
+	if ( ! gema_sovereign_is_contact_page() ) {
+		return;
+	}
+	?>
+	<section class="gema-contact-form-wrap" aria-label="Formulario de contacto GEMA">
+		<h2>Solicitar diagnóstico o trial</h2>
+		<p>Dejanos tus datos. Sincronizamos con CRM Cumbre cuando el bridge está configurado.</p>
+		<form data-gema-contact-form class="gema-contact-form">
+			<label>Nombre<input type="text" name="nombre" required autocomplete="name" /></label>
+			<label>Empresa<input type="text" name="empresa" required autocomplete="organization" /></label>
+			<label>Email<input type="email" name="email" autocomplete="email" /></label>
+			<label>Teléfono / WhatsApp<input type="tel" name="telefono" required autocomplete="tel" /></label>
+			<label>CUIT (opcional)<input type="text" name="cuit" inputmode="numeric" /></label>
+			<label>Necesidad / mensaje<textarea name="mensaje" rows="4"></textarea></label>
+			<button type="submit">Enviar consulta</button>
+		</form>
+		<div class="gema-contact-status" data-contact-status></div>
+	</section>
+	<?php
+}
+add_action( 'wp_footer', 'gema_sovereign_print_contact_form_widget', 19 );
+
+function gema_sovereign_enqueue_contact_form_assets(): void {
+	if ( ! gema_sovereign_is_contact_page() ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'gema-contact-form',
+		get_stylesheet_directory_uri() . '/assets/gema-contact-form.js',
+		array(),
+		gema_sovereign_asset_version( 'assets/gema-contact-form.js' ),
+		true
+	);
+
+	wp_localize_script(
+		'gema-contact-form',
+		'GEMA_CONTACT_CONFIG',
+		array(
+			'apiUrl' => rest_url( 'gema/v1/contact' ),
+		)
+	);
+}
+add_action( 'wp_enqueue_scripts', 'gema_sovereign_enqueue_contact_form_assets', 30 );
+
 function gema_sovereign_defer_theme_scripts( string $tag, string $handle, string $src ): string {
-	$deferred_handles = array( 'gema-theme-toggle', 'gema-floating-agent', 'gema-google-events' );
+	$deferred_handles = array( 'gema-theme-toggle', 'gema-mega-menu', 'gema-agent-engine', 'gema-floating-agent', 'gema-google-events', 'gema-cart-checkout', 'gema-contact-form' );
 	if ( ! in_array( $handle, $deferred_handles, true ) || false !== strpos( $tag, ' defer' ) ) {
 		return $tag;
 	}
@@ -885,10 +1086,14 @@ function gema_sovereign_get_local_page_definitions(): array {
 			),
 		),
 		'erp/precios'                   => array(
-			'title'       => 'Precios de ERP Cumbre y prueba gratis de 14 días',
-			'kicker'      => 'Precio personalizado',
-			'description' => 'Conozca cómo se cotiza ERP Cumbre: primero puede probar la versión general durante 14 días y luego se define una implementación personalizada según procesos, usuarios e integraciones.',
-			'modules'     => array(
+			'title'               => 'Precios de ERP Cumbre y prueba gratis de 14 días',
+			'kicker'              => 'Precio personalizado',
+			'description'         => 'Conozca cómo se cotiza ERP Cumbre: primero puede probar la versión general durante 14 días y luego se define una implementación personalizada según procesos, usuarios e integraciones.',
+			'primary_cta_label'   => 'Solicitar demo comercial',
+			'primary_cta_url'     => '/contacto',
+			'secondary_cta_label' => 'Acceder a ERP (clientes)',
+			'secondary_cta_url'   => gema_sovereign_get_cumbre_app_url(),
+			'modules'             => array(
 				array( 'Prueba general', 'La prueba gratuita de 14 días permite conocer el producto sin personalización inicial.' ),
 				array( 'Diagnóstico comercial', 'La reunión inicial es gratuita, dura normalmente 45 minutos y sirve para entender alcance real.' ),
 				array( 'Cotización responsable', 'El precio final depende de módulos, usuarios, integraciones, soporte, datos y nivel de implementación.' ),
@@ -1941,22 +2146,26 @@ function gema_sovereign_get_local_page_definitions(): array {
 			),
 		),
 		'login'                         => array(
-			'title'       => 'Acceso a clientes',
-			'kicker'      => 'Portal en preparación',
-			'description' => 'Espacio reservado para futuros accesos a clientes, demos, soporte o paneles relacionados con productos GEMA.',
-			'modules'     => array(
-				array( 'Demos', 'Accesos controlados para pruebas y validaciones.' ),
-				array( 'Soporte', 'Futuro punto de ingreso para clientes y seguimiento.' ),
-				array( 'Productos', 'Acceso a herramientas, documentación o paneles cuando estén disponibles.' ),
+			'title'             => 'Acceder a ERP Cumbre',
+			'kicker'            => 'Portal cliente',
+			'description'       => 'Ingresá con tu email y contraseña de ERP Cumbre. Clientes trial y suscriptores acceden al portal de cuenta (facturación, soporte y datos). Si todavía no tenés acceso, solicitá demo comercial o prueba de 14 días.',
+			'primary_cta_label' => 'Ingresar al portal',
+			'primary_cta_url'   => gema_sovereign_get_site_mi_cuenta_url(),
+			'secondary_cta_label' => 'Solicitar demo comercial',
+			'secondary_cta_url'   => '/contacto',
+			'modules'           => array(
+				array( 'Clientes activos', 'Usuarios con tenant asignado ingresan directo al panel prod.' ),
+				array( 'Prueba 14 días', 'La activación comercial se coordina desde /erp/precios o con ventas.' ),
+				array( 'Soporte', 'Para recupero de acceso o claims, escribí a ventas@gema-digital.com.' ),
 			),
-			'list'        => array(
-				'Página placeholder para evitar enlaces rotos.',
-				'No habilita autenticación real todavía.',
-				'Debe conectarse al portal final cuando se defina la arquitectura.',
+			'list'              => array(
+				'El acceso usa Firebase Auth del proyecto Cumbre (sin SSO compartido con WordPress todavía).',
+				'URL prod: ' . gema_sovereign_get_cumbre_urls()['prod'] . '.',
+				'La URL beta queda reservada para dogfood interno GEMA; no se publica en marketing.',
 			),
-			'faq'         => array(
-				array( 'Ya puedo iniciar sesión?', 'Todavía no. Este acceso queda preparado para una etapa posterior.' ),
-				array( 'Para qué servirá?', 'Para demos, soporte, clientes o herramientas internas según roadmap.' ),
+			'faq'               => array(
+				array( 'Ya puedo iniciar sesión?', 'Sí, si GEMA ya te asignó usuario y tenant en ERP Cumbre prod.' ),
+				array( 'No tengo usuario, qué hago?', 'Pedí demo comercial o prueba de 14 días desde /contacto o /erp/precios.' ),
 			),
 		),
 	);
@@ -2035,6 +2244,7 @@ function gema_sovereign_get_cumbre_module_link_catalog(): array {
 		'personal'       => array( 'Cumbre Personal', '/erp-cumbre/cumbre-personal', 'Legajos digitales, asistencia, ausencias, novedades, documentos laborales y costos de personal.' ),
 		'tesoreria'      => array( 'Cumbre Tesorería', '/erp-cumbre/cumbre-tesoreria', 'Bancos argentinos, billeteras, caja, movimientos, conciliación asistida, pagos a proveedores, cashflow, alertas y trazabilidad financiera.' ),
 		'marketing'      => array( 'Cumbre Marketing', '/erp-cumbre/cumbre-marketing', 'Segmentos, campañas, audiencias, WhatsApp, email, anuncios y atribución conectada al ERP.' ),
+		'studio_ia'      => array( 'Cumbre Studio IA', '/erp-cumbre/cumbre-studio-ia', 'Guiones, clips, imágenes y piezas publicables con montaje multiformato, voz, subtítulos y calendario Marketing.' ),
 		'automatizacion' => array( 'Cumbre Automatizaciones', '/erp-cumbre/cumbre-automatizaciones', 'Workflows internos con triggers, condiciones, acciones, webhooks, auditoría e idempotencia.' ),
 		'web'            => array( 'Cumbre Web', '/erp-cumbre/cumbre-web', 'Landings, CMS/headless, formularios, SEO, eventos y captación conectada al CRM.' ),
 		'ecommerce'      => array( 'Cumbre eCommerce y Mercado Libre', '/competencia/cumbre-ecommerce-mercado-libre-vs-sync-legacy', 'Para stock sub-segundo entre ecommerce, depósito físico y publicaciones de Mercado Libre.' ),
@@ -2056,13 +2266,15 @@ function gema_sovereign_get_recommended_cumbre_modules( string $path ): array {
 		'ia-productiva'       => array( 'whatsapp_hub', 'automatizacion', 'compras', 'tesoreria' ),
 		'gestion'             => array( 'pymes', 'activos_fijos', 'planificacion', 'reportes_bi' ),
 		'empresas'            => array( 'empresas', 'activos_fijos', 'planificacion', 'contabilidad' ),
-		'marketing'           => array( 'marketing', 'whatsapp_hub', 'crm', 'automatizacion' ),
+		'marketing'           => array( 'marketing', 'studio_ia', 'whatsapp_hub', 'crm', 'automatizacion' ),
+		'erp-cumbre/cumbre-studio-ia' => array( 'studio_ia', 'marketing', 'whatsapp_hub', 'web' ),
+		'erp-cumbre/cumbre-marketing' => array( 'marketing', 'studio_ia', 'whatsapp_hub', 'crm' ),
 		'automatizacion'      => array( 'whatsapp_hub', 'automatizacion', 'compras', 'tesoreria' ),
-		'integraciones'       => array( 'whatsapp_hub', 'tutoriales_api', 'ecommerce', 'stock' ),
-		'tecnologia'          => array( 'tutoriales_api', 'whatsapp_hub', 'empresas', 'automatizacion' ),
-		'erp/precios'         => array( 'negocios', 'activos_fijos', 'planificacion', 'cobros' ),
+		'integraciones'       => array( 'whatsapp_hub', 'studio_ia', 'tutoriales_api', 'ecommerce', 'stock' ),
+		'tecnologia'          => array( 'tutoriales_api', 'whatsapp_hub', 'studio_ia', 'empresas', 'automatizacion' ),
+		'erp/precios'         => array( 'negocios', 'studio_ia', 'marketing', 'cobros' ),
 		'erp/funciones/facturacion-electronica' => array( 'facturador', 'impuestos', 'pymes', 'tesoreria' ),
-		'ia/automatizacion-whatsapp' => array( 'whatsapp_hub', 'crm', 'automatizacion', 'marketing' ),
+		'ia/automatizacion-whatsapp' => array( 'whatsapp_hub', 'crm', 'automatizacion', 'marketing', 'studio_ia' ),
 		'blog'                => array( 'crm', 'reportes_bi', 'activos_fijos', 'pymes' ),
 		'competencia'         => array( 'crm', 'pymes', 'activos_fijos', 'planificacion' ),
 		'nosotros'            => array( 'pymes', 'empresas', 'automatizacion', 'web' ),
@@ -2127,6 +2339,7 @@ function gema_sovereign_get_cumbre_subdomain_catalog(): array {
 		'personal'       => array( 'Cumbre Personal', 'personal', 'RRHH y sueldos', 'Legajos, ausentismo, recibos, Libro de Sueldos Digital y productividad conectada.' ),
 		'tesoreria'      => array( 'Cumbre Tesorería', 'tesoreria', 'Bancos y cashflow', 'Cuentas bancarias, billeteras virtuales, caja, movimientos, conciliación asistida, pagos a proveedores y cashflow con seguridad y confirmación humana.' ),
 		'marketing'      => array( 'Cumbre Marketing', 'marketing', 'Audiencias y campañas', 'CRM sincronizado con Google Ads, Meta Ads, email, WhatsApp y comportamiento transaccional.' ),
+		'studio_ia'      => array( 'Cumbre Studio IA', 'studio-ia', 'Contenido audiovisual IA', 'Guiones, clips, imágenes, montaje 16:9/9:16/4:3, voz, subtítulos y piezas publicables conectadas al calendario Marketing.' ),
 		'automatizaciones' => array( 'Cumbre Automatizaciones', 'automatizaciones', 'Flujos internos', 'Automatizaciones tipo Zapier interno, scripts FDE y Cloud Functions para procesos reales.' ),
 		'web'            => array( 'Cumbre Web', 'web', 'CMS y SEO', 'Sitios, blogs y landings conectadas al CRM, SEO/GEO y captación de oportunidades.' ),
 		'ecommerce'      => array( 'Cumbre eCommerce', 'ecommerce', 'Venta online', 'Tienda, carrito, pedidos, stock, publicaciones, Mercado Libre, cobros y facturación.' ),
@@ -2857,6 +3070,7 @@ function gema_sovereign_get_remaining_cumbre_landing_definitions(): array {
 		'whatsapp'        => array( 'Cumbre WhatsApp Hub', '/erp-cumbre/cumbre-whatsapp-hub', 'Mensajes, alertas, opt-in, plantillas y seguimiento.' ),
 		'automatizaciones'=> array( 'Cumbre Automatizaciones', '/erp-cumbre/cumbre-automatizaciones', 'Triggers, condiciones, acciones, webhooks y auditoría.' ),
 		'marketing'       => array( 'Cumbre Marketing', '/erp-cumbre/cumbre-marketing', 'Segmentos, campañas, audiencias, atribución y medición.' ),
+		'studio_ia'       => array( 'Cumbre Studio IA', '/erp-cumbre/cumbre-studio-ia', 'Guiones, clips, imágenes y piezas publicables con calendario Marketing.' ),
 		'web'             => array( 'Cumbre Web', '/erp-cumbre/cumbre-web', 'Landings, formularios, SEO, eventos y captación conectada.' ),
 	);
 
@@ -2865,7 +3079,7 @@ function gema_sovereign_get_remaining_cumbre_landing_definitions(): array {
 			'slug' => 'cumbre-personal', 'title' => 'Cumbre Personal', 'headline' => 'RRHH simple, trazable y conectado a tu ERP', 'kicker' => 'RRHH · Legajos · Asistencia · Novedades · Costos laborales', 'section_kicker' => 'Personas y administración laboral', 'section_title' => 'Legajos, asistencia, novedades y costos laborales en un solo flujo', 'seo_title' => 'Cumbre Personal | Software de RRHH, legajos y asistencia para PyMEs', 'meta_description' => 'Gestioná legajos digitales, asistencia, ausencias, novedades de liquidación y documentos laborales con Cumbre Personal, el módulo RRHH conectado a tu ERP.', 'keywords' => 'software de recursos humanos para PyMEs, RRHH para empresas argentinas, legajos digitales, control de asistencia, ausentismo laboral, novedades de liquidación, liquidación de sueldos asistida', 'description' => 'Cumbre Personal centraliza legajos digitales, asistencia, ausencias, licencias, novedades de liquidación y documentos laborales. Conecta RRHH con Tesorería, Contabilidad, Legal, Reportes BI, Planificación, Empresas y WhatsApp Hub para que cada novedad tenga trazabilidad administrativa.', 'problem' => 'Muchas PyMEs administran empleados con planillas, chats, carpetas dispersas y documentos sin seguimiento.', 'value' => 'Ordena la información diaria de personas y la conecta con el ERP para revisar, aprobar, reportar y preparar liquidaciones asistidas con más control.', 'features' => array( array( 'Legajos digitales', 'Datos laborales, puestos, áreas, sucursales, responsables y documentos referenciados.' ), array( 'Asistencia y ausencias', 'Control simple de asistencia, licencias, vacaciones, certificados y ausentismo.' ), array( 'Novedades revisables', 'Novedades de liquidación, vencimientos y costos laborales preparados para revisión profesional.' ) ), 'list' => array( 'No reemplaza contador, abogado laboralista ni asesor profesional.', 'No almacena datos médicos sensibles en claro ni envía información laboral sensible sin opt-in y minimización.', 'Toda importación requiere previsualización, mapeo, aprobación e idempotencia.' ), 'metrics' => array( array( 'Personas activas', '86', 'Legajos por área, sucursal y responsable.' ), array( 'Ausencias mes', '14', 'Licencias y certificados con seguimiento.' ), array( 'Novedades', '22', 'Pendientes de revisión para liquidación.' ), array( 'Vencimientos', '9', 'Documentos laborales próximos a vencer.' ) ), 'flow' => array( array( 'Alta del legajo', 'Datos mínimos, puesto, área, responsable y documentos.' ), array( 'Asistencia o ausencia', 'Registro diario, licencia, certificado o novedad.' ), array( 'Revisión', 'Aprobación administrativa o derivación profesional.' ), array( 'Liquidación asistida', 'Novedades preparadas para contador o asesor.' ), array( 'Pago y asiento', 'Conexión con Tesorería y Contabilidad cuando corresponda.' ) ), 'plans' => array( 'Hasta 20 personas', 'Hasta 100 personas, aprobaciones y WhatsApp', 'Hasta 500 personas, multi sucursal e integración BI' ), 'addons' => array( 'Bloque adicional de legajos', 'Firma digital/documental', 'Soporte laboral prioritario', 'Convenios asistidos', 'Importador Universal', 'Alertas WhatsApp' ), 'guardrails' => array( array( 'Revisión profesional', 'No promete liquidación legal definitiva ni reemplaza asesoramiento laboral.' ), array( 'Datos sensibles', 'Minimización, permisos y cuidado especial de información laboral.' ), array( 'Auditoría', 'Toda acción crítica conserva usuario, fecha, origen y estado.' ) ), 'links' => array( $common['tesoreria'], $common['contabilidad'], $common['legal'], $common['bi'], $common['planificacion'], $common['whatsapp'] ), 'faq_what' => 'Es el módulo de ERP Cumbre para legajos digitales, asistencia, ausentismo, novedades laborales, documentos, vencimientos y costos de personal.', 'faq_links' => 'Conecta Tesorería, Contabilidad, Legal, Reportes BI, Planificación, Empresas, WhatsApp Hub e Importador Universal.', 'faq_guardrail' => 'No reemplaza contador, abogado laboralista ni asesor profesional; prepara información para revisión responsable.', 'cta_title' => 'Ordená tu equipo dentro del ERP', 'cta_copy' => 'Centralizá legajos, asistencia, novedades y costos laborales con trazabilidad y revisión profesional.'
 		),
 		'cumbre-marketing' => array(
-			'slug' => 'cumbre-marketing', 'title' => 'Cumbre Marketing', 'headline' => 'Campañas conectadas a tus clientes y ventas reales', 'kicker' => 'Marketing · Segmentos · Audiencias · WhatsApp · Atribución', 'section_kicker' => 'Marketing conectado al ERP', 'section_title' => 'Segmentos, campañas, canales y atribución sobre datos reales', 'seo_title' => 'Cumbre Marketing | Campañas, CRM y automatizaciones para PyMEs', 'meta_description' => 'Creá segmentos, campañas por WhatsApp/email, audiencias y atribución comercial con Cumbre Marketing, conectado al CRM, eCommerce y ERP.', 'keywords' => 'software de marketing para PyMEs, CRM con marketing, campañas por WhatsApp, automatizaciones comerciales, audiencias para Meta Ads, marketing para eCommerce, atribución de ventas', 'description' => 'Cumbre Marketing crea segmentos, audiencias y campañas multicanal usando información del CRM, eCommerce, Mercado Libre, Cobros y WhatsApp Hub. Activá acciones comerciales con consentimiento, trazabilidad y medición real de impacto.', 'problem' => 'Muchas empresas hacen marketing con listas sueltas, contactos duplicados, campañas sin atribución y datos desconectados de ventas reales.', 'value' => 'Conecta campañas con el ciclo completo: contacto, oportunidad, mensaje, venta, cobro, recompra y reporte.', 'features' => array( array( 'Segmentos reales', 'Audiencias desde CRM, ventas, eCommerce, Mercado Libre y comportamiento.' ), array( 'Campañas multicanal', 'WhatsApp, email, anuncios, calendarios, plantillas, UTM y variantes.' ), array( 'Atribución comercial', 'Mide impacto en oportunidades, ventas, cobros, recompra y reportes BI.' ) ), 'list' => array( 'No reemplaza Meta Ads, Google Ads ni plataformas de email; las orquesta con datos propios.', 'No envía campañas sin consentimiento, opt-in o base legal suficiente.', 'Credenciales externas por credencial_ref y webhooks con firma o secreto.' ), 'metrics' => array( array( 'Campañas', '12', 'Acciones activas por segmento y canal.' ), array( 'Conversión', '8,4%', 'Impacto real en oportunidades y ventas.' ), array( 'Reactivados', '137', 'Clientes recuperados con campañas trazables.' ), array( 'ROAS', '3,1x', 'Medición conectada a ventas y cobros.' ) ), 'flow' => array( array( 'Segmento', 'Clientes, oportunidades o audiencias según datos ERP.' ), array( 'Campaña', 'Mensaje, canal, plantilla, UTM y calendario.' ), array( 'Evento', 'Apertura, clic, respuesta, venta o cobro.' ), array( 'Atribución', 'Relación con CRM, Cobros, eCommerce y BI.' ), array( 'Optimización', 'Alertas, cohortes, repetición o pausa.' ) ), 'plans' => array( '5 campañas activas y atribución básica', 'Audiencias, WhatsApp, email, automatizaciones y reportes', 'Multicanal avanzado, Meta/Google asistido, cohortes y BI' ), 'addons' => array( 'Bloque de campañas', 'Conector publicitario', 'Automatizaciones avanzadas', 'Soporte growth', 'A/B testing', 'Reportes BI' ), 'guardrails' => array( array( 'Consentimiento', 'No se envían campañas sin opt-in o base legal cuando corresponde.' ), array( 'Sin bases paralelas', 'Usa contactos del CRM/empresas_clientes para evitar duplicidad.' ), array( 'Sin resultados garantizados', 'Mide y optimiza, pero no promete ventas o posicionamiento garantizado.' ) ), 'links' => array( $common['crm'], $common['whatsapp'], $common['web'], $common['cobros'], $common['bi'], $common['automatizaciones'] ), 'faq_what' => 'Es el módulo transversal para campañas, segmentos, audiencias, WhatsApp, email, anuncios y atribución conectada al ERP.', 'faq_links' => 'Conecta CRM, WhatsApp Hub, Web, eCommerce, Mercado Libre, Cobros, Reportes BI, Legal y Tutoriales API.', 'faq_guardrail' => 'No habilita spam ni reemplaza plataformas publicitarias; exige consentimiento, opt-out, minimización y credenciales seguras.', 'cta_title' => 'Activá marketing con datos reales', 'cta_copy' => 'Convertí contactos, ventas y comportamiento en campañas medibles y trazables.'
+			'slug' => 'cumbre-marketing', 'title' => 'Cumbre Marketing', 'headline' => 'Campañas conectadas a tus clientes y ventas reales', 'kicker' => 'Marketing · Segmentos · Audiencias · WhatsApp · Atribución', 'section_kicker' => 'Marketing conectado al ERP', 'section_title' => 'Segmentos, campañas, canales y atribución sobre datos reales', 'seo_title' => 'Cumbre Marketing | Campañas, CRM y automatizaciones para PyMEs', 'meta_description' => 'Creá segmentos, campañas por WhatsApp/email, audiencias y atribución comercial con Cumbre Marketing, conectado al CRM, eCommerce y ERP.', 'keywords' => 'software de marketing para PyMEs, CRM con marketing, campañas por WhatsApp, automatizaciones comerciales, audiencias para Meta Ads, marketing para eCommerce, atribución de ventas', 'description' => 'Cumbre Marketing crea segmentos, audiencias y campañas multicanal usando información del CRM, eCommerce, Mercado Libre, Cobros y WhatsApp Hub. Activá acciones comerciales con consentimiento, trazabilidad y medición real de impacto.', 'problem' => 'Muchas empresas hacen marketing con listas sueltas, contactos duplicados, campañas sin atribución y datos desconectados de ventas reales.', 'value' => 'Conecta campañas con el ciclo completo: contacto, oportunidad, mensaje, venta, cobro, recompra y reporte.', 'features' => array( array( 'Segmentos reales', 'Audiencias desde CRM, ventas, eCommerce, Mercado Libre y comportamiento.' ), array( 'Campañas multicanal', 'WhatsApp, email, anuncios, calendarios, plantillas, UTM y variantes.' ), array( 'Atribución comercial', 'Mide impacto en oportunidades, ventas, cobros, recompra y reportes BI.' ) ), 'list' => array( 'No reemplaza Meta Ads, Google Ads ni plataformas de email; las orquesta con datos propios.', 'No envía campañas sin consentimiento, opt-in o base legal suficiente.', 'Credenciales externas por credencial_ref y webhooks con firma o secreto.' ), 'metrics' => array( array( 'Campañas', '12', 'Acciones activas por segmento y canal.' ), array( 'Conversión', '8,4%', 'Impacto real en oportunidades y ventas.' ), array( 'Reactivados', '137', 'Clientes recuperados con campañas trazables.' ), array( 'ROAS', '3,1x', 'Medición conectada a ventas y cobros.' ) ), 'flow' => array( array( 'Segmento', 'Clientes, oportunidades o audiencias según datos ERP.' ), array( 'Campaña', 'Mensaje, canal, plantilla, UTM y calendario.' ), array( 'Evento', 'Apertura, clic, respuesta, venta o cobro.' ), array( 'Atribución', 'Relación con CRM, Cobros, eCommerce y BI.' ), array( 'Optimización', 'Alertas, cohortes, repetición o pausa.' ) ), 'plans' => array( '5 campañas activas y atribución básica', 'Audiencias, WhatsApp, email, automatizaciones y reportes', 'Multicanal avanzado, Meta/Google asistido, cohortes y BI' ), 'addons' => array( 'Bloque de campañas', 'Conector publicitario', 'Automatizaciones avanzadas', 'Soporte growth', 'A/B testing', 'Reportes BI' ), 'guardrails' => array( array( 'Consentimiento', 'No se envían campañas sin opt-in o base legal cuando corresponde.' ), array( 'Sin bases paralelas', 'Usa contactos del CRM/empresas_clientes para evitar duplicidad.' ), array( 'Sin resultados garantizados', 'Mide y optimiza, pero no promete ventas o posicionamiento garantizado.' ) ), 'links' => array( $common['crm'], $common['whatsapp'], $common['studio_ia'], $common['web'], $common['cobros'], $common['bi'], $common['automatizaciones'] ), 'faq_what' => 'Es el módulo transversal para campañas, segmentos, audiencias, WhatsApp, email, anuncios y atribución conectada al ERP.', 'faq_links' => 'Conecta CRM, WhatsApp Hub, Web, eCommerce, Mercado Libre, Cobros, Reportes BI, Legal y Tutoriales API.', 'faq_guardrail' => 'No habilita spam ni reemplaza plataformas publicitarias; exige consentimiento, opt-out, minimización y credenciales seguras.', 'cta_title' => 'Activá marketing con datos reales', 'cta_copy' => 'Convertí contactos, ventas y comportamiento en campañas medibles y trazables.'
 		),
 		'cumbre-automatizaciones' => array(
 			'slug' => 'cumbre-automatizaciones', 'title' => 'Cumbre Automatizaciones', 'headline' => 'Automatizaciones seguras para tu ERP', 'kicker' => 'Workflows · Triggers · Webhooks · Auditoría · Idempotencia', 'section_kicker' => 'Motor transversal', 'section_title' => 'Evento, condición, acción, auditoría y pausa por módulo', 'seo_title' => 'Cumbre Automatizaciones | Workflows seguros para ERP y PyMEs', 'meta_description' => 'Automatizá tareas entre módulos del ERP con triggers, condiciones, acciones, webhooks, auditoría, idempotencia y aprobaciones humanas.', 'keywords' => 'automatizaciones para ERP, workflows empresariales, automatizar tareas PyME, flujos no-code para empresas, automatizaciones con WhatsApp, webhooks ERP', 'description' => 'Cumbre Automatizaciones conecta eventos de CRM, ventas, cobros, stock, compras, tesorería, WhatsApp, marketing, contabilidad y otros módulos para ejecutar flujos seguros, pausables e idempotentes.', 'problem' => 'Las empresas repiten tareas manuales y, cuando automatizan sin controles, aparecen errores, loops, duplicados o acciones sensibles sin revisión.', 'value' => 'Permite crear flujos dentro del ERP con contexto, permisos, trazabilidad y guardrails del módulo dueño.', 'features' => array( array( 'Flujos no-code/low-code', 'Triggers, condiciones, filtros y acciones internas entre módulos.' ), array( 'Webhooks controlados', 'Entrantes y salientes con firma, secretos, reintentos e idempotencia.' ), array( 'Auditoría y pausas', 'Logs, errores, estados, pausa por módulo o tenant y aprobación humana.' ) ), 'list' => array( 'No ejecuta acciones críticas sin permisos y aprobación cuando corresponda.', 'No permite loops infinitos; toda ejecución debe tener idempotency key.', 'No borra datos automáticamente: usa estados, anulaciones o acciones reversibles auditadas.' ), 'metrics' => array( array( 'Flujos activos', '48', 'Automatizaciones por módulo y estado.' ), array( 'Ejecuciones', '9.2k', 'Eventos procesados con trazabilidad.' ), array( 'Errores', '0,7%', 'Reintentos, alertas y diagnóstico.' ), array( 'Pausas', '6', 'Módulos con flujos detenidos preventivamente.' ) ), 'flow' => array( array( 'Elegir trigger', 'Evento de módulo, webhook o tarea programada.' ), array( 'Condición', 'Reglas, filtros, permisos y contexto.' ), array( 'Acción', 'Notificación, tarea, cambio de estado o webhook.' ), array( 'Prueba', 'Simulación, logs y validación.' ), array( 'Monitoreo', 'Auditoría, reintentos, pausa y alertas.' ) ), 'plans' => array( '5 flujos activos e historial básico', '50 flujos, condiciones, webhooks e idempotencia', '500 flujos, aprobaciones, auditoría extendida y BI' ), 'addons' => array( 'Bloque de flujos', 'Webhooks avanzados', 'Flujos críticos asistidos', 'Soporte prioritario', 'Alertas BI', 'Pausa por tenant' ), 'guardrails' => array( array( 'Permisos', 'Acciones críticas requieren permisos y aprobación cuando corresponde.' ), array( 'Anti-loop', 'Idempotencia, reintentos controlados y prevención de ciclos.' ), array( 'Trazabilidad', 'Cada ejecución conserva origen, resultado, error y usuario o sistema responsable.' ) ), 'links' => array( $common['whatsapp'], $common['marketing'], $common['bi'], $common['web'], $common['cobros'], $common['stock'] ), 'faq_what' => 'Es el motor transversal de workflows de Cumbre ERP para automatizar eventos, condiciones, acciones, webhooks y aprobaciones.', 'faq_links' => 'Puede tomar eventos de todos los módulos Cumbre y conectarse con WhatsApp Hub, Marketing, Empresas, Reportes BI y Tutoriales API.', 'faq_guardrail' => 'No reemplaza controles humanos en pagos, bajas, fiscalidad, contabilidad, mensajes sensibles o cambios críticos.', 'cta_title' => 'Automatizá sin perder control', 'cta_copy' => 'Transformá tareas repetitivas en flujos trazables, pausables y auditables.'
@@ -2896,6 +3110,18 @@ function gema_sovereign_get_remaining_cumbre_landing_definitions(): array {
 	$definitions = array();
 	foreach ( $configs as $slug => $config ) {
 		$definitions[ $slug ] = gema_sovereign_make_cumbre_remaining_landing( $config );
+	}
+
+	if ( isset( $definitions['cumbre-marketing'] ) ) {
+		$definitions['cumbre-marketing']['custom_sections'] .= gema_sovereign_build_cumbre_studio_ia_marketing_embed_section();
+		$definitions['cumbre-marketing']['list']          = array_merge(
+			$definitions['cumbre-marketing']['list'],
+			array(
+				'Cumbre Studio IA (addon embebido): generación de guiones, clips, imágenes y piezas publicables conectadas al calendario Marketing.',
+				'Studio Base USD 31/mes lanzamiento · Studio Pro USD 63/mes · Studio Full USD 119/mes. Overage clip USD 0.26 e imagen USD 0.06.',
+				'Bundle Marketing Redes + Studio Base: −15% sobre precios de lanzamiento (aprox. USD 80/mes).',
+			)
+		);
 	}
 
 	return $definitions;
@@ -2942,6 +3168,8 @@ function gema_sovereign_get_cumbre_whatsapp_hub_page_definition(): array {
 		'custom_sections'     => gema_sovereign_build_cumbre_whatsapp_hub_custom_sections() . gema_sovereign_build_cumbre_whatsapp_costs_section(),
 		'links'               => array(
 			array( 'Cumbre CRM', '/cumbre-crm', 'Seguir leads, oportunidades, clientes, próximas acciones y derivaciones comerciales.' ),
+			array( 'Cumbre Marketing', '/erp-cumbre/cumbre-marketing', 'Campanas, segmentos, calendario y atribucion conectados a WhatsApp.' ),
+			array( 'Cumbre Studio IA', '/erp-cumbre/cumbre-studio-ia', 'Piezas audiovisuales listas para aprobar y publicar con opt-in.' ),
 			array( 'Cumbre Cobros', '/erp-cumbre/cumbre-cobros', 'Enviar recordatorios de pago, avisos de cobro, confirmaciones y estados.' ),
 			array( 'Cumbre Stock', '/erp-cumbre/cumbre-stock', 'Alertar bajo stock, movimientos observados, reservas o ingestas pendientes.' ),
 			array( 'Cumbre Compras', '/erp-cumbre/cumbre-compras', 'Pedir confirmación de reposición, aprobación de órdenes y seguimiento a proveedores.' ),
@@ -3369,12 +3597,79 @@ function gema_sovereign_build_cumbre_cobros_flow_section(): string {
 	return '<!-- wp:group {"tagName":"section","className":"gema-content-section cumbre-cobros-flow-section","layout":{"type":"constrained"}} --><section id="flujo-conciliacion-cobros" class="wp-block-group gema-content-section cumbre-cobros-flow-section"><!-- wp:paragraph {"className":"gema-section-kicker"} --><p class="gema-section-kicker">Flujo completo de cobro</p><!-- /wp:paragraph --><!-- wp:heading {"level":2,"className":"gema-section-title"} --><h2 class="wp-block-heading gema-section-title">De la factura o pedido al pago conciliado y registrado</h2><!-- /wp:heading --><!-- wp:paragraph {"className":"gema-section-copy"} --><p class="gema-section-copy">Los competidores fuertes nombran pasarelas y conciliación, pero la PyME necesita ver el circuito entero. Cumbre Cobros muestra cómo viaja un cobro desde la venta hasta Tesorería, Contabilidad e Impuestos.</p><!-- /wp:paragraph --><!-- wp:html --><div class="cumbre-compras-flow"><article><span>01</span><h3>Factura, pedido o presupuesto</h3><p>El cobro nace desde CRM, Ventas, ERP Negocios, PyMEs o Facturador ARCA.</p></article><article><span>02</span><h3>Link, QR o instrucción</h3><p>Se genera medio de cobro según cuenta, moneda, vencimiento, cliente y pasarela habilitada.</p></article><article><span>03</span><h3>Evento o evidencia</h3><p>Webhook, comprobante, transferencia, efectivo/manual o reporte del proveedor externo.</p></article><article><span>04</span><h3>Conciliación asistida</h3><p>Se cruza pago, cliente, importe, comisión, retención, factura, referencia y estado.</p></article><article><span>05</span><h3>Registro y trazabilidad</h3><p>El cobro alimenta Tesorería, cuentas corrientes, reportes, contabilidad e impuestos según alcance.</p></article></div><div class="cumbre-limit-table" role="table" aria-label="Qué se valida en conciliación de pagos"><div class="cumbre-limit-row cumbre-limit-row--head" role="row"><span>Dato</span><span>Origen posible</span><span>Uso</span><span>Guardrail</span></div><div class="cumbre-limit-row" role="row"><span>Importe y moneda</span><span>Pasarela, transferencia o carga manual</span><span>Comparar contra pedido/factura</span><span>Diferencias requieren revisión</span></div><div class="cumbre-limit-row" role="row"><span>Comisión y retención</span><span>Mercado Pago, Payway, MODO, banco o proveedor</span><span>Reporte financiero y contable</span><span>No asumir costo si el proveedor no lo informa</span></div><div class="cumbre-limit-row" role="row"><span>Estado</span><span>Webhook, panel externo o comprobante</span><span>Pendiente, aprobado, rechazado, devuelto o disputa</span><span>Eventos idempotentes para no duplicar</span></div><div class="cumbre-limit-row" role="row"><span>Evidencia manual</span><span>Comprobante, caja, cheque o transferencia</span><span>Acreditación administrativa</span><span>No marcar como cobrado sin evidencia</span></div></div><div class="cumbre-pymes-guardrails"><article class="cumbre-proof-card"><strong>Separar costos</strong><span>El abono Cumbre no elimina aranceles, retenciones o plazos de acreditación de proveedores externos.</span></article><article class="cumbre-proof-card"><strong>Idempotencia</strong><span>Un webhook repetido no debe duplicar cobros, facturas, recibos ni movimientos de tesorería.</span></article><article class="cumbre-proof-card"><strong>Conciliación revisable</strong><span>El sistema sugiere cruces, pero diferencias, devoluciones, contracargos y pagos manuales necesitan control humano.</span></article></div><!-- /wp:html --></section><!-- /wp:group -->';
 }
 
+function gema_sovereign_get_cumbre_studio_ia_page_definition(): array {
+	return array(
+		'title'               => 'Cumbre Studio IA: video, imagen y piezas publicables embebidas en el ERP',
+		'seo_title'           => 'Cumbre Studio IA | Video, imagen y contenido audiovisual para PyMEs',
+		'meta_description'    => 'Generá guiones, clips, imágenes y piezas publicables con Cumbre Studio IA. Precios −20% vs referencias, montaje multiformato, voz, subtítulos y calendario Marketing.',
+		'keywords'            => 'generación de video con IA para empresas, contenido audiovisual PyME, video marketing ERP, imágenes IA para redes, piezas publicables, Cumbre Studio IA, video 16:9 9:16 4:3',
+		'kicker'              => 'Studio IA · Guiones · Clips · Imágenes · Piezas publicables · Calendario',
+		'description'         => 'Cumbre Studio IA es el módulo embebido de ERP Cumbre para crear guiones, escenas, imágenes, montajes multiformato, voz, subtítulos y piezas publicables conectadas al calendario de Cumbre Marketing. No compite como herramienta suelta: incluye aprobación humana, plantillas de marca y trazabilidad comercial.',
+		'primary_cta_label'   => 'Activar Cumbre Studio IA',
+		'primary_cta_url'     => '/contacto',
+		'secondary_cta_label' => 'Probar 14 días',
+		'secondary_cta_url'   => '/erp/precios',
+		'visual'              => array(
+			'src' => '/wp-content/themes/gema-sovereign/assets/seo-visuals/seo-geo-nodo-conocimiento-lite.webp',
+			'alt' => 'Cumbre Studio IA con guiones, clips video, imágenes, montaje 16:9 9:16 4:3, voz, subtítulos y calendario Marketing',
+		),
+		'modules_title'       => 'Qué resuelve Cumbre Studio IA',
+		'list_title'          => 'Planes, límites, overage y promos de lanzamiento',
+		'links_title'         => 'Cómo se integra Studio IA con ERP Cumbre',
+		'faq_title'           => 'Preguntas frecuentes sobre Cumbre Studio IA',
+		'bottom_cta_title'    => 'Publicá con piezas completas, no solo clips sueltos',
+		'bottom_cta_copy'     => 'Studio IA empaqueta guion, escena, montaje, voz, subtítulos, carátulas y exportación al calendario Marketing con precios competitivos y control de consumo en Panel de Control.',
+		'modules'             => array(
+			array( 'Piezas publicables completas', 'Una pieza incluye guion, escenas, montaje, voz, carátulas y exportación al calendario. No vendemos solo el clip suelto como Hailuo o Runway.' ),
+			array( 'Precio competitivo embebido', 'Overage clip 6s USD 0.26 (−21% vs Hailuo Fast) e imagen USD 0.06 (−25% vs referencia). Lanzamiento −20% sobre los tres planes.' ),
+			array( 'Multiformato y marca', 'Montaje 16:9, 9:16 y 4:3 según plan, plantillas de marca, aprobación humana y reintentos controlados por plan.' ),
+			array( 'Conectado a Marketing', 'Las piezas aprobadas pueden exportarse al calendario de Cumbre Marketing, WhatsApp Hub y campañas con consentimiento.' ),
+			array( 'Panel de consumo', 'El Panel de Control muestra clips, imágenes y piezas usadas vs límite mensual, alertas y overage estimado.' ),
+			array( 'Trial preservado', 'Prueba 14 días con 3 clips, 5 imágenes y 1 pieza publicable. Los datos se conservan al pasar a plan pago.' ),
+		),
+		'list'                => array(
+			'Studio Base: USD 39/mes lista, USD 31/mes lanzamiento. 12 clips, 24 imágenes, 3 piezas/mes, formatos 16:9 y 9:16, motor económico, 1 reintento por escena.',
+			'Studio Pro ⭐: USD 79/mes lista, USD 63/mes lanzamiento. 40 clips, 80 imágenes, 10 piezas/mes, +4:3 y subtítulos, voz ElevenLabs incluida, cola Marketing.',
+			'Studio Full: USD 149/mes lista, USD 119/mes lanzamiento. 120 clips, 250 imágenes, 30 piezas/mes, hero premium, prioridad de cola, overage USD 0.24/0.05.',
+			'Overage: clip 6s USD 0.26 (Base/Pro) o USD 0.24 (Full); imagen USD 0.06 o USD 0.05 (Full).',
+			'Packs: 50 clips USD 12 · 200 imágenes USD 10 · 10 piezas USD 39 · bloque +20 clips USD 15/mes · bloque +50 imágenes USD 7/mes.',
+			'Bundle Marketing Redes + Studio Base: −15% sobre suma de lanzamiento (aprox. USD 80/mes).',
+			'Guardrails: reintentos máximos por plan, generate_audio=false en motor económico, aprobación humana antes de publicar.',
+		),
+		'custom_sections'     => gema_sovereign_build_cumbre_studio_ia_custom_sections(),
+		'links'               => array(
+			array( 'Cumbre Marketing', '/erp-cumbre/cumbre-marketing', 'Calendario, campañas y exportación de piezas publicables.' ),
+			array( 'Cumbre Web', '/erp-cumbre/cumbre-web', 'Landings, SEO y captación conectada al CRM.' ),
+			array( 'Cumbre WhatsApp Hub', '/erp-cumbre/cumbre-whatsapp-hub', 'Distribución de piezas y seguimiento con opt-in.' ),
+			array( 'Cumbre CRM', '/cumbre-crm', 'Segmentos y oportunidades que alimentan el calendario.' ),
+			array( 'ERP Cumbre', '/erp-cumbre', 'Ver el ecosistema completo de módulos.' ),
+			array( 'Precios ERP', '/erp/precios', 'Carrito institucional con SKUs Studio IA.' ),
+		),
+		'faq'                 => array(
+			array( 'Cumbre Studio IA reemplaza a Hailuo o Runway?', 'No compite como herramienta standalone. Es un servicio embebido en Cumbre con guion, montaje, voz, calendario y aprobación incluidos, a precio por pieza publicable más conveniente.' ),
+			array( 'Qué incluye una pieza publicable?', 'Aproximadamente 5 clips + 2 imágenes + montaje + voz + exportación al calendario Marketing, según equivalencia interna del plan.' ),
+			array( 'Qué pasa si supero el límite mensual?', 'Podés usar overage a USD 0.26/clip 6s y USD 0.06/imagen (menor en Full) o comprar packs y bloques adicionales.' ),
+			array( 'Tiene prueba gratis?', 'Sí. 14 días con 3 clips, 5 imágenes y 1 pieza. Los datos se preservan al convertir a plan pago.' ),
+			array( 'Se publica automáticamente en redes?', 'No sin aprobación humana. Studio IA prepara la pieza; Marketing y WhatsApp Hub respetan consentimiento y reglas de publicación.' ),
+		),
+	);
+}
+
+function gema_sovereign_build_cumbre_studio_ia_custom_sections(): string {
+	return '<!-- wp:group {"tagName":"section","className":"gema-content-section cumbre-studio-ia-section","layout":{"type":"constrained"}} --><section id="planes-studio-ia" class="wp-block-group gema-content-section cumbre-studio-ia-section"><!-- wp:paragraph {"className":"gema-section-kicker"} --><p class="gema-section-kicker">Precios Studio IA</p><!-- /wp:paragraph --><!-- wp:heading {"level":2,"className":"gema-section-title"} --><h2 class="wp-block-heading gema-section-title">Tres planes embebidos en Cumbre, −20% lanzamiento vs referencias de mercado</h2><!-- /wp:heading --><!-- wp:html --><div class="cumbre-pricing-grid" aria-label="Planes de Cumbre Studio IA"><article class="cumbre-pricing-card"><span class="cumbre-pricing-eyebrow">Studio Base</span><h3>Studio Base</h3><p class="cumbre-pricing-price"><strong>USD 31</strong><span>/mes lanzamiento</span></p><p class="cumbre-pricing-list-price">Lista: USD 39/mes</p><ul><li>12 clips video IA / mes</li><li>24 imágenes IA / mes</li><li>3 piezas publicables / mes</li><li>16:9 y 9:16</li><li>1 reintento por escena</li><li>Overage clip USD 0.26 · imagen USD 0.06</li></ul></article><article class="cumbre-pricing-card cumbre-pricing-card--featured"><span class="cumbre-pricing-eyebrow">Recomendado</span><h3>Studio Pro</h3><p class="cumbre-pricing-price"><strong>USD 63</strong><span>/mes lanzamiento</span></p><p class="cumbre-pricing-list-price">Lista: USD 79/mes</p><ul><li>40 clips · 80 imágenes · 10 piezas / mes</li><li>+ formato 4:3 y subtítulos</li><li>Voz ElevenLabs incluida</li><li>Cola publicación Marketing</li><li>2 reintentos por escena</li></ul></article><article class="cumbre-pricing-card"><span class="cumbre-pricing-eyebrow">Alto volumen</span><h3>Studio Full</h3><p class="cumbre-pricing-price"><strong>USD 119</strong><span>/mes lanzamiento</span></p><p class="cumbre-pricing-list-price">Lista: USD 149/mes</p><ul><li>120 clips · 250 imágenes · 30 piezas / mes</li><li>Hero premium y prioridad de cola</li><li>Overage USD 0.24 clip · USD 0.05 imagen</li><li>3 reintentos por escena</li></ul></article></div><div class="cumbre-limit-table" role="table" aria-label="Límites por plan de Cumbre Studio IA"><div class="cumbre-limit-row cumbre-limit-row--head" role="row"><span>Capacidad</span><span>Base</span><span>Pro</span><span>Full</span></div><div class="cumbre-limit-row" role="row"><span>Clips video / mes</span><span>12</span><span>40</span><span>120</span></div><div class="cumbre-limit-row" role="row"><span>Imágenes / mes</span><span>24</span><span>80</span><span>250</span></div><div class="cumbre-limit-row" role="row"><span>Piezas publicables / mes</span><span>3</span><span>10</span><span>30</span></div><div class="cumbre-limit-row" role="row"><span>Formatos</span><span>16:9 · 9:16</span><span>+ 4:3 · subtítulos</span><span>+ hero premium</span></div><div class="cumbre-limit-row" role="row"><span>Trial 14 días</span><span>3 clips · 5 imgs · 1 pieza</span><span>Datos preservados</span><span>Datos preservados</span></div></div><div class="cumbre-addon-panel" aria-label="Packs y promos Studio IA"><div><span class="cumbre-pricing-eyebrow">Packs y bundle</span><h3>Sumá capacidad o combinate con Cumbre Marketing</h3><p>Los packs no reemplazan el plan: amplían clips, imágenes o piezas cuando el calendario crece.</p></div><ul><li><strong>Pack 50 clips:</strong> USD 12 lanzamiento</li><li><strong>Pack 200 imágenes:</strong> USD 10 lanzamiento</li><li><strong>Pack 10 piezas publicables:</strong> USD 39 lanzamiento</li><li><strong>Bloque +20 clips / mes:</strong> USD 15 lanzamiento</li><li><strong>Bloque +50 imágenes / mes:</strong> USD 7 lanzamiento</li><li><strong>Bundle Marketing Redes + Studio Base:</strong> −15% (aprox. USD 80/mes)</li></ul></div><div class="cumbre-pymes-guardrails"><article class="cumbre-proof-card"><strong>Pieza completa</strong><span>Incluye guion, montaje, voz y exportación al calendario — no solo el clip suelto.</span></article><article class="cumbre-proof-card"><strong>Consumo visible</strong><span>Panel de Control muestra clips, imágenes y piezas vs límite con alertas y overage estimado.</span></article><article class="cumbre-proof-card"><strong>Aprobación humana</strong><span>Nada se publica automáticamente sin revisión cuando la política del tenant lo exige.</span></article></div><!-- /wp:html --></section><!-- /wp:group -->';
+}
+
+function gema_sovereign_build_cumbre_studio_ia_marketing_embed_section(): string {
+	return '<!-- wp:group {"tagName":"section","className":"gema-content-section cumbre-studio-ia-embed-section","layout":{"type":"constrained"}} --><section id="studio-ia-marketing" class="wp-block-group gema-content-section cumbre-studio-ia-embed-section"><!-- wp:paragraph {"className":"gema-section-kicker"} --><p class="gema-section-kicker">Contenido audiovisual</p><!-- /wp:paragraph --><!-- wp:heading {"level":2,"className":"gema-section-title"} --><h2 class="wp-block-heading gema-section-title">Cumbre Studio IA: de la campaña al video publicable</h2><!-- /wp:heading --><!-- wp:paragraph {"className":"gema-section-copy"} --><p class="gema-section-copy">Cumbre Marketing ordena segmentos y calendario; Cumbre Studio IA genera guiones, clips, imágenes, montaje multiformato, voz y piezas listas para aprobar y publicar. Precio lanzamiento desde USD 31/mes (Base) o USD 63/mes (Pro recomendado).</p><!-- /wp:paragraph --><!-- wp:html --><div class="cumbre-pricing-grid cumbre-pricing-grid--compact" aria-label="Resumen Studio IA en Marketing"><article class="cumbre-pricing-card"><span class="cumbre-pricing-eyebrow">Studio Base</span><h3>USD 31/mes</h3><p>3 piezas publicables · 12 clips · 24 imágenes</p></article><article class="cumbre-pricing-card cumbre-pricing-card--featured"><span class="cumbre-pricing-eyebrow">Studio Pro</span><h3>USD 63/mes</h3><p>10 piezas · 4:3 · subtítulos · cola Marketing</p></article><article class="cumbre-pricing-card"><span class="cumbre-pricing-eyebrow">Bundle</span><h3>−15%</h3><p>Marketing Redes + Studio Base ≈ USD 80/mes</p></article></div><p class="gema-section-copy"><a href="/erp-cumbre/cumbre-studio-ia/">Ver planes completos de Cumbre Studio IA</a></p><!-- /wp:html --></section><!-- /wp:group -->';
+}
+
 function gema_sovereign_get_payment_page_definitions(): array {
 	$links = gema_sovereign_get_payment_links();
 
 	return array(
 
 		'erp-cumbre/cumbre-cobros' => gema_sovereign_get_cumbre_cobros_page_definition(),
+		'erp-cumbre/cumbre-studio-ia' => gema_sovereign_get_cumbre_studio_ia_page_definition(),
 		'pagos' => array(
 			'title'       => 'Plataforma de pagos GEMA: Argentina y global',
 			'kicker'      => 'Pagos nacionales + internacionales',
@@ -4012,6 +4307,18 @@ function gema_sovereign_print_local_page_schema(): void {
 				'category'    => 'WhatsApp Business API conectado al ERP',
 				'description' => 'WhatsApp Business API para PyMEs conectada a CRM, módulos ERP, opt-in, plantillas, webhooks y trazabilidad.',
 			),
+			'erp-cumbre/cumbre-marketing'       => array(
+				'id'          => '/erp-cumbre/cumbre-marketing',
+				'name'        => 'Cumbre Marketing',
+				'category'    => 'Campanas, audiencias y atribucion comercial',
+				'description' => 'Segmentos, campanas multicanal, calendario y atribucion conectados al CRM, eCommerce y ERP.',
+			),
+			'erp-cumbre/cumbre-studio-ia'       => array(
+				'id'          => '/erp-cumbre/cumbre-studio-ia',
+				'name'        => 'Cumbre Studio IA',
+				'category'    => 'Contenido audiovisual IA embebido en ERP',
+				'description' => 'Guiones, clips, imagenes, montaje multiformato, voz, subtitulos y piezas publicables conectadas al calendario Marketing.',
+			),
 		);
 
 		$cumbre_application = $cumbre_application_pages[ trim( $path, '/' ) ] ?? null;
@@ -4096,11 +4403,7 @@ function gema_sovereign_ensure_page_path( string $path, string $title, string $c
 	}
 }
 
-function gema_sovereign_ensure_local_pages(): void {
-	if ( false === strpos( home_url( '/' ), 'localhost' ) && false === strpos( home_url( '/' ), '127.0.0.1' ) ) {
-		return;
-	}
-
+function gema_sovereign_sync_local_page_definitions(): void {
 	$pages = array(
 		'erp-cumbre'    => 'ERP Cumbre',
 		'gema-negocios' => 'GEMA Negocios',
@@ -4124,7 +4427,7 @@ function gema_sovereign_ensure_local_pages(): void {
 	}
 
 	foreach ( gema_sovereign_get_local_page_definitions() as $path => $page ) {
-		$force_update = in_array( $path, array( 'gestion', 'empresas', 'marketing', 'automatizacion', 'nosotros', 'contacto', 'servicios', 'terminos', 'privacidad', 'politica-de-cookies', 'blog', 'competencia', 'integraciones', 'tecnologia', 'erp/precios', 'erp/funciones/facturacion-electronica', 'ia/automatizacion-whatsapp', 'cumbre', 'cumbre-crm', 'cumbre-erp-negocios' ), true ) || 0 === strpos( $path, 'competencia/' ) || 0 === strpos( $path, 'cumbre/' ) || 0 === strpos( $path, 'pagos/' ) || 0 === strpos( $path, 'legal/' );
+		$force_update = in_array( $path, array( 'gestion', 'empresas', 'marketing', 'automatizacion', 'nosotros', 'contacto', 'servicios', 'terminos', 'privacidad', 'politica-de-cookies', 'blog', 'competencia', 'integraciones', 'tecnologia', 'login', 'erp/precios', 'erp/funciones/facturacion-electronica', 'ia/automatizacion-whatsapp', 'cumbre', 'cumbre-crm', 'cumbre-erp-negocios' ), true ) || 0 === strpos( $path, 'competencia/' ) || 0 === strpos( $path, 'cumbre/' ) || 0 === strpos( $path, 'erp-cumbre/' ) || 0 === strpos( $path, 'pagos/' ) || 0 === strpos( $path, 'legal/' );
 
 		gema_sovereign_ensure_page_path(
 			$path,
@@ -4133,6 +4436,14 @@ function gema_sovereign_ensure_local_pages(): void {
 			$force_update
 		);
 	}
+}
+
+function gema_sovereign_ensure_local_pages(): void {
+	if ( false === strpos( home_url( '/' ), 'localhost' ) && false === strpos( home_url( '/' ), '127.0.0.1' ) ) {
+		return;
+	}
+
+	gema_sovereign_sync_local_page_definitions();
 }
 add_action( 'init', 'gema_sovereign_ensure_local_pages' );
 

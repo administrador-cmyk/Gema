@@ -23,14 +23,14 @@
 		<nav id="gema-main-nav" class="gema-main-nav" aria-label="Navegación principal">
 			<ul class="gema-main-nav__list">
 				<li><a href="/">Inicio</a></li>
-				<li class="gema-main-nav__item--mega">
+				<li class="gema-main-nav__item--mega" aria-expanded="false">
 					<div class="gema-mega-menu__trigger-row">
 						<a href="/erp-cumbre" aria-haspopup="true" aria-expanded="false">Cumbre ERP</a>
-						<button type="button" class="gema-mega-menu__mobile-toggle" aria-expanded="false" aria-label="Mostrar secciones de Cumbre ERP">
+						<button type="button" class="gema-mega-menu__mobile-toggle" aria-expanded="false" aria-controls="gema-mega-menu-cumbre" aria-label="Mostrar u ocultar módulos de Cumbre ERP">
 							<span class="gema-mega-menu__mobile-toggle-icon" aria-hidden="true"></span>
 						</button>
 					</div>
-					<div class="gema-mega-menu" aria-label="Secciones de Cumbre ERP">
+					<div class="gema-mega-menu" id="gema-mega-menu-cumbre" aria-label="Secciones de Cumbre ERP">
 						<div class="gema-mega-menu__grid">
 							<section>
 								<h2>Empezar con Cumbre</h2>
@@ -40,7 +40,6 @@
 								<a href="/erp-cumbre/#cumbre-erp-pymes"><strong>ERP PyMEs</strong><span>Administración para empresas en crecimiento.</span></a>
 								<a href="/erp-cumbre/#cumbre-empresas"><strong>Cumbre Empresas</strong><span>Gobernanza, permisos y auditoría.</span></a>
 								<a href="/erp/precios"><strong>Precios y prueba</strong><span>Planes, diagnóstico y demo.</span></a>
-								<a href="https://cumbre-erp-prod.web.app" rel="noopener noreferrer" target="_blank"><strong>Acceder a ERP</strong><span>Panel Cumbre en producción.</span></a>
 							</section>
 							<section>
 								<h2>Operación diaria</h2>
@@ -66,6 +65,7 @@
 								<a href="/erp-cumbre/cumbre-whatsapp-hub">WhatsApp Hub</a>
 								<a href="/erp-cumbre/cumbre-agente-chatbot">Agente Chatbot</a>
 								<a href="/erp-cumbre/cumbre-marketing">Marketing</a>
+								<a href="/erp-cumbre/cumbre-studio-ia">Studio IA</a>
 								<a href="/erp-cumbre/cumbre-web">Web</a>
 								<a href="/erp-cumbre/cumbre-automatizaciones">Automatizaciones</a>
 								<a href="/erp-cumbre/tutoriales-api-cumbre">Tutoriales API</a>
@@ -107,7 +107,10 @@
 			</button>
 			<!-- /wp:html -->
 			<!-- wp:button {"className":"btn-ghost-login"} -->
-			<div class="wp-block-button btn-ghost-login"><a class="wp-block-button__link wp-element-button" href="/login">Iniciar sesión</a></div>
+			<div class="wp-block-button btn-ghost-login"><a class="wp-block-button__link wp-element-button" href="/login">Ingresar</a></div>
+			<!-- /wp:button -->
+			<!-- wp:button {"className":"btn-ghost-login"} -->
+			<div class="wp-block-button btn-ghost-login"><a class="wp-block-button__link wp-element-button" href="/mi-cuenta">Mi cuenta</a></div>
 			<!-- /wp:button -->
 			<!-- wp:button {"className":"btn-cta-primary"} -->
 			<div class="wp-block-button btn-cta-primary"><a class="wp-block-button__link wp-element-button" href="/erp/precios">Prueba gratis</a></div>
